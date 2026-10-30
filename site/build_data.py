@@ -397,8 +397,13 @@ def main() -> None:
     }
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(data, indent=1, sort_keys=False) + "\n")
+    shown = (
+        args.output.relative_to(REPO_ROOT)
+        if args.output.is_relative_to(REPO_ROOT)
+        else args.output
+    )
     print(
-        f"{args.output.relative_to(REPO_ROOT)}: {len(runs)} runs, {len(tests)} tests, {len(history)} commits, {args.output.stat().st_size // 1024} KB"
+        f"{shown}: {len(runs)} runs, {len(tests)} tests, {len(history)} commits, {args.output.stat().st_size // 1024} KB"
     )
 
 
