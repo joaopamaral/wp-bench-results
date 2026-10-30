@@ -129,6 +129,8 @@
 
   /* local files: upload, drop and follow */
   #uploadBtn { flex-shrink: 0; }
+  .seg.lang { flex-shrink: 0; }
+  .seg.lang button { padding: 6px 8px; font-size: 12px; font-weight: 500; letter-spacing: .02em; }
   #localbar:not([hidden]) { padding-top: 16px; }
   .localbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 16px; background: var(--blueberry-wash); border: 1px solid color-mix(in srgb, var(--blueberry) 30%, transparent); border-radius: 8px; font-size: 13px; color: var(--ink-2); }
   .localbar > span:not(.livedot):not(.grow) { min-width: 0; overflow-wrap: anywhere; }
@@ -222,7 +224,8 @@
   table.board td.rank { color: var(--ink-4); width: 24px; }
   table.board .pickc { width: 48px; padding: 0 0 0 8px; text-align: center; }
   table.board .pickc .pick { width: 40px; height: 40px; margin: 0; }
-  table.board .who { flex-wrap: nowrap; }
+  /* Chips drop under the model name only when the column runs out of room (longer labels in PT and ES). */
+  table.board .who { flex-wrap: wrap; }
   table.board .byline { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-4); }
   table.board .byline a { color: var(--ink-3); }
   table.board td.overall strong { font-size: 14px; font-weight: 600; }
@@ -451,24 +454,25 @@
 <header class="masthead">
   <div class="wrap">
     <div class="row">
-      <a class="brand" href="#/">WP-Bench <span>leaderboard</span></a>
-      <nav class="suites" id="suites" aria-label="Suite"></nav>
+      <a class="brand" href="#/">WP-Bench <span data-i18n="leaderboard">leaderboard</span></a>
+      <nav class="suites" id="suites" data-i18n-attr="aria-label:Suite" aria-label="Suite"></nav>
       <div class="search" id="search">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="q" type="text" role="combobox" aria-expanded="false" aria-controls="qResults" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Jump to a model, category or test" aria-label="Jump to a model, category or test">
+        <input id="q" type="text" role="combobox" aria-expanded="false" aria-controls="qResults" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Jump to a model, category or test" aria-label="Jump to a model, category or test" data-i18n-attr="placeholder:Jump to a model, category or test;aria-label:Jump to a model, category or test">
         <kbd aria-hidden="true">/</kbd>
         <ul class="results" id="qResults" role="listbox" hidden></ul>
       </div>
-      <button type="button" class="btn" id="uploadBtn" data-action="upload" title="Preview a results file from this computer. Nothing is uploaded.">Upload results</button>
+      <button type="button" class="btn" id="uploadBtn" data-action="upload" data-i18n="Upload results" data-i18n-attr="title:Preview a results file from this computer. Nothing is uploaded." title="Preview a results file from this computer. Nothing is uploaded.">Upload results</button>
+      <div class="seg lang" id="lang" role="group" data-i18n-attr="aria-label:Language" aria-label="Language"></div>
     </div>
-    <nav class="views" id="views" aria-label="Views"></nav>
+    <nav class="views" id="views" data-i18n-attr="aria-label:Views" aria-label="Views"></nav>
   </div>
 </header>
 
 <div class="wrap" id="localbar" role="status" hidden></div>
-<main class="wrap" id="main"><div class="status">Loading runs…</div></main>
+<main class="wrap" id="main"><div class="status" data-i18n="Loading runs…">Loading runs…</div></main>
 
-<div class="drophint" id="dropHint" hidden><div><strong>Drop to preview</strong><span>results_&lt;timestamp&gt;.json, .jsonl or .jsonl.partial · nothing is uploaded</span></div></div>
+<div class="drophint" id="dropHint" hidden><div><strong data-i18n="Drop to preview">Drop to preview</strong><span data-i18n="results_<timestamp>.json, .jsonl or .jsonl.partial · nothing is uploaded">results_&lt;timestamp&gt;.json, .jsonl or .jsonl.partial · nothing is uploaded</span></div></div>
 <div class="tray" id="tray" hidden></div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
@@ -492,8 +496,22 @@
   const RUN_FILE = /^results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.json$/;
   const $ = (id) => document.getElementById(id);
   const main = $('main');
-  /** Translation hook: the English text is the key and {name} marks a value. */
-  const t = (text, vars) => vars ? text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : text;
+  // ---------- language ----------
+  const LANGS = { en: { name: 'English', tag: 'en-US' }, pt: { name: 'Português', tag: 'pt-BR' }, es: { name: 'Español', tag: 'es' } };
+  const detectLang = () => {
+    const asked = qs.get('lang');
+    if (LANGS[asked]) return asked;
+    try { const saved = localStorage.getItem('wpb-lang'); if (LANGS[saved]) return saved; } catch {}
+    const browser = (navigator.languages?.[0] || navigator.language || 'en').slice(0, 2).toLowerCase();
+    return LANGS[browser] ? browser : 'en';
+  };
+  let LANG = detectLang();
+  const TAG = () => LANGS[LANG].tag;
+  /** The English text is the key and {name} marks a value; a text missing from the dictionary shows in English. */
+  const t = (text, vars) => {
+    const out = I18N[LANG]?.[text] || text;
+    return vars ? out.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : out;
+  };
   $('buildLink').href = `https://github.com/${REPO}/blob/${REF}/site/build_data.py`;
   $('folderLink').href = `https://github.com/${REPO}/tree/${REF}/results`;
   $('folderLink').textContent = `${REPO}/results`;
@@ -524,7 +542,7 @@
     };
   }
   const statusOf = (run, id) => run.passedSet.has(id) ? 'pass' : run.failures[id] ? (run.failures[id].reason === 'harness error' ? 'error' : 'fail') : 'none';
-  const STATUS = { pass: 'passed', fail: 'failed', error: 'errored', none: 'not run' };
+  const STATUS = { get pass() { return t('passed'); }, get fail() { return t('failed'); }, get error() { return t('errored'); }, get none() { return t('not run'); } };
 
   // Local previews: the same summary build_data.py writes, computed in the browser from a raw output.
   const pctl = (values, f) => { if (!values.length) return null; const o = [...values].sort((a, b) => a - b); return o[Math.min(o.length - 1, Math.max(0, Math.round(f * (o.length - 1))))]; };
@@ -685,16 +703,27 @@
 
   // ---------- formatting ----------
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const pct = (v, d = 1) => v == null ? '—' : (v * 100).toFixed(d) + '%';
-  const secs = (v) => v == null ? '—' : v >= 1000 ? (v / 1000).toFixed(1) + ' s' : Math.round(v) + ' ms';
-  const usd = (v) => v == null ? '—' : '$' + v.toFixed(v >= 0.1 ? 2 : v >= 0.01 ? 3 : 4);
-  const int = (v) => v == null ? '—' : Math.round(v).toLocaleString('en-US');
-  const day = (iso) => { if (!iso) return '—'; const d = new Date(iso.slice(0, 10) + 'T00:00:00Z'); return isNaN(d) ? iso : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); };
+  // Displayed numbers follow the language (91,1% in Portuguese); SVG coordinates keep toFixed.
+  const fx = (v, d) => v.toLocaleString(TAG(), { minimumFractionDigits: d, maximumFractionDigits: d });
+  const pct = (v, d = 1) => v == null ? '—' : fx(v * 100, d) + '%';
+  const secs = (v) => v == null ? '—' : v >= 1000 ? fx(v / 1000, 1) + ' s' : Math.round(v) + ' ms';
+  const usd = (v) => v == null ? '—' : '$' + fx(v, v >= 0.1 ? 2 : v >= 0.01 ? 3 : 4);
+  const int = (v) => v == null ? '—' : Math.round(v).toLocaleString(TAG());
+  // "Oct 30, 2026" in English; "30 out 2026" / "30 oct 2026" elsewhere, without the "de" that pt-BR adds and that overflows the stat cells.
+  const day = (iso) => {
+    if (!iso) return '—';
+    const d = new Date(iso.slice(0, 10) + 'T00:00:00Z');
+    if (isNaN(d)) return iso;
+    const opts = { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' };
+    if (LANG === 'en') return d.toLocaleDateString(TAG(), opts);
+    const p = Object.fromEntries(new Intl.DateTimeFormat(TAG(), opts).formatToParts(d).map(x => [x.type, x.value]));
+    return `${p.day} ${p.month.replace(/\.$/, '')} ${p.year}`;
+  };
   const seqClass = (p) => p == null ? 'na' : p >= .99 ? 'seq-700 dark' : p >= .9 ? 'seq-600 dark' : p >= .8 ? 'seq-500 dark' : p >= .7 ? 'seq-400 dark' : p >= .55 ? 'seq-300' : p >= .35 ? 'seq-200' : 'seq-100';
   const seqCell = (p, text, attrs = '') => { const cls = seqClass(p); return `<td class="seq ${cls}"${p == null ? '' : ` style="background:var(--${cls.split(' ')[0]})"`}${attrs}>${text}</td>`; };
   function score(run, cls = 'score', ci = true) {
     const v = run.scores.overall, h = ci ? wilson(v, run.total) : null;
-    return `<span class="${cls}">${v == null ? '—' : (v * 100).toFixed(1)}<small>%</small>${h != null ? `<span class="ci" title="95% Wilson interval over ${run.total} tests">±${(h * 100).toFixed(1)}</span>` : ''}</span>`;
+    return `<span class="${cls}">${v == null ? '—' : fx(v * 100, 1)}<small>%</small>${h != null ? `<span class="ci" title="${esc(t('95% Wilson interval over {n} tests', { n: run.total }))}">±${fx(h * 100, 1)}</span>` : ''}</span>`;
   }
   function modelName(name, href) {
     const i = name.indexOf('/');
@@ -705,14 +734,14 @@
   /** Provenance chips; the ranking only flags exceptions, a model page also confirms the full suite. */
   function chips(r, s, { full = false } = {}) {
     const out = [];
-    if (r.synthetic) out.push('<span class="chip synthetic" title="Random scores generated to develop this page. Not a benchmark result.">synthetic</span>');
+    if (r.synthetic) out.push(`<span class="chip synthetic" title="${esc(t('Random scores generated to develop this page. Not a benchmark result.'))}">${esc(t('synthetic'))}</span>`);
     if (r.partial) out.push(`<span class="chip live" title="${esc(t('The harness is still writing this run: the score covers only the tests graded so far.'))}">${esc(t('in progress'))} ${r.total}/${s.full}</span>`);
-    else if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
-    else if (r.subset) out.push(`<span class="chip" title="Ran ${r.total} tests; the current full suite has ${s.full} (a partial run or an earlier revision of the suite)">${r.total} tests</span>`);
-    else if (full) out.push('<span class="chip full" title="Every test in the suite was run">full suite</span>');
-    if (r.scoring_version !== s.scoring) out.push(`<span class="chip subset" title="Scores from another scoring version are not comparable">scoring ${esc(r.scoring_version)}</span>`);
-    if (r.errored) out.push(`<span class="chip errored" title="Errored tests are left out of the scores">${r.errored} errored</span>`);
-    if (r.local) out.push('<span class="chip local" title="Opened from this computer; not published">local file</span>');
+    else if (r.subset && r.limit) out.push(`<span class="chip subset" title="${esc(t('Seeded subset: limit {limit}, seed {seed}', { limit: r.limit, seed: r.config.seed }))}">${esc(t('subset {n}/{full}', { n: r.total, full: s.full }))}</span>`);
+    else if (r.subset) out.push(`<span class="chip" title="${esc(t('Ran {n} tests; the current full suite has {full} (a partial run or an earlier revision of the suite)', { n: r.total, full: s.full }))}">${esc(t('{n} tests', { n: r.total }))}</span>`);
+    else if (full) out.push(`<span class="chip full" title="${esc(t('Every test in the suite was run'))}">${esc(t('full suite'))}</span>`);
+    if (r.scoring_version !== s.scoring) out.push(`<span class="chip subset" title="${esc(t('Scores from another scoring version are not comparable'))}">${esc(t('scoring {v}', { v: r.scoring_version }))}</span>`);
+    if (r.errored) out.push(`<span class="chip errored" title="${esc(t('Errored tests are left out of the scores'))}">${esc(t('{n} errored', { n: r.errored }))}</span>`);
+    if (r.local) out.push(`<span class="chip local" title="${esc(t('Opened from this computer; not published'))}">${esc(t('local file'))}</span>`);
     return out.join('');
   }
 
@@ -721,7 +750,7 @@
   const H = {
     board: (s) => `#/${enc(s)}`,
     model: (s, m, file) => `#/${enc(s)}/m/${enc(m)}${file ? `/r/${enc(file)}` : ''}`,
-    test: (s, t) => `#/${enc(s)}/t/${enc(t)}`,
+    test: (s, id) => `#/${enc(s)}/t/${enc(id)}`,
     cat: (s, c) => `#/${enc(s)}/c/${enc(c)}`,
     cats: (s) => `#/${enc(s)}/categories`,
     cost: (s) => `#/${enc(s)}/cost`,
@@ -764,22 +793,22 @@
       else out += `<rect class="n" x="${x}" y="${h - 1}" width="${TICK_W}" height="1"/>`;
     }
     const failed = run.total - run.passed - run.errored;
-    return `<svg class="strip" data-run="${esc(run.key)}" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${run.passed} passed, ${failed} failed${run.errored ? `, ${run.errored} errored` : ''} of ${s.size} tests">${out}</svg>`;
+    return `<svg class="strip" data-run="${esc(run.key)}" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${esc(t('{p} passed, {f} failed', { p: run.passed, f: failed }) + (run.errored ? ', ' + t('{n} errored', { n: run.errored }) : '') + ' · ' + t('{n} tests', { n: s.size }))}">${out}</svg>`;
   }
   /** Failures by category for a table row: one bar per category, as tall as its failure rate. A tick per test is too thin at this width. */
   function miniBars(run, s, h = 16) {
     const w = 5, gap = 1.5, stats = catStats(run, s);
     const bars = s.cats.map((c, i) => {
       const b = stats.get(c.name), x = (i * (w + gap)).toFixed(1);
-      if (!b || !b.total) return `<rect class="n" x="${x}" y="${h - 1}" width="${w}" height="1"><title>${esc(c.name)}: not run</title></rect>`;
+      if (!b || !b.total) return `<rect class="n" x="${x}" y="${h - 1}" width="${w}" height="1"><title>${esc(c.name)}: ${esc(t('not run'))}</title></rect>`;
       const bad = b.fail + b.error, bh = bad ? Math.max(4, Math.round(bad / b.total * h)) : 2;
-      return `<rect class="${bad ? 'f' : 'p'}" x="${x}" y="${h - bh}" width="${w}" height="${bh}" rx="1"><title>${esc(c.name)}: ${bad} of ${b.total} failed</title></rect>`;
+      return `<rect class="${bad ? 'f' : 'p'}" x="${x}" y="${h - bh}" width="${w}" height="${bh}" rx="1"><title>${esc(c.name)}: ${esc(t('{bad} of {n} failed', { bad, n: b.total }))}</title></rect>`;
     }).join('');
     const failed = run.total - run.passed - run.errored;
-    return `<svg class="minibars" viewBox="0 0 ${(s.cats.length * (w + gap) - gap).toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${failed} failed tests across ${s.cats.length} categories">${bars}</svg>`;
+    return `<svg class="minibars" viewBox="0 0 ${(s.cats.length * (w + gap) - gap).toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${esc(t('{f} failed tests across {n} categories', { f: failed, n: s.cats.length }))}">${bars}</svg>`;
   }
   function ruler(s) {
-    return `<svg class="ruler" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} 6" preserveAspectRatio="none" height="6" role="img" aria-label="${s.cats.length} categories">${s.cats.map(c => `<rect x="${c.x.toFixed(1)}" y="0" width="${c.w.toFixed(1)}" height="6" rx="1"/>`).join('')}</svg>`;
+    return `<svg class="ruler" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} 6" preserveAspectRatio="none" height="6" role="img" aria-label="${esc(t('{n} categories', { n: s.cats.length }))}">${s.cats.map(c => `<rect x="${c.x.toFixed(1)}" y="0" width="${c.w.toFixed(1)}" height="6" rx="1"/>`).join('')}</svg>`;
   }
   const xAt = (s, svg, clientX) => { const box = svg.getBoundingClientRect(); return (clientX - box.left) / box.width * s.width; };
   const testIndexAt = (s, svg, clientX) => {
@@ -806,9 +835,10 @@
     S.compare = (r.view === 'compare' ? r.models : S.compare).filter(inSuite).slice(0, 3);
     renderChrome(r);
     renderLocalBar();
+    if (S.srcInfo) $('srcLine').textContent = t('{runs} runs · {tests} tests · data built {built} UTC', S.srcInfo) + S.srcInfo.from;
     hideTip();
     const s = S.suites.get(r.suite);
-    if (!s && !GLOBAL_VIEWS.includes(r.view)) { main.innerHTML = '<div class="status">No runs found in the results folder yet.</div>'; return; }
+    if (!s && !GLOBAL_VIEWS.includes(r.view)) { main.innerHTML = `<div class="status">${esc(t('No runs found in the results folder yet.'))}</div>`; return; }
     ({ board: viewBoard, model: viewModel, test: viewTest, category: viewCategory, categories: viewCategories, cost: viewCost, compare: viewCompare, history: viewHistory, how: viewHow })[r.view](r, s);
     renderTray(r);
   }
@@ -816,12 +846,12 @@
   function renderChrome(r) {
     $('suites').innerHTML = orderedSuites().map(s => `<a href="${H.board(s.name)}" aria-current="${s.name === r.suite && !GLOBAL_VIEWS.includes(r.view)}">${esc(s.name)}<small class="num">${s.full}</small></a>`).join('');
     const views = [
-      ['board', 'Ranking', H.board(r.suite)],
-      ['compare', `Compare${S.compare.length ? `<span class="pill num">${S.compare.length}</span>` : ''}`, H.compare(r.suite, S.compare)],
-      ['categories', 'Categories', H.cats(r.suite)],
-      ['cost', 'Score vs cost', H.cost(r.suite)],
-      ['history', 'History', H.history()],
-      ['how', 'How it works', H.how()],
+      ['board', t('Ranking'), H.board(r.suite)],
+      ['compare', `${t('Compare')}${S.compare.length ? `<span class="pill num">${S.compare.length}</span>` : ''}`, H.compare(r.suite, S.compare)],
+      ['categories', t('Categories'), H.cats(r.suite)],
+      ['cost', t('Score vs cost'), H.cost(r.suite)],
+      ['history', t('History'), H.history()],
+      ['how', t('How it works'), H.how()],
     ];
     const current = r.view === 'model' || r.view === 'test' ? 'board' : r.view === 'category' ? 'categories' : r.view;
     $('views').innerHTML = views.map(([k, label, href]) => `<a href="${href}"${k === current ? ' aria-current="page"' : ''}>${label}</a>`).join('');
@@ -831,7 +861,7 @@
     const synthetic = s.runs.filter(x => x.synthetic).length;
     if (!synthetic) return '';
     const real = latestOf(s.runs.filter(x => !x.synthetic)).length;
-    return `<p class="notice synthetic">${synthetic} of ${s.runs.length} runs in ${esc(s.name)} are synthetic: random scores generated to build this page, tagged below. ${real} model${real === 1 ? ' has' : 's have'} real runs.${S.showSynthetic ? '' : ' They are hidden now.'}</p>`;
+    return `<p class="notice synthetic">${esc(t('{n} of {total} runs in {suite} are synthetic: random scores generated to build this page, tagged below. Models with real runs: {real}.', { n: synthetic, total: s.runs.length, suite: s.name, real }))}${S.showSynthetic ? '' : ' ' + esc(t('They are hidden now.'))}</p>`;
   }
 
   /** Home (the list from the build_data page): a stat strip and one table of each model's latest run, ranked full runs first; tick rows to compare. */
@@ -869,25 +899,25 @@
       ${syntheticNotice(s)}
       ${boardStats(s, ranked)}
       <div class="toolbar">
-        <input type="search" class="field" id="boardSearch" placeholder="Filter by model or author" value="${esc(S.board.q)}" aria-label="Filter by model or author">
-        <label class="check"><input type="checkbox" id="optAll"${S.board.all ? ' checked' : ''}> Show older runs</label>
+        <input type="search" class="field" id="boardSearch" placeholder="${esc(t('Filter by model or author'))}" value="${esc(S.board.q)}" aria-label="${esc(t('Filter by model or author'))}">
+        <label class="check"><input type="checkbox" id="optAll"${S.board.all ? ' checked' : ''}> ${esc(t('Show older runs'))}</label>
         ${filterToggles()}
         <span class="grow"></span>
-        ${canFollow() && $('localbar').hidden ? '<button type="button" class="btn" data-action="follow" title="Pick a results file the harness is still writing and watch it fill in.">Follow a running benchmark</button>' : ''}
-        <button type="button" class="btn" id="exportCsv">Export CSV</button>
+        ${canFollow() && $('localbar').hidden ? `<button type="button" class="btn" data-action="follow" title="${esc(t('Pick a results file the harness is still writing and watch it fill in.'))}">${esc(t('Follow a running benchmark'))}</button>` : ''}
+        <button type="button" class="btn" id="exportCsv">${esc(t('Export CSV'))}</button>
       </div>
       <div class="sheet grid-wrap">
         <table class="board" id="boardTable">
-          <thead><tr><th class="nosort pickc" scope="col"><span class="sr">Compare</span></th>${BOARD_COLS.map(([k, label, get, align]) => get
-            ? `<th scope="col" data-sort="${k}" class="${align || ''}" aria-sort="${k === col[0] ? (dir < 0 ? 'descending' : 'ascending') : 'none'}">${label}${k === 'overall' ? ' <span class="faint" title="Strict execution pass rate; ± is a 95% Wilson interval">±</span>' : ''}${k === col[0] ? `<span class="dir">${dir < 0 ? '▼' : '▲'}</span>` : ''}</th>`
-            : `<th scope="col" class="nosort ${align || ''}">${label}</th>`).join('')}<th class="nosort" scope="col"><span class="sr">Run details</span></th></tr></thead>
+          <thead><tr><th class="nosort pickc" scope="col"><span class="sr">${esc(t('Compare'))}</span></th>${BOARD_COLS.map(([k, label, get, align]) => get
+            ? `<th scope="col" data-sort="${k}" class="${align || ''}" aria-sort="${k === col[0] ? (dir < 0 ? 'descending' : 'ascending') : 'none'}">${esc(t(label))}${k === 'overall' ? ` <span class="faint" title="${esc(t('Strict execution pass rate; ± is a 95% Wilson interval'))}">±</span>` : ''}${k === col[0] ? `<span class="dir">${dir < 0 ? '▼' : '▲'}</span>` : ''}</th>`
+            : `<th scope="col" class="nosort ${align || ''}">${esc(t(label))}</th>`).join('')}<th class="nosort" scope="col"><span class="sr">${esc(t('Run details'))}</span></th></tr></thead>
           <tbody>
-            ${top.length ? top.map(x => boardRow(x, s, rank)).join('') : `<tr><td colspan="${span}" class="empty">${q ? 'No ranked runs match the filter.' : `No full runs to rank in ${esc(s.name)} yet.`}</td></tr>`}
-            ${rest.length ? `<tr class="group"><td colspan="${span}"><strong>Not ranked</strong> · a different test count (a partial run or an earlier revision of the suite), another scoring version${S.board.all ? ', or an older run' : ''}</td></tr>${rest.map(x => boardRow(x, s, rank)).join('')}` : ''}
+            ${top.length ? top.map(x => boardRow(x, s, rank)).join('') : `<tr><td colspan="${span}" class="empty">${esc(q ? t('No ranked runs match the filter.') : t('No full runs to rank in {suite} yet.', { suite: s.name }))}</td></tr>`}
+            ${rest.length ? `<tr class="group"><td colspan="${span}"><strong>${esc(t('Not ranked'))}</strong> · ${esc(S.board.all ? t('a different test count (a partial run or an earlier revision of the suite), another scoring version, or an older run') : t('a different test count (a partial run or an earlier revision of the suite), another scoring version'))}</td></tr>${rest.map(x => boardRow(x, s, rank)).join('')}` : ''}
           </tbody>
         </table>
       </div>
-      <p class="lede" style="margin-top:12px">Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. Each strip has one tick per test in suite order, red where it failed. Costs are harness estimates. Tick rows to compare up to three models.</p>`;
+      <p class="lede" style="margin-top:12px">${esc(t('Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. The bars show the failures in each category, taller where more of its tests failed. Costs are harness estimates. Tick rows to compare up to three models.'))}</p>`;
     $('boardSearch').addEventListener('input', e => { S.board.q = e.target.value; const pos = e.target.selectionStart; render(); const el = $('boardSearch'); el.focus(); el.setSelectionRange(pos, pos); });
     $('optAll').addEventListener('change', e => { S.board.all = e.target.checked; render(); });
     bindFilterToggles();
@@ -902,28 +932,28 @@
   function boardRow(x, s, rank) {
     const picked = S.compare.includes(x.model);
     const pub = x.published, cfg = x.config, h = wilson(x.scores.overall, x.total);
-    const why = rank.has(x) ? '' : x.scoring_version !== s.scoring ? `scoring ${esc(x.scoring_version)}` : x.subset ? '' : 'older run';
-    const by = pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a>` : x.local ? 'local file' : 'uncommitted';
+    const why = rank.has(x) ? '' : x.scoring_version !== s.scoring ? esc(t('scoring {v}', { v: x.scoring_version })) : x.subset ? '' : esc(t('older run'));
+    const by = pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a>` : esc(x.local ? t('local file') : t('uncommitted'));
     return `<tr class="${rank.has(x) ? '' : 'dim'}${picked ? ' picked' : ''}">
-      <td class="pickc"><label class="pick" title="Compare"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="Compare ${esc(x.model)}"></label></td>
+      <td class="pickc"><label class="pick" title="${esc(t('Compare'))}"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="${esc(t('Compare {model}', { model: x.model }))}"></label></td>
       <td class="rank">${rank.get(x) ?? '—'}</td>
-      <td class="left"><span class="who">${modelName(x.model, H.model(s.name, x.model, rank.has(x) ? '' : x.file))}${chips(x, s)}${why ? `<span class="chip" title="Not ranked">${why}</span>` : ''}</span><span class="byline">${day(x.run_date)} · ${by}</span></td>
-      <td class="overall"><strong>${pct(x.scores.overall)}</strong>${h != null ? `<span class="ci">±${(h * 100).toFixed(1)}</span>` : ''}</td>
+      <td class="left"><span class="who">${modelName(x.model, H.model(s.name, x.model, rank.has(x) ? '' : x.file))}${chips(x, s)}${why ? `<span class="chip" title="${esc(t('Not ranked'))}">${why}</span>` : ''}</span><span class="byline">${day(x.run_date)} · ${by}</span></td>
+      <td class="overall"><strong>${pct(x.scores.overall)}</strong>${h != null ? `<span class="ci">±${fx(h * 100, 1)}</span>` : ''}</td>
       <td class="left mini${x.synthetic ? ' synthetic' : ''}">${miniBars(x, s)}</td>
       <td>${x.passed}/${x.total}</td>
       <td>${usd(x.cost.total)}</td>
       <td>${usd(x.cost.per_pass)}</td>
       <td>${secs(x.latency.p50)}<span class="faint"> / ${secs(x.latency.p90)}</span></td>
-      <td class="drawer-cell"><details class="drawer"><summary>details</summary><div class="drawer-body"><dl>
-        <dt>run</dt><dd>${esc(x.file)} · ${day(x.run_date)}${pub ? ` · published by ${esc(pub.by)} in <a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank">${esc(pub.short || pub.sha.slice(0, 7))}</a>` : ''}</dd>
-        <dt>suite</dt><dd>${esc(x.suite)} · scoring ${esc(x.scoring_version)} · schema ${esc(x.result_schema_version ?? '—')}</dd>
-        <dt>model</dt><dd>${esc(x.model)} (${esc(cfg.kind ?? '—')}) · temperature ${esc(cfg.temperature ?? '—')} · max_tokens ${esc(cfg.max_tokens ?? 'default')}</dd>
+      <td class="drawer-cell"><details class="drawer"><summary>${esc(t('details'))}</summary><div class="drawer-body"><dl>
+        <dt>${esc(t('run'))}</dt><dd>${esc(x.file)} · ${day(x.run_date)}${pub ? ` · ${esc(t('published by {by} in', { by: pub.by }))} <a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank">${esc(pub.short || pub.sha.slice(0, 7))}</a>` : ''}</dd>
+        <dt>${esc(t('suite'))}</dt><dd>${esc(x.suite)} · ${esc(t('scoring {v}', { v: x.scoring_version }))} · schema ${esc(x.result_schema_version ?? '—')}</dd>
+        <dt>${esc(t('model'))}</dt><dd>${esc(x.model)} (${esc(cfg.kind ?? '—')}) · temperature ${esc(cfg.temperature ?? '—')} · max_tokens ${esc(cfg.max_tokens ?? t('default'))}</dd>
         <dt>runtime</dt><dd>${esc(cfg.grader ?? '—')} / ${esc(cfg.database ?? '—')} · ${esc(cfg.runtime_isolation ?? '—')} (${esc(cfg.runtime_isolation_boundary ?? '—')}) · concurrency ${esc(cfg.execution_concurrency ?? '—')} · seed ${esc(cfg.seed ?? '—')}</dd>
-        <dt>image</dt><dd>${esc(cfg.runtime_image_id ?? '—')}</dd>
+        <dt>${esc(t('image'))}</dt><dd>${esc(cfg.runtime_image_id ?? '—')}</dd>
         <dt>dataset</dt><dd>${esc(cfg.dataset?.source ?? '—')} ${esc(cfg.dataset?.name ?? '')}${cfg.dataset?.revision ? ' @ ' + esc(cfg.dataset.revision) : ''}</dd>
-        <dt>scores</dt><dd>exec pass ${pct(x.scores.execution_pass_rate)} · runtime partial ${pct(x.scores.runtime)} · static policy ${pct(x.scores.static_policy_pass_rate)} · correctness (legacy) ${pct(x.scores.correctness)}</dd>
-        <dt>usage</dt><dd>${int(x.tokens.completion_p50)} completion tokens per test (median) · ${int(x.usage.prompt_tokens)} prompt + ${int(x.usage.completion_tokens)} completion in all · ${x.latency.total_min ?? '—'} min of model time · max latency ${secs(x.latency.max)}</dd>
-        <dt>file</dt><dd>${x.local ? esc(x.file) : `<a href="${esc(fileUrl(x))}" rel="noopener" target="_blank">${esc(x.file)}</a>`}</dd>
+        <dt>${esc(t('scores'))}</dt><dd>${esc(t('exec pass {a} · runtime partial {b} · static policy {c} · correctness (legacy) {d}', { a: pct(x.scores.execution_pass_rate), b: pct(x.scores.runtime), c: pct(x.scores.static_policy_pass_rate), d: pct(x.scores.correctness) }))}</dd>
+        <dt>${esc(t('usage'))}</dt><dd>${esc(t('{a} completion tokens per test (median) · {b} prompt + {c} completion in all · {d} min of model time · max latency {e}', { a: int(x.tokens.completion_p50), b: int(x.usage.prompt_tokens), c: int(x.usage.completion_tokens), d: x.latency.total_min == null ? '—' : fx(x.latency.total_min, 1), e: secs(x.latency.max) }))}</dd>
+        <dt>${esc(t('file'))}</dt><dd>${x.local ? esc(x.file) : `<a href="${esc(fileUrl(x))}" rel="noopener" target="_blank">${esc(x.file)}</a>`}</dd>
       </dl></div></details></td>
     </tr>`;
   }
@@ -936,15 +966,15 @@
     const allFail = ranked.length > 1 ? s.order.filter(([id]) => ranked.every(x => { const st = statusOf(x, id); return st === 'fail' || st === 'error'; })).length : null;
     const stat = (k, v, sub, href) => `<div><dt>${esc(k)}</dt><dd><b>${v}</b>${sub ? ` <span class="who-s" title="${esc(sub)}">${href ? `<a href="${href}">${esc(shortName(sub))}</a>` : esc(sub)}</span>` : ''}</dd></div>`;
     return `<dl class="statline">${[
-      stat('Top score', pct(top.scores.overall), top.model, H.model(s.name, top.model)),
-      stat('Cheapest per pass', cheapest ? usd(cheapest.cost.per_pass) : '—', cheapest?.model, cheapest && H.model(s.name, cheapest.model)),
-      stat('Fastest p50', fastest ? secs(fastest.latency.p50) : '—', fastest?.model, fastest && H.model(s.name, fastest.model)),
-      stat('Tests', String(s.full), `${s.cats.length} categories`, ''),
-      stat('Fail for every model', allFail == null ? '—' : String(allFail), allFail == null ? 'needs 2 ranked models' : `of ${s.full}`, ''),
+      stat(t('Top score'), pct(top.scores.overall), top.model, H.model(s.name, top.model)),
+      stat(t('Cheapest per pass'), cheapest ? usd(cheapest.cost.per_pass) : '—', cheapest?.model, cheapest && H.model(s.name, cheapest.model)),
+      stat(t('Fastest p50'), fastest ? secs(fastest.latency.p50) : '—', fastest?.model, fastest && H.model(s.name, fastest.model)),
+      stat(t('Tests'), String(s.full), t('{n} categories', { n: s.cats.length }), ''),
+      stat(t('Fail for every model'), allFail == null ? '—' : String(allFail), allFail == null ? t('needs 2 ranked models') : t('of {n}', { n: s.full }), ''),
     ].join('')}</dl>`;
   }
   // Synthetic runs only exist in development data (examples/synthetic); the toggle appears only then.
-  const filterToggles = () => S.runs.some(r => r.synthetic) ? `<label class="check"><input type="checkbox" id="optSynthetic"${S.showSynthetic ? ' checked' : ''}> Synthetic runs</label>` : '';
+  const filterToggles = () => S.runs.some(r => r.synthetic) ? `<label class="check"><input type="checkbox" id="optSynthetic"${S.showSynthetic ? ' checked' : ''}> ${esc(t('Synthetic runs'))}</label>` : '';
   function bindFilterToggles() {
     $('optSynthetic')?.addEventListener('change', e => { S.showSynthetic = e.target.checked; setPref('synthetic', S.showSynthetic); render(); });
   }
@@ -952,7 +982,7 @@
   function viewModel(r, s) {
     const runs = s.runs.filter(x => x.model === r.model).sort((a, b) => b.run_ts.localeCompare(a.run_ts));
     const run = runs.find(x => x.file === r.file) || primaryRun(s, r.model);
-    if (!run) { main.innerHTML = `${crumbs(s, [[esc(r.model)]])}<div class="status">${esc(r.model)} has no run in ${esc(s.name)}.</div>`; return; }
+    if (!run) { main.innerHTML = `${crumbs(s, [[esc(r.model)]])}<div class="status">${esc(t('{model} has no run in {suite}.', { model: r.model, suite: s.name }))}</div>`; return; }
     if (S.testsFor !== run.key) { S.testsFor = run.key; S.tests = { status: run.total - run.passed ? 'fail' : 'all', cat: '', q: '' }; }
     const cfg = run.config;
     const failed = run.total - run.passed - run.errored;
@@ -960,69 +990,69 @@
     const cats = [...catStats(run, s).values()].filter(b => b.total).sort((a, b) => (rate(a) ?? 2) - (rate(b) ?? 2) || b.fail - a.fail || a.name.localeCompare(b.name));
     const h = wilson(run.scores.overall, run.total);
     const notes = [
-      run.synthetic && '<p class="notice synthetic">Synthetic run: these results were randomly generated to build this page. They say nothing about the model.</p>',
+      run.synthetic && `<p class="notice synthetic">${esc(t('Synthetic run: these results were randomly generated to build this page. They say nothing about the model.'))}</p>`,
       run.partial && `<p class="notice live">${esc(t('In progress: {done} of {full} tests graded so far. The score and the strip are partial and keep changing until the run ends.', { done: run.total, full: s.full }))}</p>`,
-      run.subset && !run.partial && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
-      run.errored && `<p class="notice">${run.errored} tests errored before grading and are left out of the scores (continue_on_error).</p>`,
-      run.scoring_version !== s.scoring && `<p class="notice">Scored with version ${esc(run.scoring_version)}, not ${esc(s.scoring)}: not ranked with the current runs.</p>`,
-      cfg.runtime_isolation_boundary && cfg.runtime_isolation_boundary !== 'container_per_test' && `<p class="notice fail">Isolation "${esc(cfg.runtime_isolation_boundary)}" shares state between tests; not valid for published scores.</p>`,
+      run.subset && !run.partial && `<p class="notice">${esc(run.limit ? t('This run has {n} tests and the current full suite has {full} (seeded subset: limit {limit}, seed {seed}), so its score is not ranked with full runs.', { n: run.total, full: s.full, limit: run.limit, seed: cfg.seed }) : t('This run has {n} tests and the current full suite has {full}: a partial run or an earlier revision of the suite, so its score is not ranked with full runs.', { n: run.total, full: s.full }))}</p>`,
+      run.errored && `<p class="notice">${esc(t('{n} tests errored before grading and are left out of the scores (continue_on_error).', { n: run.errored }))}</p>`,
+      run.scoring_version !== s.scoring && `<p class="notice">${esc(t('Scored with version {v}, not {current}: not ranked with the current runs.', { v: run.scoring_version, current: s.scoring }))}</p>`,
+      cfg.runtime_isolation_boundary && cfg.runtime_isolation_boundary !== 'container_per_test' && `<p class="notice fail">${esc(t('Isolation "{b}" shares state between tests; not valid for published scores.', { b: cfg.runtime_isolation_boundary }))}</p>`,
     ].filter(Boolean).join('');
     main.innerHTML = `
       ${crumbs(s, [[modelName(run.model)]])}
       <div class="hero">
         <div>
           <h1>${esc(run.model)}</h1>
-          <div class="chips">${chips(run, s, { full: true })}${runs.length > 1 ? `<span class="chip">${runs.length} runs in this suite</span>` : ''}</div>
+          <div class="chips">${chips(run, s, { full: true })}${runs.length > 1 ? `<span class="chip">${esc(t('{n} runs in this suite', { n: runs.length }))}</span>` : ''}</div>
         </div>
-        <div class="big-score"><div class="v">${run.scores.overall == null ? '—' : (run.scores.overall * 100).toFixed(1)}<small>%</small></div><div class="l">strict pass rate${h != null ? ` ±${(h * 100).toFixed(1)}` : ''} · ${esc(s.name)} · scoring ${esc(run.scoring_version)}</div></div>
+        <div class="big-score"><div class="v">${run.scores.overall == null ? '—' : fx(run.scores.overall * 100, 1)}<small>%</small></div><div class="l">${esc(t('strict pass rate'))}${h != null ? ` ±${fx(h * 100, 1)}` : ''} · ${esc(s.name)} · ${esc(t('scoring {v}', { v: run.scoring_version }))}</div></div>
       </div>
       ${notes}
       <div class="sheet">
         <dl class="stats">
-          <div><dt>Passed</dt><dd>${run.passed}<span class="sub">of ${run.total} tests</span></dd></div>
-          <div><dt>Failed</dt><dd>${failed}<span class="sub">${timeouts ? `${timeouts} timeouts` : 'tests'}</span></dd></div>
-          <div><dt>Runtime mean</dt><dd>${pct(run.scores.runtime)}<span class="sub">partial credit</span></dd></div>
-          <div><dt>Est. cost</dt><dd>${usd(run.cost.total)}<span class="sub">${usd(run.cost.per_pass)} per pass</span></dd></div>
-          <div><dt>Latency p50</dt><dd>${secs(run.latency.p50)}<span class="sub">p90 ${secs(run.latency.p90)}</span></dd></div>
-          <div><dt>Tokens / test</dt><dd>${int(run.tokens.completion_p50)}<span class="sub">median completion</span></dd></div>
-          <div><dt>Run</dt><dd>${day(run.run_date)}<span class="sub">${run.published ? `by <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank" title="${esc(run.published.message)}">${esc(run.published.by)}</a>` : run.local ? 'local file' : 'unpublished'}</span></dd></div>
+          <div><dt>${esc(t('Passed'))}</dt><dd>${run.passed}<span class="sub">${esc(t('of {n} tests', { n: run.total }))}</span></dd></div>
+          <div><dt>${esc(t('Failed'))}</dt><dd>${failed}<span class="sub">${esc(timeouts ? t('{n} timeouts', { n: timeouts }) : t('tests'))}</span></dd></div>
+          <div><dt>${esc(t('Runtime mean'))}</dt><dd>${pct(run.scores.runtime)}<span class="sub">${esc(t('partial credit'))}</span></dd></div>
+          <div><dt>${esc(t('Est. cost'))}</dt><dd>${usd(run.cost.total)}<span class="sub">${esc(t('{x} per pass', { x: usd(run.cost.per_pass) }))}</span></dd></div>
+          <div><dt>${esc(t('Latency p50'))}</dt><dd>${secs(run.latency.p50)}<span class="sub">p90 ${secs(run.latency.p90)}</span></dd></div>
+          <div><dt>${esc(t('Tokens / test'))}</dt><dd>${int(run.tokens.completion_p50)}<span class="sub">${esc(t('median completion'))}</span></dd></div>
+          <div><dt>${esc(t('Run'))}</dt><dd>${day(run.run_date)}<span class="sub">${run.published ? `${esc(t('by'))} <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank" title="${esc(run.published.message)}">${esc(run.published.by)}</a>` : esc(run.local ? t('local file') : t('unpublished'))}</span></dd></div>
         </dl>
         <div class="big-lane" style="border-top:1px solid var(--rule)">
-          <div class="ruler-label" id="rulerLabel"><span>Every test in the suite, grouped by category · click a failure to open it</span></div>
+          <div class="ruler-label" id="rulerLabel"><span>${esc(t('Every test in the suite, grouped by category · click a failure to open it'))}</span></div>
           <div class="lane">${ruler(s)}</div>
           <div class="lane${run.synthetic ? ' synthetic' : ''}" style="margin-top:6px">${strip(run, s, 36)}</div>
         </div>
       </div>
       <div class="split" style="margin-top:20px">
         <section>
-          <div class="section-head" style="margin-top:0"><h2>Where it stumbles</h2><p>weakest categories first</p></div>
-          <div class="sheet"><ul class="cats" id="catList">${cats.map(b => `<li><a href="#" data-cat="${esc(b.name)}"${S.tests.cat === b.name ? ' aria-current="true"' : ''} title="${b.pass} passed, ${b.fail} failed${b.error ? `, ${b.error} errored` : ''}">
+          <div class="section-head" style="margin-top:0"><h2>${esc(t('Where it stumbles'))}</h2><p>${esc(t('weakest categories first'))}</p></div>
+          <div class="sheet"><ul class="cats" id="catList">${cats.map(b => `<li><a href="#" data-cat="${esc(b.name)}"${S.tests.cat === b.name ? ' aria-current="true"' : ''} title="${esc(t('{p} passed, {f} failed', { p: b.pass, f: b.fail }) + (b.error ? ', ' + t('{n} errored', { n: b.error }) : ''))}">
               <span class="name">${esc(b.name)}</span>
               <span class="meter"><i class="mp" style="width:${b.pass / b.total * 100}%"></i><i class="me" style="width:${b.error / b.total * 100}%"></i><i class="mf" style="width:${b.fail / b.total * 100}%"></i></span>
               <span class="r">${b.pass}/${b.total}</span></a></li>`).join('')}</ul></div>
         </section>
         <section>
-          <div class="section-head" style="margin-top:0"><h2>Tests</h2><p id="testScope"></p></div>
+          <div class="section-head" style="margin-top:0"><h2>${esc(t('Tests'))}</h2><p id="testScope"></p></div>
           <div class="sheet">
             <div class="tests-head">
-              <span class="seg" role="group" aria-label="Status">${[['fail', 'Failed', failed], ['error', 'Errored', run.errored], ['pass', 'Passed', run.passed], ['all', 'All', run.total]].filter(([k, , n]) => k !== 'error' || n).map(([k, l, n]) => `<button type="button" data-status="${k}" aria-pressed="${S.tests.status === k}">${l}<span class="c num">${n}</span></button>`).join('')}</span>
-              <input type="search" class="field" id="testSearch" placeholder="Filter by test id" value="${esc(S.tests.q)}" aria-label="Filter tests by id">
+              <span class="seg" role="group" aria-label="${esc(t('Status'))}">${[['fail', t('Failed'), failed], ['error', t('Errored'), run.errored], ['pass', t('Passed'), run.passed], ['all', t('All'), run.total]].filter(([k, , n]) => k !== 'error' || n).map(([k, l, n]) => `<button type="button" data-status="${k}" aria-pressed="${S.tests.status === k}">${esc(l)}<span class="c num">${n}</span></button>`).join('')}</span>
+              <input type="search" class="field" id="testSearch" placeholder="${esc(t('Filter by test id'))}" value="${esc(S.tests.q)}" aria-label="${esc(t('Filter tests by id'))}">
               <span class="count num" id="testCount"></span>
             </div>
             <div id="testList"></div>
           </div>
         </section>
       </div>
-      <div class="section-head"><h2>Run details</h2><p>${run.local ? esc(run.file) : `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">${esc(run.file)}</a>`}${run.published ? ` · <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank">commit ${esc(run.published.short)}</a>` : ''}</p></div>
+      <div class="section-head"><h2>${esc(t('Run details'))}</h2><p>${run.local ? esc(run.file) : `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">${esc(run.file)}</a>`}${run.published ? ` · <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank">${esc(t('commit {sha}', { sha: run.published.short }))}</a>` : ''}</p></div>
       <div class="sheet"><dl class="stats">
-        <div><dt>Temperature</dt><dd>${esc(cfg.temperature ?? '—')}<span class="sub"> · ${esc(cfg.kind ?? '')}</span></dd></div>
-        <div><dt>Seed · limit</dt><dd>${esc(cfg.seed ?? '—')}<span class="sub"> · ${esc(run.limit ?? 'full suite')}</span></dd></div>
-        <div><dt>Isolation</dt><dd>${esc(cfg.runtime_isolation ?? '—')}<span class="sub"> · concurrency ${esc(cfg.execution_concurrency ?? '—')}</span></dd></div>
-        <div><dt>Grader</dt><dd>${esc(cfg.grader ?? '—')}<span class="sub"> · ${esc(cfg.database ?? '')}</span></dd></div>
-        <div><dt>Runtime image</dt><dd class="mono" style="font-size:12px">${esc(String(cfg.runtime_image_id ?? '—').slice(0, 19))}</dd></div>
-        <div><dt>Schema</dt><dd>${esc(run.result_schema_version ?? '—')}<span class="sub">scoring ${esc(run.scoring_version)}</span></dd></div>
+        <div><dt>${esc(t('Temperature'))}</dt><dd>${esc(cfg.temperature ?? '—')}<span class="sub"> · ${esc(cfg.kind ?? '')}</span></dd></div>
+        <div><dt>${esc(t('Seed · limit'))}</dt><dd>${esc(cfg.seed ?? '—')}<span class="sub"> · ${esc(run.limit ?? t('full suite'))}</span></dd></div>
+        <div><dt>${esc(t('Isolation'))}</dt><dd>${esc(cfg.runtime_isolation ?? '—')}<span class="sub"> · ${esc(t('concurrency {n}', { n: cfg.execution_concurrency ?? '—' }))}</span></dd></div>
+        <div><dt>${esc(t('Grader'))}</dt><dd>${esc(cfg.grader ?? '—')}<span class="sub"> · ${esc(cfg.database ?? '')}</span></dd></div>
+        <div><dt>${esc(t('Runtime image'))}</dt><dd class="mono" style="font-size:12px">${esc(String(cfg.runtime_image_id ?? '—').slice(0, 19))}</dd></div>
+        <div><dt>${esc(t('Schema'))}</dt><dd>${esc(run.result_schema_version ?? '—')}<span class="sub">${esc(t('scoring {v}', { v: run.scoring_version }))}</span></dd></div>
       </dl></div>
-      ${runs.length > 1 ? `<div class="section-head"><h2>Other runs</h2></div><div class="sheet"><ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto 112px"><span class="who"><a href="${H.model(s.name, x.model, x.file)}" class="mono">${esc(x.file)}</a>${x === run ? '<span class="chip">showing</span>' : ''}${chips(x, s)}</span><span class="facts num"><span>${x.passed}/${x.total}</span><span>${day(x.run_date)}</span></span>${score(x, 'score', false)}</div></li>`).join('')}</ol></div>` : ''}`;
+      ${runs.length > 1 ? `<div class="section-head"><h2>${esc(t('Other runs'))}</h2></div><div class="sheet"><ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto 112px"><span class="who"><a href="${H.model(s.name, x.model, x.file)}" class="mono">${esc(x.file)}</a>${x === run ? `<span class="chip">${esc(t('showing'))}</span>` : ''}${chips(x, s)}</span><span class="facts num"><span>${x.passed}/${x.total}</span><span>${day(x.run_date)}</span></span>${score(x, 'score', false)}</div></li>`).join('')}</ol></div>` : ''}`;
     main.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', () => { S.tests.status = b.dataset.status; main.querySelectorAll('[data-status]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderTestList(run, s); }));
     $('testSearch').addEventListener('input', e => { S.tests.q = e.target.value; renderTestList(run, s); });
     $('catList').addEventListener('click', e => {
@@ -1045,17 +1075,17 @@
       const st = statusOf(run, id);
       return st !== 'none' && (S.tests.status === 'all' || st === S.tests.status) && (!S.tests.cat || cat === S.tests.cat) && (!q || id.toLowerCase().includes(q));
     }).map(([id]) => id);
-    $('testCount').textContent = `${ids.length} shown`;
-    $('testScope').innerHTML = S.tests.cat ? `in <code>${esc(S.tests.cat)}</code> · <a href="#" id="clearCat">all categories</a>` : 'click a category to narrow';
+    $('testCount').textContent = t('{n} shown', { n: ids.length });
+    $('testScope').innerHTML = S.tests.cat ? `${t('in {cat}', { cat: `<code>${esc(S.tests.cat)}</code>` })} · <a href="#" id="clearCat">${esc(t('all categories'))}</a>` : esc(t('click a category to narrow'));
     $('clearCat')?.addEventListener('click', e => { e.preventDefault(); S.tests.cat = ''; $('catList').querySelectorAll('[data-cat]').forEach(x => x.removeAttribute('aria-current')); renderTestList(run, s); });
-    $('testList').innerHTML = ids.length ? ids.map((id, i) => testRow(run, id, s, { i, showCat: !S.tests.cat })).join('') : '<div class="empty">No tests match these filters.</div>';
+    $('testList').innerHTML = ids.length ? ids.map((id, i) => testRow(run, id, s, { i, showCat: !S.tests.cat })).join('') : `<div class="empty">${esc(t('No tests match these filters.'))}</div>`;
     bindTestBodies($('testList'), (i) => [run, ids[i]], s);
   }
 
   function testRow(run, id, s, { label, showCat = true, i } = {}) {
     const st = statusOf(run, id), f = run.failures[id];
     const cat = S.data.tests[id]?.category ?? '';
-    const meta = st === 'pass' ? '' : f ? `${esc(f.reason)}${f.runtime_score != null ? ` · rt ${pct(f.runtime_score, 0)}` : ''}` : '';
+    const meta = st === 'pass' ? '' : f ? `${esc(t(f.reason))}${f.runtime_score != null ? ` · rt ${pct(f.runtime_score, 0)}` : ''}` : '';
     return `<details class="test" data-i="${i}"><summary>
       <span class="st ${st}">${STATUS[st]}</span>
       <span class="id">${label || esc(id)}${showCat ? `<span class="cat">${esc(cat)}</span>` : ''}</span>
@@ -1077,30 +1107,30 @@
     }, true);
   }
   // WordPress notices (_doing_it_wrong and friends) carry HTML; show their text.
-  const plain = (t) => String(t ?? '').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#0?39;/g, "'");
+  const plain = (text) => String(text ?? '').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#0?39;/g, "'");
 
   function testBody(run, id, s, across = true) {
     const st = statusOf(run, id), f = run.failures[id], meta = S.data.tests[id] || {};
     const links = [
-      across && `<a href="${H.test(s.name, id)}">How every model did on this test</a>`,
-      meta.category && `<a href="${esc(definitionUrl(s.name, meta.category))}" rel="noopener" target="_blank">Test definition</a>`,
-      !run.local && `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">Full run output</a>`,
+      across && `<a href="${H.test(s.name, id)}">${esc(t('How every model did on this test'))}</a>`,
+      meta.category && `<a href="${esc(definitionUrl(s.name, meta.category))}" rel="noopener" target="_blank">${esc(t('Test definition'))}</a>`,
+      !run.local && `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">${esc(t('Full run output'))}</a>`,
     ].filter(Boolean).join('');
-    if (st === 'none') return `<div class="links">${links}</div><p class="muted">This run did not include the test.</p>`;
-    const refs = (meta.source_refs || []).length ? `<h4>Core source</h4><div class="refs">${meta.source_refs.map(x => `<code>${esc(x.replace(/^src\//, ''))}</code>`).join('')}</div>` : '';
-    if (st === 'pass') return `<div class="links">${links}</div><p class="muted" style="margin:8px 0 0">Passed every runtime assertion with no forbidden pattern.</p>${refs}`;
+    if (st === 'none') return `<div class="links">${links}</div><p class="muted">${esc(t('This run did not include the test.'))}</p>`;
+    const refs = (meta.source_refs || []).length ? `<h4>${esc(t('Core source'))}</h4><div class="refs">${meta.source_refs.map(x => `<code>${esc(x.replace(/^src\//, ''))}</code>`).join('')}</div>` : '';
+    if (st === 'pass') return `<div class="links">${links}</div><p class="muted" style="margin:8px 0 0">${esc(t('Passed every runtime assertion with no forbidden pattern.'))}</p>${refs}`;
     return `
       <div class="links">${links}</div>
-      <div class="kv"><span>why <b>${esc(f.reason)}</b></span>${f.runtime_score != null ? `<span>runtime <b>${pct(f.runtime_score)}</b></span>` : ''}</div>
+      <div class="kv"><span>${esc(t('why'))} <b>${esc(t(f.reason))}</b></span>${f.runtime_score != null ? `<span>runtime <b>${pct(f.runtime_score)}</b></span>` : ''}</div>
       ${f.error ? `<p class="notice fail" style="margin:10px 0 0">${esc(plain(f.error))}</p>` : ''}
-      ${f.assertions?.length ? `<h4>Failed assertions</h4><ul class="checks">${f.assertions.map(a => `<li><span class="mark" aria-label="failed">✗</span><div>${esc(plain(a))}</div></li>`).join('')}</ul>` : ''}
+      ${f.assertions?.length ? `<h4>${esc(t('Failed assertions'))}</h4><ul class="checks">${f.assertions.map(a => `<li><span class="mark" aria-label="${esc(t('failed'))}">✗</span><div>${esc(plain(a))}</div></li>`).join('')}</ul>` : ''}
       ${f.stderr ? `<h4>stderr</h4><pre><code>${esc(plain(f.stderr))}</code></pre>` : ''}
       ${refs}`;
   }
 
   function viewTest(r, s) {
     const cat = s.tests.get(r.test);
-    if (!cat) { main.innerHTML = `${crumbs(s, [[esc(r.test)]])}<div class="status">No test called <code>${esc(r.test)}</code> in ${esc(s.name)}.</div>`; return; }
+    if (!cat) { main.innerHTML = `${crumbs(s, [[esc(r.test)]])}<div class="status">${t('No test called {id} in {suite}.', { id: `<code>${esc(r.test)}</code>`, suite: esc(s.name) })}</div>`; return; }
     const rows = boardRuns(s);
     const ran = rows.filter(x => statusOf(x, r.test) !== 'none');
     const passed = ran.filter(x => statusOf(x, r.test) === 'pass');
@@ -1113,19 +1143,19 @@
       <div class="hero">
         <div>
           <h1>${esc(r.test)}</h1>
-          <div class="chips"><a class="chip" href="${H.cat(s.name, cat)}">${esc(cat)}</a><a class="chip" href="${esc(definitionUrl(s.name, cat))}" rel="noopener" target="_blank">Test definition ↗</a></div>
+          <div class="chips"><a class="chip" href="${H.cat(s.name, cat)}">${esc(cat)}</a><a class="chip" href="${esc(definitionUrl(s.name, cat))}" rel="noopener" target="_blank">${esc(t('Test definition'))} ↗</a></div>
         </div>
-        <div class="big-score"><div class="v">${passed.length}<small> / ${ran.length}</small></div><div class="l">models in the ranking pass this test</div></div>
+        <div class="big-score"><div class="v">${passed.length}<small> / ${ran.length}</small></div><div class="l">${esc(t('models in the ranking pass this test'))}</div></div>
       </div>
       <div class="toolbar">${prev ? `<a class="btn" href="${H.test(s.name, prev[0])}">← ${esc(prev[0])}</a>` : ''}${next ? `<a class="btn" href="${H.test(s.name, next[0])}">${esc(next[0])} →</a>` : ''}</div>
-      <div class="sheet" id="testList">${listed.map((x, i) => testRow(x, r.test, s, { i, showCat: false, label: `${modelName(x.model)} ${x.synthetic ? '<span class="chip synthetic">synthetic</span>' : ''}${x.failures[r.test]?.assertions?.[0] ? `<span class="why">${esc(plain(x.failures[r.test].assertions[0]))}</span>` : ''}` })).join('') || '<div class="empty">No model in the ranking ran this test.</div>'}</div>`;
+      <div class="sheet" id="testList">${listed.map((x, i) => testRow(x, r.test, s, { i, showCat: false, label: `${modelName(x.model)} ${x.synthetic ? `<span class="chip synthetic">${esc(t('synthetic'))}</span>` : ''}${x.failures[r.test]?.assertions?.[0] ? `<span class="why">${esc(plain(x.failures[r.test].assertions[0]))}</span>` : ''}` })).join('') || `<div class="empty">${esc(t('No model in the ranking ran this test.'))}</div>`}</div>`;
     bindTestBodies($('testList'), (i) => [listed[i], r.test], s, { across: false });
   }
 
   /** Categories (from the build_data page): pass rate per category per model, one sequential ramp. */
   function viewCategories(r, s) {
     const rows = boardRuns(s);
-    if (!rows.length) { main.innerHTML = `<div class="sheet empty">No models in ${esc(s.name)} match the filters.</div>`; return; }
+    if (!rows.length) { main.innerHTML = `<div class="sheet empty">${esc(t('No models in {suite} match the filters.', { suite: s.name }))}</div>`; return; }
     const stat = (x, c) => catStats(x, s).get(c);
     const avg = (c) => rows.reduce((acc, x) => acc + (rate(stat(x, c)) ?? 0), 0) / rows.length;
     const cats = s.cats.map(c => c.name).sort((a, b) => avg(b) - avg(a) || a.localeCompare(b));
@@ -1137,12 +1167,12 @@
     };
     main.innerHTML = `
       ${syntheticNotice(s)}
-      <div class="toolbar"><span>Pass rate per category for each model's latest run in ${esc(s.name)}; darker is higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked <span class="chip">n&lt;5</span>: one test moves them by 20 points or more.</span><span class="grow"></span>${filterToggles()}</div>
+      <div class="toolbar"><span>${t('Pass rate per category for the latest run of each model in {suite}; darker is higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked {chip}: one test moves them by 20 points or more.', { suite: esc(s.name), chip: '<span class="chip">n&lt;5</span>' })}</span><span class="grow"></span>${filterToggles()}</div>
       <div class="cat-layout">
       <div class="sheet pad grid-wrap">
-        <table class="heat"><thead><tr><th class="cat"></th>${rows.map(x => `<th class="col${x.synthetic ? ' synthetic' : ''}" title="${esc(x.model)}${x.synthetic ? ' · synthetic' : ''}"><a href="${H.model(s.name, x.model)}">${esc(x.model)}</a></th>`).join('')}</tr></thead>
+        <table class="heat"><thead><tr><th class="cat"></th>${rows.map(x => `<th class="col${x.synthetic ? ' synthetic' : ''}" title="${esc(x.model)}${x.synthetic ? ' · ' + esc(t('synthetic')) : ''}"><a href="${H.model(s.name, x.model)}">${esc(x.model)}</a></th>`).join('')}</tr></thead>
         <tbody>
-          <tr class="total"><th class="cat">overall<span class="n">n=${s.full}</span></th>${rows.map(x => cell(x, null)).join('')}</tr>
+          <tr class="total"><th class="cat">${esc(t('overall'))}<span class="n">n=${s.full}</span></th>${rows.map(x => cell(x, null)).join('')}</tr>
           ${cats.map(c => { const n = s.cats.find(x => x.name === c).count; return `<tr><th class="cat"><a href="${H.cat(s.name, c)}">${esc(c)}</a><span class="n">n=${n}</span>${n < 5 ? ' <span class="chip">n&lt;5</span>' : ''}</th>${rows.map(x => cell(x, c)).join('')}</tr>`; }).join('')}
         </tbody></table>
         <div class="legend">0%<span class="ramp">${[100, 200, 300, 400, 500, 600, 700].map(n => `<i style="background:var(--seq-${n})"></i>`).join('')}</span>100%</div>
@@ -1158,7 +1188,7 @@
     };
     heat.addEventListener('click', e => { const el = e.target.closest('.cell[data-model]'); if (el) open(el); });
     heat.addEventListener('keydown', e => { const el = e.target.closest('.cell[data-model]'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); open(el); } });
-    heat.addEventListener('mousemove', e => { const el = e.target.closest('.cell[data-model]'); if (!el) return hideTip(); showTip(`<b>${esc(el.dataset.model)}</b><br>${esc(el.dataset.cat || 'overall')}: ${el.dataset.p}/${el.dataset.n} passed`, e.clientX, e.target.getBoundingClientRect().top); });
+    heat.addEventListener('mousemove', e => { const el = e.target.closest('.cell[data-model]'); if (!el) return hideTip(); showTip(`<b>${esc(el.dataset.model)}</b><br>${esc(t('{cat}: {p}/{n} passed', { cat: el.dataset.cat || t('overall'), p: el.dataset.p, n: el.dataset.n }))}`, e.clientX, e.target.getBoundingClientRect().top); });
     heat.addEventListener('mouseleave', hideTip);
   }
   function showCell(s, run, cat) {
@@ -1167,7 +1197,7 @@
     const ok = ids.filter(id => statusOf(run, id) === 'pass').length;
     const el = $('cellDetail');
     el.hidden = false;
-    el.innerHTML = `<div class="section-head cell-head"><h2>${modelName(run.model, H.model(s.name, run.model))} · ${cat ? `<a href="${H.cat(s.name, cat)}" class="mono">${esc(cat)}</a>` : 'all categories'}</h2><p>${ok}/${ids.length} passed</p></div>
+    el.innerHTML = `<div class="section-head cell-head"><h2>${modelName(run.model, H.model(s.name, run.model))} · ${cat ? `<a href="${H.cat(s.name, cat)}" class="mono">${esc(cat)}</a>` : esc(t('all categories'))}</h2><p>${esc(t('{ok}/{n} passed', { ok, n: ids.length }))}</p></div>
       <div id="cellTests">${ids.map((id, i) => testRow(run, id, s, { i, showCat: !cat })).join('')}</div>`;
     bindTestBodies($('cellTests'), (i) => [run, ids[i]], s);
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -1178,13 +1208,13 @@
     const rows = boardRuns(s);
     main.innerHTML = `
       ${syntheticNotice(s)}
-      <div class="toolbar"><span>Overall score against the estimated cost of the full run (log scale). Up and to the left is better. Hover a point for details, click it to open the model.</span><span class="grow"></span>${filterToggles()}</div>
-      <div class="sheet pad"><svg id="scatter" class="chart" role="img" aria-label="Overall score versus estimated cost per run"></svg>
-        ${rows.some(x => x.synthetic) ? `<div class="legend"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--blueberry)"/></svg> real run</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--sheet)" stroke="var(--notice)" stroke-width="1.5" stroke-dasharray="2 1.5"/></svg> synthetic</span></div>` : ''}
+      <div class="toolbar"><span>${esc(t('Overall score against the estimated cost of the full run (log scale). Up and to the left is better. Hover a point for details, click it to open the model.'))}</span><span class="grow"></span>${filterToggles()}</div>
+      <div class="sheet pad"><svg id="scatter" class="chart" role="img" aria-label="${esc(t('Overall score versus estimated cost per run'))}"></svg>
+        ${rows.some(x => x.synthetic) ? `<div class="legend"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--blueberry)"/></svg> ${esc(t('real run'))}</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--sheet)" stroke="var(--notice)" stroke-width="1.5" stroke-dasharray="2 1.5"/></svg> ${esc(t('synthetic'))}</span></div>` : ''}
       </div>
       <div class="sheet grid-wrap" style="margin-top:12px"><table class="grid">
-        <thead><tr><th class="left">model</th><th class="right">overall</th><th class="right">cost / run</th><th class="right">$ / pass</th><th class="right">passes per $</th><th class="right">tokens / test</th><th class="right">latency p50</th></tr></thead>
-        <tbody>${rows.map(x => `<tr><td class="left">${modelName(x.model, H.model(s.name, x.model))} ${chips(x, s)}</td><td class="right"><strong>${pct(x.scores.overall)}</strong></td><td class="right">${usd(x.cost.total)}</td><td class="right">${usd(x.cost.per_pass)}</td><td class="right">${x.cost.total ? (x.passed / x.cost.total).toFixed(1) : '—'}</td><td class="right">${int(x.tokens.completion_p50)}</td><td class="right">${secs(x.latency.p50)}</td></tr>`).join('')}</tbody>
+        <thead><tr><th class="left">${esc(t('model'))}</th><th class="right">${esc(t('overall'))}</th><th class="right">${esc(t('cost / run'))}</th><th class="right">$ / pass</th><th class="right">${esc(t('passes per $'))}</th><th class="right">${esc(t('tokens / test'))}</th><th class="right">${esc(t('latency p50'))}</th></tr></thead>
+        <tbody>${rows.map(x => `<tr><td class="left">${modelName(x.model, H.model(s.name, x.model))} ${chips(x, s)}</td><td class="right"><strong>${pct(x.scores.overall)}</strong></td><td class="right">${usd(x.cost.total)}</td><td class="right">${usd(x.cost.per_pass)}</td><td class="right">${x.cost.total ? fx(x.passed / x.cost.total, 1) : '—'}</td><td class="right">${int(x.tokens.completion_p50)}</td><td class="right">${secs(x.latency.p50)}</td></tr>`).join('')}</tbody>
       </table></div>`;
     bindFilterToggles();
     drawScatter(s, rows);
@@ -1194,7 +1224,7 @@
     const pts = rows.filter(x => x.cost.total != null && x.scores.overall != null);
     const W = svg.clientWidth || 800, Hh = svg.clientHeight || 380, m = { t: 16, r: 28, b: 44, l: 52 };
     svg.setAttribute('viewBox', `0 0 ${W} ${Hh}`);
-    if (!pts.length) { svg.innerHTML = `<text x="${W / 2}" y="${Hh / 2}" text-anchor="middle">No runs with cost estimates in this suite.</text>`; return; }
+    if (!pts.length) { svg.innerHTML = `<text x="${W / 2}" y="${Hh / 2}" text-anchor="middle">${esc(t('No runs with cost estimates in this suite.'))}</text>`; return; }
     const costs = pts.map(p => p.cost.total);
     const lo = Math.pow(10, Math.floor(Math.log10(Math.min(...costs)))), hi = Math.pow(10, Math.ceil(Math.log10(Math.max(...costs))));
     const x = (c) => m.l + (Math.log10(c) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo) || 1) * (W - m.l - m.r);
@@ -1205,13 +1235,13 @@
       ${yt.map(v => `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>`).join('')}
       <line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}"/><line class="axis" x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${y(0)}"/>
       ${yt.map(v => `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${Math.round(v * 100)}%</text>`).join('')}
-      ${xt.map(v => `<text x="${x(v)}" y="${Hh - m.b + 18}" text-anchor="middle">$${v >= 1 ? v : v.toFixed(-Math.floor(Math.log10(v)))}</text>`).join('')}
-      <text x="${(m.l + W - m.r) / 2}" y="${Hh - 6}" text-anchor="middle">estimated cost of the full run (log)</text>
+      ${xt.map(v => `<text x="${x(v)}" y="${Hh - m.b + 18}" text-anchor="middle">$${v >= 1 ? v : fx(v, -Math.floor(Math.log10(v)))}</text>`).join('')}
+      <text x="${(m.l + W - m.r) / 2}" y="${Hh - 6}" text-anchor="middle">${esc(t('estimated cost of the full run (log)'))}</text>
       ${pts.map((p, i) => `<circle class="dot${p.synthetic ? ' synthetic' : ''}" r="6" cx="${x(p.cost.total)}" cy="${y(p.scores.overall)}" data-i="${i}" tabindex="0" role="link" aria-label="${esc(p.model)}: ${pct(p.scores.overall)}, ${usd(p.cost.total)}"/>`).join('')}
       ${pts.map(p => `<text class="lbl${p.synthetic ? ' synthetic' : ''}" x="${x(p.cost.total) + 10}" y="${y(p.scores.overall) + 4}">${esc(shortName(p.model))}</text>`).join('')}`;
     svg.querySelectorAll('.dot').forEach(d => {
       const p = pts[+d.dataset.i];
-      d.addEventListener('mousemove', e => showTip(`<b>${esc(p.model)}</b>${p.synthetic ? ' · synthetic' : ''}<br>overall ${pct(p.scores.overall)} · ${usd(p.cost.total)} per run<br>${usd(p.cost.per_pass)} per passed test · p50 ${secs(p.latency.p50)}`, e.clientX, d.getBoundingClientRect().top));
+      d.addEventListener('mousemove', e => showTip(`<b>${esc(p.model)}</b>${p.synthetic ? ' · ' + esc(t('synthetic')) : ''}<br>${esc(t('overall {a} · {b} per run', { a: pct(p.scores.overall), b: usd(p.cost.total) }))}<br>${esc(t('{a} per passed test · p50 {b}', { a: usd(p.cost.per_pass), b: secs(p.latency.p50) }))}`, e.clientX, d.getBoundingClientRect().top));
       d.addEventListener('mouseleave', hideTip);
       const go = () => { location.hash = H.model(s.name, p.model); };
       d.addEventListener('click', go);
@@ -1222,15 +1252,15 @@
 
   function viewCategory(r, s) {
     const c = s.cats.find(x => x.name === r.cat);
-    if (!c) { main.innerHTML = `${crumbs(s, [[esc(r.cat)]])}<div class="status">No category called <code>${esc(r.cat)}</code> in ${esc(s.name)}.</div>`; return; }
+    if (!c) { main.innerHTML = `${crumbs(s, [[esc(r.cat)]])}<div class="status">${t('No category called {cat} in {suite}.', { cat: `<code>${esc(r.cat)}</code>`, suite: esc(s.name) })}</div>`; return; }
     const rows = boardRuns(s);
     const ids = s.order.slice(c.start, c.start + c.count).map(([id]) => id);
-    const mark = (st) => st === 'pass' ? '<span class="ok" aria-label="passed">✓</span>' : st === 'fail' ? '<span class="ko" aria-label="failed">✗</span>' : st === 'error' ? '<span class="er" aria-label="errored">!</span>' : '<span class="na" aria-label="not run">·</span>';
+    const mark = (st) => st === 'pass' ? `<span class="ok" aria-label="${esc(t('passed'))}">✓</span>` : st === 'fail' ? `<span class="ko" aria-label="${esc(t('failed'))}">✗</span>` : st === 'error' ? `<span class="er" aria-label="${esc(t('errored'))}">!</span>` : `<span class="na" aria-label="${esc(t('not run'))}">·</span>`;
     main.innerHTML = `
-      ${crumbs(s, [['categories', H.cats(s.name)], [esc(c.name)]])}
-      <div class="hero"><div><h1>${esc(c.name)}</h1><div class="chips"><span class="chip">${c.count} tests</span><a class="chip" href="${esc(definitionUrl(s.name, c.name))}" rel="noopener" target="_blank">Test definitions ↗</a></div></div></div>
+      ${crumbs(s, [[esc(t('categories')), H.cats(s.name)], [esc(c.name)]])}
+      <div class="hero"><div><h1>${esc(c.name)}</h1><div class="chips"><span class="chip">${esc(t('{n} tests', { n: c.count }))}</span><a class="chip" href="${esc(definitionUrl(s.name, c.name))}" rel="noopener" target="_blank">${esc(t('Test definitions'))} ↗</a></div></div></div>
       <div class="sheet grid-wrap"><table class="grid">
-        <thead><tr><th class="rowh">test</th><th>passed by</th>${rows.map(x => `<th title="${esc(x.model)}"><a href="${H.model(s.name, x.model)}">${esc(shortName(x.model))}</a>${x.synthetic ? '<br><span class="chip synthetic">synthetic</span>' : ''}</th>`).join('')}</tr></thead>
+        <thead><tr><th class="rowh">${esc(t('test'))}</th><th>${esc(t('passed by'))}</th>${rows.map(x => `<th title="${esc(x.model)}"><a href="${H.model(s.name, x.model)}">${esc(shortName(x.model))}</a>${x.synthetic ? `<br><span class="chip synthetic">${esc(t('synthetic'))}</span>` : ''}</th>`).join('')}</tr></thead>
         <tbody>${ids.map(id => {
           const sts = rows.map(x => statusOf(x, id));
           const ran = sts.filter(v => v !== 'none').length, ok = sts.filter(v => v === 'pass').length;
@@ -1242,7 +1272,7 @@
   function viewCompare(r, s) {
     const runs = S.compare.map(m => primaryRun(s, m)).filter(Boolean);
     if (runs.length < 2) {
-      main.innerHTML = `<div class="section-head" style="margin-top:0"><h2>Compare models</h2></div><div class="sheet empty">Tick two or three models in the <a href="${H.board(s.name)}">ranking</a> to line their tests up here.${runs.length ? ` Picked so far: ${runs.map(x => `<code>${esc(x.model)}</code>`).join(', ')}.` : ''}</div>`;
+      main.innerHTML = `<div class="section-head" style="margin-top:0"><h2>${esc(t('Compare models'))}</h2></div><div class="sheet empty">${t('Tick two or three models in the {link} to line their tests up here.', { link: `<a href="${H.board(s.name)}">${esc(t('ranking'))}</a>` })}${runs.length ? ` ${t('Picked so far: {list}.', { list: runs.map(x => `<code>${esc(x.model)}</code>`).join(', ') })}` : ''}</div>`;
       return;
     }
     const [a] = runs;
@@ -1259,25 +1289,25 @@
     const catRows = s.cats.map(c => ({ c, rates: runs.map(x => rate(catStats(x, s).get(c.name))) }))
       .map(row => ({ ...row, spread: Math.max(...row.rates.map(v => v ?? 0)) - Math.min(...row.rates.map(v => v ?? 0)) }))
       .sort((x, y) => y.spread - x.spread || x.c.name.localeCompare(y.c.name));
-    const ids = (list) => list.length ? `<div class="idlist">${list.map(id => `<a href="${H.test(s.name, id)}">${esc(id)}</a>`).join('')}</div>` : '<p class="muted" style="margin:6px 0 0">None.</p>';
-    const delta = (x) => { const d = (x.scores.overall - a.scores.overall) * 100; return `<span class="${d >= 0 ? 'delta-up' : 'delta-down'}" style="font-size:13px;font-weight:500">${d >= 0 ? '+' : ''}${d.toFixed(1)}</span>`; };
+    const ids = (list) => list.length ? `<div class="idlist">${list.map(id => `<a href="${H.test(s.name, id)}">${esc(id)}</a>`).join('')}</div>` : `<p class="muted" style="margin:6px 0 0">${esc(t('None.'))}</p>`;
+    const delta = (x) => { const d = (x.scores.overall - a.scores.overall) * 100; return `<span class="${d >= 0 ? 'delta-up' : 'delta-down'}" style="font-size:13px;font-weight:500">${d >= 0 ? '+' : ''}${fx(d, 1)}</span>`; };
     main.innerHTML = `
-      ${crumbs(s, [['compare']])}
-      <div class="cmp-heads">${runs.map((x, i) => `<div class="sheet">${modelName(x.model, H.model(s.name, x.model))}<div>${chips(x, s)}</div><div class="score" style="text-align:left">${(x.scores.overall * 100).toFixed(1)}<small>%</small> ${i ? delta(x) : ''}</div><div class="muted num" style="font-size:12.5px">${x.passed}/${x.total} passed · ${usd(x.cost.total)}${i && a.cost.total && x.cost.total ? ` (${(x.cost.total / a.cost.total).toFixed(1)}×)` : ''} · ${secs(x.latency.p50)}</div></div>`).join('')}</div>
+      ${crumbs(s, [[esc(t('compare'))]])}
+      <div class="cmp-heads">${runs.map((x, i) => `<div class="sheet">${modelName(x.model, H.model(s.name, x.model))}<div>${chips(x, s)}</div><div class="score" style="text-align:left">${fx(x.scores.overall * 100, 1)}<small>%</small> ${i ? delta(x) : ''}</div><div class="muted num" style="font-size:12.5px">${esc(t('{a}/{b} passed', { a: x.passed, b: x.total }))} · ${usd(x.cost.total)}${i && a.cost.total && x.cost.total ? ` (${fx(x.cost.total / a.cost.total, 1)}×)` : ''} · ${secs(x.latency.p50)}</div></div>`).join('')}</div>
       <div class="sheet cmp-lanes" id="board">
-        <div class="ruler-wrap"><div class="ruler-label" id="rulerLabel" style="margin-left:0"><span>Strips line up test by test · hover to find a category or test</span></div><div class="lane">${ruler(s)}</div></div>
+        <div class="ruler-wrap"><div class="ruler-label" id="rulerLabel" style="margin-left:0"><span>${esc(t('Strips line up test by test · hover to find a category or test'))}</span></div><div class="lane">${ruler(s)}</div></div>
         <ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto"><span class="who">${modelName(x.model)}</span><span class="facts num">${x.passed}/${x.total}</span></div><div class="lane${x.synthetic ? ' synthetic' : ''}">${strip(x, s)}</div></li>`).join('')}</ol>
       </div>
-      <div class="section-head"><h2>Where they differ</h2><p>${only.reduce((n, l) => n + l.length, 0) + mixed.length} tests split the models · ${allFailed.length} fail everywhere</p></div>
+      <div class="section-head"><h2>${esc(t('Where they differ'))}</h2><p>${esc(t('{n} tests split the models · {m} fail everywhere', { n: only.reduce((n, l) => n + l.length, 0) + mixed.length, m: allFailed.length }))}</p></div>
       <div class="diff-groups">
-        ${runs.map((x, i) => `<div class="sheet"><h3>Only ${modelName(x.model)} passed <span class="c num">${only[i].length}</span></h3>${ids(only[i])}</div>`).join('')}
-        ${runs.length > 2 ? `<div class="sheet"><h3>Split <span class="c num">${mixed.length}</span></h3>${ids(mixed)}</div>` : ''}
-        <div class="sheet"><h3>Every model failed <span class="c num">${allFailed.length}</span></h3>${ids(allFailed)}</div>
+        ${runs.map((x, i) => `<div class="sheet"><h3>${t('Only {model} passed', { model: modelName(x.model) })} <span class="c num">${only[i].length}</span></h3>${ids(only[i])}</div>`).join('')}
+        ${runs.length > 2 ? `<div class="sheet"><h3>${esc(t('Split'))} <span class="c num">${mixed.length}</span></h3>${ids(mixed)}</div>` : ''}
+        <div class="sheet"><h3>${esc(t('Every model failed'))} <span class="c num">${allFailed.length}</span></h3>${ids(allFailed)}</div>
       </div>
-      <div class="section-head"><h2>Categories</h2><p>largest gaps first</p></div>
+      <div class="section-head"><h2>${esc(t('Categories'))}</h2><p>${esc(t('largest gaps first'))}</p></div>
       <div class="sheet grid-wrap"><table class="grid">
-        <thead><tr><th class="rowh">category</th>${runs.map(x => `<th>${esc(shortName(x.model))}</th>`).join('')}<th>gap</th></tr></thead>
-        <tbody>${catRows.map(({ c, rates, spread }) => `<tr><th class="rowh"><a href="${H.cat(s.name, c.name)}">${esc(c.name)}</a></th>${rates.map(v => seqCell(v, pct(v, 0))).join('')}<td class="num muted">${spread ? (spread * 100).toFixed(0) + ' pts' : '—'}</td></tr>`).join('')}</tbody>
+        <thead><tr><th class="rowh">${esc(t('category'))}</th>${runs.map(x => `<th>${esc(shortName(x.model))}</th>`).join('')}<th>${esc(t('gap'))}</th></tr></thead>
+        <tbody>${catRows.map(({ c, rates, spread }) => `<tr><th class="rowh"><a href="${H.cat(s.name, c.name)}">${esc(c.name)}</a></th>${rates.map(v => seqCell(v, pct(v, 0))).join('')}<td class="num muted">${spread ? fx(spread * 100, 0) + ' ' + t('pts') : '—'}</td></tr>`).join('')}</tbody>
       </table></div>`;
   }
 
@@ -1285,12 +1315,12 @@
   function viewHistory() {
     const Hs = S.data.history || [];
     main.innerHTML = `
-      <div class="section-head" style="margin-top:0"><h2>History</h2><p>every commit that touched <code>${RESULTS}</code> · pick one to see which runs it added, removed or changed and how the latest score per model moved</p></div>
+      <div class="section-head" style="margin-top:0"><h2>${esc(t('History'))}</h2><p>${t('every commit that touched {dir} · pick one to see which runs it added, removed or changed and how the latest score per model moved', { dir: `<code>${RESULTS}</code>` })}</p></div>
       ${Hs.length ? `<div class="hist"><div class="sheet commits" id="commits">${Hs.map((c, i) => `
         <div class="commit" data-i="${i}" tabindex="0">
           <div class="msg" title="${esc(c.message)}">${esc(c.message.split('\n')[0])}</div>
           <div class="meta"><span>${esc(c.author)}</span><span>${day(c.date)}</span><a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank" onclick="event.stopPropagation()"><code>${esc(c.short)}</code></a><span>${c.added.length ? `+${c.added.length} ` : ''}${c.removed.length ? `−${c.removed.length} ` : ''}${c.modified.length ? `~${c.modified.length}` : ''}</span></div>
-        </div>`).join('')}</div><div class="sheet diff" id="diff"></div></div>` : '<div class="sheet empty">No commits recorded in the data file.</div>'}`;
+        </div>`).join('')}</div><div class="sheet diff" id="diff"></div></div>` : `<div class="sheet empty">${esc(t('No commits recorded in the data file.'))}</div>`}`;
     if (!Hs.length) return;
     $('commits').querySelectorAll('.commit').forEach(el => {
       const open = () => showCommit(+el.dataset.i);
@@ -1307,24 +1337,25 @@
     const A = latest(c.snapshot), B = latest(prev ? prev.snapshot : []);
     const added = [...A.keys()].filter(k => !B.has(k)), removed = [...B.keys()].filter(k => !A.has(k));
     const changed = [...A.keys()].filter(k => B.has(k) && (A.get(k).overall !== B.get(k).overall || A.get(k).file !== B.get(k).file));
-    const tag = (x) => synth.has(`${x.file}#${x.model}`) ? ' <span class="chip synthetic">synthetic</span>' : '';
+    const tag = (x) => synth.has(`${x.file}#${x.model}`) ? ` <span class="chip synthetic">${esc(t('synthetic'))}</span>` : '';
     const row = (x) => `<li>${modelName(x.model)}${tag(x)} <span class="muted">${esc(x.suite)} · ${esc(x.file)}</span> — <strong>${pct(x.overall)}</strong> <span class="muted">(${x.passed}/${x.total})</span></li>`;
     $('diff').innerHTML = `
       <p style="margin:0 0 4px;white-space:pre-wrap"><strong>${esc(c.message.split('\n')[0])}</strong>${c.message.includes('\n') ? '\n' + esc(c.message.split('\n').slice(1).join('\n').trim()) : ''}</p>
-      <p class="muted" style="margin:0 0 12px;font-size:12px">${esc(c.author)} · ${day(c.date)}, ${esc(c.date.slice(11, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · files: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || 'none'}</p>
-      <p class="faint" style="margin:0;font-size:12.5px">${A.size} model runs after this commit, ${B.size} before.</p>
-      <h3>Models added <span class="faint num">${added.length}</span></h3>${added.length ? `<ul>${added.map(k => row(A.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
-      <h3>Models removed <span class="faint num">${removed.length}</span></h3>${removed.length ? `<ul>${removed.map(k => row(B.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
-      <h3>Latest run changed <span class="faint num">${changed.length}</span></h3>${changed.length ? `<ul>${changed.map(k => { const x = A.get(k), y = B.get(k); const d = (x.overall - y.overall) * 100; return `<li>${modelName(x.model)} <span class="muted">${esc(x.suite)}</span>: ${pct(y.overall)} → <span class="${d >= 0 ? 'delta-up' : 'delta-down'}">${pct(x.overall)} (${d >= 0 ? '+' : ''}${d.toFixed(1)})</span> <span class="muted">${esc(y.file)} → ${esc(x.file)}</span></li>`; }).join('')}</ul>` : '<p class="muted">None</p>'}`;
+      <p class="muted" style="margin:0 0 12px;font-size:12px">${esc(c.author)} · ${day(c.date)}, ${esc(c.date.slice(11, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · ${esc(t('files'))}: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || esc(t('none'))}</p>
+      <p class="faint" style="margin:0;font-size:12px">${esc(t('{a} model runs after this commit, {b} before.', { a: A.size, b: B.size }))}</p>
+      <h3>${esc(t('Models added'))} <span class="faint num">${added.length}</span></h3>${added.length ? `<ul>${added.map(k => row(A.get(k))).join('')}</ul>` : `<p class="muted">${esc(t('None'))}</p>`}
+      <h3>${esc(t('Models removed'))} <span class="faint num">${removed.length}</span></h3>${removed.length ? `<ul>${removed.map(k => row(B.get(k))).join('')}</ul>` : `<p class="muted">${esc(t('None'))}</p>`}
+      <h3>${esc(t('Latest run changed'))} <span class="faint num">${changed.length}</span></h3>${changed.length ? `<ul>${changed.map(k => { const x = A.get(k), y = B.get(k); const d = (x.overall - y.overall) * 100; return `<li>${modelName(x.model)} <span class="muted">${esc(x.suite)}</span>: ${pct(y.overall)} → <span class="${d >= 0 ? 'delta-up' : 'delta-down'}">${pct(x.overall)} (${d >= 0 ? '+' : ''}${fx(d, 1)})</span> <span class="muted">${esc(y.file)} → ${esc(x.file)}</span></li>`; }).join('')}</ul>` : `<p class="muted">${esc(t('None'))}</p>`}`;
   }
 
   /** How it works (from the build_data page): the publishing flow and what gets ranked. */
   function viewHow() {
     const mono = 'class="m"';
+    const code = (x) => `<code>${x}</code>`;
     main.innerHTML = `
-      <div class="section-head" style="margin-top:0"><h2>How it works</h2><p>raw run outputs are the source of truth; one small prebuilt data file is all this page needs</p></div>
+      <div class="section-head" style="margin-top:0"><h2>${esc(t('How it works'))}</h2><p>${esc(t('raw run outputs are the source of truth; one small prebuilt data file is all this page needs'))}</p></div>
       <figure class="sheet pad" style="margin:0">
-        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.">
+        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="${esc(t('A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.'))}">
           <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
           <g fill="none" stroke="currentColor" stroke-width="1.5">
             <rect x="20" y="130" width="190" height="120" rx="8"/>
@@ -1339,33 +1370,33 @@
           </g>
           <rect class="claim" x="505" y="190" width="150" height="70" rx="6"/>
           <g fill="currentColor" font-size="12">
-            <text x="115" y="155" text-anchor="middle" class="t">Contributor or agent</text>
+            <text x="115" y="155" text-anchor="middle" class="t">${esc(t('Contributor or agent'))}</text>
             <text x="115" y="178" text-anchor="middle" ${mono}>wp-bench run</text>
             <text x="115" y="200" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.json</text>
             <text x="115" y="216" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.jsonl</text>
-            <text x="490" y="68" text-anchor="middle" class="t">wp-bench-results repository</text>
-            <text x="490" y="86" text-anchor="middle" font-size="11" class="dim">public · pull requests · CI</text>
+            <text x="490" y="68" text-anchor="middle" class="t">${esc(t('wp-bench-results repository'))}</text>
+            <text x="490" y="86" text-anchor="middle" font-size="11" class="dim">${esc(t('public · pull requests · CI'))}</text>
             <text x="400" y="135" text-anchor="middle" ${mono}>results/</text>
-            <text x="400" y="152" text-anchor="middle" font-size="11">raw run outputs,</text>
-            <text x="400" y="167" text-anchor="middle" font-size="11">copied unchanged</text>
+            <text x="400" y="152" text-anchor="middle" font-size="11">${esc(t('raw run outputs,'))}</text>
+            <text x="400" y="167" text-anchor="middle" font-size="11">${esc(t('copied unchanged'))}</text>
             <text x="400" y="323" text-anchor="middle" ${mono}>git log</text>
-            <text x="400" y="341" text-anchor="middle" font-size="11">who published, when</text>
+            <text x="400" y="341" text-anchor="middle" font-size="11">${esc(t('who published, when'))}</text>
             <text x="580" y="133" text-anchor="middle" ${mono}>site/build_data.py</text>
-            <text x="580" y="152" text-anchor="middle" font-size="11">aggregates per run</text>
+            <text x="580" y="152" text-anchor="middle" font-size="11">${esc(t('aggregates per run'))}</text>
             <text x="580" y="215" text-anchor="middle" ${mono}>site/data/</text>
             <text x="580" y="231" text-anchor="middle" ${mono}>leaderboard.json</text>
-            <text x="580" y="248" text-anchor="middle" font-size="11">~65 KB per run</text>
+            <text x="580" y="248" text-anchor="middle" font-size="11">${esc(t('~65 KB per run'))}</text>
             <text x="580" y="323" text-anchor="middle" ${mono}>site/index.html</text>
-            <text x="580" y="341" text-anchor="middle" font-size="11">static page</text>
+            <text x="580" y="341" text-anchor="middle" font-size="11">${esc(t('static page'))}</text>
             <text x="855" y="125" text-anchor="middle" class="t">Spacefast</text>
-            <text x="855" y="145" text-anchor="middle" font-size="11">serves site/ at</text>
+            <text x="855" y="145" text-anchor="middle" font-size="11">${esc(t('serves site/ at'))}</text>
             <text x="855" y="162" text-anchor="middle" font-size="11">wpbench-leaderboard.space.fast</text>
-            <text x="855" y="316" text-anchor="middle" class="t">Your browser</text>
-            <text x="855" y="336" text-anchor="middle" font-size="11">fetches one data file,</text>
-            <text x="855" y="351" text-anchor="middle" font-size="11">no API calls</text>
+            <text x="855" y="316" text-anchor="middle" class="t">${esc(t('Your browser'))}</text>
+            <text x="855" y="336" text-anchor="middle" font-size="11">${esc(t('fetches one data file,'))}</text>
+            <text x="855" y="351" text-anchor="middle" font-size="11">${esc(t('no API calls'))}</text>
             <text x="115" y="325" text-anchor="middle" class="t">WordPress/wp-bench</text>
             <text x="115" y="343" text-anchor="middle" ${mono}>AGENTS.md</text>
-            <text x="115" y="361" text-anchor="middle" font-size="11">check here before a run</text>
+            <text x="115" y="361" text-anchor="middle" font-size="11">${esc(t('check here before a run'))}</text>
           </g>
           <g fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)">
             <line x1="210" y1="170" x2="325" y2="150"/>
@@ -1378,44 +1409,44 @@
           </g>
           <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)"><line x1="210" y1="310" x2="300" y2="250"/></g>
           <g fill="currentColor" font-size="11" class="dim">
-            <text x="268" y="150" text-anchor="middle">copy + PR</text>
-            <text x="232" y="318" text-anchor="middle">reads the data</text>
-            <text x="232" y="331" text-anchor="middle">before a run</text>
-            <text x="490" y="104" text-anchor="middle">reads</text>
-            <text x="470" y="262" text-anchor="middle">attribution</text>
-            <text x="602" y="182" text-anchor="start">writes</text>
-            <text x="602" y="285" text-anchor="start">renders</text>
-            <text x="717" y="128" text-anchor="middle">push to main</text>
-            <text x="717" y="158" text-anchor="middle">→ deploy</text>
+            <text x="268" y="150" text-anchor="middle">${esc(t('copy + PR'))}</text>
+            <text x="232" y="318" text-anchor="middle">${esc(t('reads the data'))}</text>
+            <text x="232" y="331" text-anchor="middle">${esc(t('before a run'))}</text>
+            <text x="490" y="104" text-anchor="middle">${esc(t('reads'))}</text>
+            <text x="470" y="262" text-anchor="middle">${esc(t('attribution'))}</text>
+            <text x="602" y="182" text-anchor="start">${esc(t('writes'))}</text>
+            <text x="602" y="285" text-anchor="start">${esc(t('renders'))}</text>
+            <text x="717" y="128" text-anchor="middle">${esc(t('push to main'))}</text>
+            <text x="717" y="158" text-anchor="middle">${esc(t('→ deploy'))}</text>
             <text x="866" y="240" text-anchor="start">GET /data/</text>
             <text x="866" y="254" text-anchor="start">leaderboard.json</text>
           </g>
         </svg>
-        <figcaption class="muted" style="margin-top:10px;font-size:13px">The data file is the one thing the page reads; the repository's git history is the audit trail.</figcaption>
+        <figcaption class="muted" style="margin-top:10px;font-size:13px">${esc(t("The data file is the one thing the page reads; the repository's git history is the audit trail."))}</figcaption>
       </figure>
       <div class="split" style="margin-top:16px">
         <section class="sheet pad">
-          <h2 style="margin-bottom:8px">Publishing a run</h2>
+          <h2 style="margin-bottom:8px">${esc(t('Publishing a run'))}</h2>
           <ol style="margin:0;padding-left:20px;line-height:1.7">
-            <li>Check the model is not already listed for the suite (this page, or <code>site/data/leaderboard.json</code>). <code>AGENTS.md</code> in wp-bench makes agents do this before running anything.</li>
-            <li>Run the benchmark: <code>wp-bench run</code> writes <code>output/results_&lt;timestamp&gt;.json</code> and <code>.jsonl</code>.</li>
-            <li>Fork <a href="https://github.com/${esc(REPO)}" rel="noopener">${esc(REPO)}</a>, copy both files into <code>results/</code>, commit. That commit is the run's attribution here.</li>
-            <li>Run <code>python3 site/build_data.py</code>, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.</li>
-            <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
+            <li>${t('Check the model is not already listed for the suite (this page, or {data}). {agents} in wp-bench makes agents do this before running anything.', { data: code('site/data/leaderboard.json'), agents: code('AGENTS.md') })}</li>
+            <li>${t('Run the benchmark: {run} writes {json} and {jsonl}.', { run: code('wp-bench run'), json: code('output/results_&lt;timestamp&gt;.json'), jsonl: code('.jsonl') })}</li>
+            <li>${t("Fork {repo}, copy both files into {dir}, commit. That commit is the run's attribution here.", { repo: `<a href="https://github.com/${esc(REPO)}" rel="noopener">${esc(REPO)}</a>`, dir: code('results/') })}</li>
+            <li>${t('Run {cmd}, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.', { cmd: code('python3 site/build_data.py') })}</li>
+            <li>${t('Merge → push to {main} → Spacefast redeploys {site}.', { main: code('main'), site: code('site/') })}</li>
           </ol>
         </section>
         <section class="sheet pad">
-          <h2 style="margin-bottom:8px">What gets ranked</h2>
-          <p style="margin:0 0 8px">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite) and other scoring versions are listed under "Not ranked", never ranked with full runs.</p>
-          <p style="margin:0 0 8px">Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
-          <p class="muted" style="margin:0 0 8px">Synthetic runs from <code>examples/synthetic</code> exist only for developing this page and are never published.</p>
-          <p class="muted" style="margin:0">To preview a run before publishing it, use Upload results or drop a file anywhere on this page: <code>output/results_&lt;timestamp&gt;.json</code>, the <code>.jsonl</code>, or the <code>.jsonl.partial</code> the harness writes while a run is going. Nothing leaves your browser; in Chromium a dropped <code>.partial</code> file is followed live.</p>
+          <h2 style="margin-bottom:8px">${esc(t('What gets ranked'))}</h2>
+          <p style="margin:0 0 8px">${t('Each model\'s latest {full} run per suite and scoring version. Runs with a different test count ({limit}, {cats}, or an earlier revision of the suite) and other scoring versions are listed under "Not ranked", never ranked with full runs.', { full: `<strong>${esc(t('full'))}</strong>`, limit: code('--limit'), cats: code('--categories') })}</p>
+          <p style="margin:0 0 8px">${esc(t('Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.'))}</p>
+          <p class="muted" style="margin:0 0 8px">${t('Synthetic runs from {dir} exist only for developing this page and are never published.', { dir: code('examples/synthetic') })}</p>
+          <p class="muted" style="margin:0">${t('To preview a run before publishing it, use Upload results or drop a file anywhere on this page: {json}, the {jsonl}, or the {partial} the harness writes while a run is going. Nothing leaves your browser; in Chromium a dropped {partial2} file is followed live.', { json: code('output/results_&lt;timestamp&gt;.json'), jsonl: code('.jsonl'), partial: code('.jsonl.partial'), partial2: code('.partial') })}</p>
         </section>
       </div>`;
   }
 
   function crumbs(s, parts) {
-    return `<nav class="crumbs" aria-label="Breadcrumb"><a href="${H.board(s.name)}">${esc(s.name)}</a>${parts.map(([label, href], i) => `<span aria-hidden="true">›</span>${href ? `<a href="${href}">${label}</a>` : `<span class="here"${i === parts.length - 1 ? ' aria-current="page"' : ''}>${label}</span>`}`).join('')}</nav>`;
+    return `<nav class="crumbs" aria-label="${esc(t('Breadcrumb'))}"><a href="${H.board(s.name)}">${esc(s.name)}</a>${parts.map(([label, href], i) => `<span aria-hidden="true">›</span>${href ? `<a href="${href}">${label}</a>` : `<span class="here"${i === parts.length - 1 ? ' aria-current="page"' : ''}>${label}</span>`}`).join('')}</nav>`;
   }
 
   // ---------- compare tray ----------
@@ -1424,9 +1455,9 @@
     const show = S.compare.length && r.view !== 'compare' && !GLOBAL_VIEWS.includes(r.view);
     tray.hidden = !show;
     if (!show) return;
-    tray.innerHTML = `<span class="names">${S.compare.map(m => `<span>${esc(m)}<button type="button" data-unpick="${esc(m)}" aria-label="Remove ${esc(m)}">×</button></span>`).join('')}</span>
-      ${S.compare.length > 1 ? `<a class="btn primary" href="${H.compare(r.suite, S.compare)}">Compare ${S.compare.length}</a>` : '<span class="hint">pick one more</span>'}
-      <button type="button" class="btn" data-unpick="*">Clear</button>`;
+    tray.innerHTML = `<span class="names">${S.compare.map(m => `<span>${esc(m)}<button type="button" data-unpick="${esc(m)}" aria-label="${esc(t('Remove {model}', { model: m }))}">×</button></span>`).join('')}</span>
+      ${S.compare.length > 1 ? `<a class="btn primary" href="${H.compare(r.suite, S.compare)}">${esc(t('Compare {n}', { n: S.compare.length }))}</a>` : `<span class="hint">${esc(t('pick one more'))}</span>`}
+      <button type="button" class="btn" data-unpick="*">${esc(t('Clear'))}</button>`;
   }
   document.addEventListener('change', e => {
     const box = e.target.closest('[data-pick]'); if (!box) return;
@@ -1460,7 +1491,7 @@
       const c = catAt(s, svg, e.clientX);
       setBand(container, s, c);
       tip.hidden = true;
-      if (label) label.innerHTML = c ? `<strong>${esc(c.name)}</strong><span>${c.count} tests · click to open the category</span>` : label.dataset.idle;
+      if (label) label.innerHTML = c ? `<strong>${esc(c.name)}</strong><span>${esc(t('{n} tests · click to open the category', { n: c.count }))}</span>` : label.dataset.idle;
       return;
     }
     const [id, cat] = s.order[testIndexAt(s, svg, e.clientX)];
@@ -1468,7 +1499,7 @@
     const st = run ? statusOf(run, id) : 'none';
     const c = s.cats.find(x => x.name === cat);
     setBand(container, s, c);
-    if (label) label.innerHTML = `<strong>${esc(cat)}</strong><span>${c.count} tests</span>`;
+    if (label) label.innerHTML = `<strong>${esc(cat)}</strong><span>${esc(t('{n} tests', { n: c.count }))}</span>`;
     const why = run?.failures[id]?.assertions?.[0];
     showTip(`<b>${esc(id)}</b> · <span class="s-${st}">${STATUS[st]}</span><br>${esc(run?.model || '')}${why ? `<br>${esc(plain(why))}` : ''}`, e.clientX, svg.getBoundingClientRect().top);
   });
@@ -1485,14 +1516,14 @@
   const q = $('q'), list = $('qResults');
   let options = [], active = -1;
   function searchIndex(term) {
-    const t = term.trim().toLowerCase();
-    if (!t) return [];
-    const rank = (text) => { const v = text.toLowerCase(); const i = v.indexOf(t); return i < 0 ? -1 : i === 0 ? 0 : 1; };
+    const needle = term.trim().toLowerCase();
+    if (!needle) return [];
+    const rank = (text) => { const v = text.toLowerCase(); const i = v.indexOf(needle); return i < 0 ? -1 : i === 0 ? 0 : 1; };
     const take = (items, n) => items.map(x => ({ ...x, rank: rank(x.key) })).filter(x => x.rank >= 0).sort((a, b) => a.rank - b.rank || a.key.localeCompare(b.key, undefined, { numeric: true })).slice(0, n);
     const models = [], cats = [], tests = [];
     for (const s of S.suites.values()) {
-      for (const m of new Set(s.runs.map(x => x.model))) { const run = primaryRun(s, m); models.push({ group: 'Models', key: m, desc: `${s.name} · ${pct(run.scores.overall)}${run.synthetic ? ' · synthetic' : ''}`, href: H.model(s.name, m) }); }
-      for (const c of s.cats) cats.push({ group: 'Categories', key: c.name, desc: `${s.name} · ${c.count} tests`, href: H.cat(s.name, c.name) });
+      for (const m of new Set(s.runs.map(x => x.model))) { const run = primaryRun(s, m); models.push({ group: 'Models', key: m, desc: `${s.name} · ${pct(run.scores.overall)}${run.synthetic ? ' · ' + t('synthetic') : ''}`, href: H.model(s.name, m) }); }
+      for (const c of s.cats) cats.push({ group: 'Categories', key: c.name, desc: `${s.name} · ${t('{n} tests', { n: c.count })}`, href: H.cat(s.name, c.name) });
       for (const [id, cat] of s.order) tests.push({ group: 'Tests', key: id, desc: `${s.name} · ${cat}`, href: H.test(s.name, id) });
     }
     return [...take(models, 6), ...take(cats, 5), ...take(tests, 8)];
@@ -1502,7 +1533,7 @@
     active = options.length ? 0 : -1;
     if (!q.value.trim()) { closeResults(); return; }
     let group = '';
-    list.innerHTML = options.length ? options.map((o, i) => `${o.group !== group ? `<li class="group" role="presentation">${(group = o.group)}</li>` : ''}<li role="option" id="opt${i}" data-i="${i}" aria-selected="${i === active}"><span class="k">${esc(o.key)}</span><span class="d">${esc(o.desc)}</span></li>`).join('') : `<li class="none" role="presentation">Nothing matches "${esc(q.value.trim())}".</li>`;
+    list.innerHTML = options.length ? options.map((o, i) => `${o.group !== group ? `<li class="group" role="presentation">${esc(t(group = o.group))}</li>` : ''}<li role="option" id="opt${i}" data-i="${i}" aria-selected="${i === active}"><span class="k">${esc(o.key)}</span><span class="d">${esc(o.desc)}</span></li>`).join('') : `<li class="none" role="presentation">${esc(t('Nothing matches "{q}".', { q: q.value.trim() }))}</li>`;
     list.hidden = false;
     q.setAttribute('aria-expanded', 'true');
     q.setAttribute('aria-activedescendant', active >= 0 ? 'opt' + active : '');
@@ -1617,7 +1648,7 @@
     let text = '';
     if (following.length) {
       const h = following[0], run = h.runs?.[0];
-      text = `<span class="livedot" aria-hidden="true"></span><span>${t('Following')} <b>${esc(h.handle.name)}</b>${run ? ` · <b>${run.total}</b> ${t('tests graded')} · ${t('score')} <b>${pct(run.scores.overall)}</b>` : ''}${h.updated ? ` · ${t('updated')} ${h.updated.toLocaleTimeString()}` : ''}</span>`;
+      text = `<span class="livedot" aria-hidden="true"></span><span>${t('Following')} <b>${esc(h.handle.name)}</b>${run ? ` · <b>${run.total}</b> ${t('tests graded')} · ${t('score')} <b>${pct(run.scores.overall)}</b>` : ''}${h.updated ? ` · ${t('updated')} ${h.updated.toLocaleTimeString(TAG())}` : ''}</span>`;
     } else if (local.length) {
       text = `<span>${t('Previewing local results')}: ${files.map(f => `<code>${esc(f)}</code>`).join(', ')} · ${t('only in this tab, nothing is uploaded')}</span>`;
     }
@@ -1667,7 +1698,295 @@
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
+  /* i18n:start */
+  // Interface text in Portuguese (Brazil) and Spanish, one row per English text: [English, pt, es].
+  // Data stays as published: model names, test ids, categories and grader messages are not translated.
+  const I18N = { pt: {}, es: {} };
+  for (const [en, pt, es] of [
+    ["passed", "passou", "pasó"],
+    ["failed", "falhou", "falló"],
+    ["errored", "com erro", "con error"],
+    ["not run", "não executado", "no ejecutado"],
+    ["Exploit audits are not leaderboard runs.", "Auditorias de exploits não são execuções do ranking.", "Las auditorías de exploits no son ejecuciones de la clasificación."],
+    ["uploaded", "carregado", "cargado"],
+    ["95% Wilson interval over {n} tests", "Intervalo de Wilson de 95% sobre {n} testes", "Intervalo de Wilson del 95 % sobre {n} pruebas"],
+    ["Random scores generated to develop this page. Not a benchmark result.", "Notas aleatórias geradas para desenvolver esta página. Não é um resultado de benchmark.", "Puntuaciones aleatorias generadas para desarrollar esta página. No es un resultado de benchmark."],
+    ["synthetic", "sintético", "sintético"],
+    ["The harness is still writing this run: the score covers only the tests graded so far.", "O harness ainda está gravando esta execução: a nota cobre só os testes avaliados até agora.", "El harness aún está escribiendo esta ejecución: la puntuación cubre solo las pruebas evaluadas hasta ahora."],
+    ["in progress", "em andamento", "en curso"],
+    ["Seeded subset: limit {limit}, seed {seed}", "Subconjunto com semente: limite {limit}, seed {seed}", "Subconjunto con semilla: límite {limit}, seed {seed}"],
+    ["subset {n}/{full}", "subconjunto {n}/{full}", "subconjunto {n}/{full}"],
+    ["Ran {n} tests; the current full suite has {full} (a partial run or an earlier revision of the suite)", "Rodou {n} testes; a suíte completa atual tem {full} (uma execução parcial ou uma revisão anterior da suíte)", "Ejecutó {n} pruebas; la suite completa actual tiene {full} (una ejecución parcial o una revisión anterior de la suite)"],
+    ["{n} tests", "{n} testes", "{n} pruebas"],
+    ["Every test in the suite was run", "Todos os testes da suíte foram executados", "Se ejecutaron todas las pruebas de la suite"],
+    ["full suite", "suíte completa", "suite completa"],
+    ["Scores from another scoring version are not comparable", "Notas de outra versão de pontuação não são comparáveis", "Las puntuaciones de otra versión de puntuación no son comparables"],
+    ["scoring {v}", "pontuação {v}", "puntuación {v}"],
+    ["Errored tests are left out of the scores", "Testes com erro ficam fora das notas", "Las pruebas con error quedan fuera de las puntuaciones"],
+    ["{n} errored", "{n} com erro", "{n} con error"],
+    ["Opened from this computer; not published", "Aberto neste computador; não publicado", "Abierto desde este equipo; no publicado"],
+    ["local file", "arquivo local", "archivo local"],
+    ["{p} passed, {f} failed", "{p} passaram, {f} falharam", "{p} pasaron, {f} fallaron"],
+    ["{bad} of {n} failed", "{bad} de {n} falharam", "{bad} de {n} fallaron"],
+    ["{f} failed tests across {n} categories", "{f} testes reprovados em {n} categorias", "{f} pruebas fallidas en {n} categorías"],
+    ["{n} categories", "{n} categorias", "{n} categorías"],
+    ["{runs} runs · {tests} tests · data built {built} UTC", "{runs} execuções · {tests} testes · dados gerados em {built} UTC", "{runs} ejecuciones · {tests} pruebas · datos generados el {built} UTC"],
+    ["No runs found in the results folder yet.", "Nenhuma execução encontrada na pasta de resultados ainda.", "Aún no hay ejecuciones en la carpeta de resultados."],
+    ["Ranking", "Ranking", "Clasificación"],
+    ["Compare", "Comparar", "Comparar"],
+    ["Categories", "Categorias", "Categorías"],
+    ["Score vs cost", "Nota × custo", "Puntuación vs costo"],
+    ["History", "Histórico", "Historial"],
+    ["How it works", "Como funciona", "Cómo funciona"],
+    ["{n} of {total} runs in {suite} are synthetic: random scores generated to build this page, tagged below. Models with real runs: {real}.", "{n} de {total} execuções em {suite} são sintéticas: notas aleatórias geradas para montar esta página, marcadas abaixo. Modelos com execuções reais: {real}.", "{n} de {total} ejecuciones en {suite} son sintéticas: puntuaciones aleatorias generadas para montar esta página, marcadas abajo. Modelos con ejecuciones reales: {real}."],
+    ["They are hidden now.", "Elas estão ocultas agora.", "Ahora están ocultas."],
+    ["Filter by model or author", "Filtrar por modelo ou autor", "Filtrar por modelo o autor"],
+    ["Show older runs", "Mostrar execuções antigas", "Mostrar ejecuciones anteriores"],
+    ["Pick a results file the harness is still writing and watch it fill in.", "Escolha um arquivo de resultados que o harness ainda está gravando e veja-o crescer.", "Elige un archivo de resultados que el harness aún está escribiendo y míralo crecer."],
+    ["Follow a running benchmark", "Acompanhar execução ao vivo", "Seguir ejecución en vivo"],
+    ["Export CSV", "Exportar CSV", "Exportar CSV"],
+    ["Strict execution pass rate; ± is a 95% Wilson interval", "Taxa de aprovação estrita; ± é um intervalo de Wilson de 95%", "Tasa de aprobación estricta; ± es un intervalo de Wilson del 95 %"],
+    ["Run details", "Detalhes da execução", "Detalles de la ejecución"],
+    ["No ranked runs match the filter.", "Nenhuma execução ranqueada corresponde ao filtro.", "Ninguna ejecución clasificada coincide con el filtro."],
+    ["No full runs to rank in {suite} yet.", "Ainda não há execuções completas para ranquear em {suite}.", "Aún no hay ejecuciones completas para clasificar en {suite}."],
+    ["Not ranked", "Fora do ranking", "Fuera de la clasificación"],
+    ["a different test count (a partial run or an earlier revision of the suite), another scoring version, or an older run", "outra quantidade de testes (execução parcial ou revisão anterior da suíte), outra versão de pontuação ou uma execução antiga", "otra cantidad de pruebas (una ejecución parcial o una revisión anterior de la suite), otra versión de puntuación o una ejecución anterior"],
+    ["a different test count (a partial run or an earlier revision of the suite), another scoring version", "outra quantidade de testes (execução parcial ou revisão anterior da suíte) ou outra versão de pontuação", "otra cantidad de pruebas (una ejecución parcial o una revisión anterior de la suite) u otra versión de puntuación"],
+    ["Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. The bars show the failures in each category, taller where more of its tests failed. Costs are harness estimates. Tick rows to compare up to three models.", "A nota geral é a taxa de aprovação estrita (o código roda, passa nas asserções de runtime e não aciona nenhum padrão proibido); ± é um intervalo de Wilson de 95%. As barras mostram as falhas de cada categoria, mais altas onde mais testes falharam. Os custos são estimativas do harness. Marque linhas para comparar até três modelos.", "La puntuación general es la tasa de aprobación estricta (el código se ejecuta, pasa sus aserciones de runtime y no activa ningún patrón prohibido); ± es un intervalo de Wilson del 95 %. Las barras muestran los fallos de cada categoría, más altas donde fallaron más pruebas. Los costos son estimaciones del harness. Marca filas para comparar hasta tres modelos."],
+    ["older run", "execução antiga", "ejecución anterior"],
+    ["uncommitted", "sem commit", "sin commit"],
+    ["Compare {model}", "Comparar {model}", "Comparar {model}"],
+    ["details", "detalhes", "detalles"],
+    ["run", "execução", "ejecución"],
+    ["published by {by} in", "publicado por {by} em", "publicado por {by} en"],
+    ["suite", "suíte", "suite"],
+    ["model", "modelo", "modelo"],
+    ["default", "padrão", "predeterminado"],
+    ["image", "imagem", "imagen"],
+    ["scores", "notas", "puntuaciones"],
+    ["exec pass {a} · runtime partial {b} · static policy {c} · correctness (legacy) {d}", "aprovação estrita {a} · runtime parcial {b} · política estática {c} · correção (legado) {d}", "aprobación estricta {a} · runtime parcial {b} · política estática {c} · corrección (heredado) {d}"],
+    ["usage", "uso", "uso"],
+    ["{a} completion tokens per test (median) · {b} prompt + {c} completion in all · {d} min of model time · max latency {e}", "{a} tokens de resposta por teste (mediana) · {b} de prompt + {c} de resposta no total · {d} min de tempo de modelo · latência máxima {e}", "{a} tokens de respuesta por prueba (mediana) · {b} de prompt + {c} de respuesta en total · {d} min de tiempo de modelo · latencia máxima {e}"],
+    ["file", "arquivo", "archivo"],
+    ["Top score", "Maior nota", "Mayor puntuación"],
+    ["Cheapest per pass", "Menor $ / aprovação", "Menor $ / aprobación"],
+    ["Fastest p50", "Mais rápido (p50)", "Más rápido (p50)"],
+    ["Tests", "Testes", "Pruebas"],
+    ["Fail for every model", "Falham em todos", "Fallan en todos"],
+    ["needs 2 ranked models", "precisa de 2 modelos ranqueados", "necesita 2 modelos clasificados"],
+    ["of {n}", "de {n}", "de {n}"],
+    ["Synthetic runs", "Execuções sintéticas", "Ejecuciones sintéticas"],
+    ["{model} has no run in {suite}.", "{model} não tem execução em {suite}.", "{model} no tiene ejecución en {suite}."],
+    ["Synthetic run: these results were randomly generated to build this page. They say nothing about the model.", "Execução sintética: estes resultados foram gerados aleatoriamente para montar esta página. Não dizem nada sobre o modelo.", "Ejecución sintética: estos resultados se generaron al azar para montar esta página. No dicen nada sobre el modelo."],
+    ["In progress: {done} of {full} tests graded so far. The score and the strip are partial and keep changing until the run ends.", "Em andamento: {done} de {full} testes avaliados até agora. A nota e a faixa são parciais e continuam mudando até o fim da execução.", "En curso: {done} de {full} pruebas evaluadas hasta ahora. La puntuación y la franja son parciales y seguirán cambiando hasta que termine la ejecución."],
+    ["This run has {n} tests and the current full suite has {full} (seeded subset: limit {limit}, seed {seed}), so its score is not ranked with full runs.", "Esta execução tem {n} testes e a suíte completa atual tem {full} (subconjunto com semente: limite {limit}, seed {seed}); por isso a nota não entra no ranking junto com as execuções completas.", "Esta ejecución tiene {n} pruebas y la suite completa actual tiene {full} (subconjunto con semilla: límite {limit}, seed {seed}); por eso su puntuación no se clasifica junto a las ejecuciones completas."],
+    ["This run has {n} tests and the current full suite has {full}: a partial run or an earlier revision of the suite, so its score is not ranked with full runs.", "Esta execução tem {n} testes e a suíte completa atual tem {full}: uma execução parcial ou uma revisão anterior da suíte; por isso a nota não entra no ranking junto com as execuções completas.", "Esta ejecución tiene {n} pruebas y la suite completa actual tiene {full}: una ejecución parcial o una revisión anterior de la suite; por eso su puntuación no se clasifica junto a las ejecuciones completas."],
+    ["{n} tests errored before grading and are left out of the scores (continue_on_error).", "{n} testes deram erro antes da avaliação e ficam fora das notas (continue_on_error).", "{n} pruebas dieron error antes de evaluarse y quedan fuera de las puntuaciones (continue_on_error)."],
+    ["Scored with version {v}, not {current}: not ranked with the current runs.", "Pontuada com a versão {v}, não {current}: não entra no ranking com as execuções atuais.", "Puntuada con la versión {v}, no {current}: no se clasifica con las ejecuciones actuales."],
+    ["Isolation \"{b}\" shares state between tests; not valid for published scores.", "O isolamento \"{b}\" compartilha estado entre os testes; não vale para notas publicadas.", "El aislamiento \"{b}\" comparte estado entre pruebas; no es válido para puntuaciones publicadas."],
+    ["{n} runs in this suite", "{n} execuções nesta suíte", "{n} ejecuciones en esta suite"],
+    ["strict pass rate", "taxa de aprovação estrita", "tasa de aprobación estricta"],
+    ["Passed", "Aprovados", "Aprobadas"],
+    ["of {n} tests", "de {n} testes", "de {n} pruebas"],
+    ["Failed", "Reprovados", "Fallidas"],
+    ["{n} timeouts", "{n} timeouts", "{n} timeouts"],
+    ["tests", "testes", "pruebas"],
+    ["Runtime mean", "Média de runtime", "Media de runtime"],
+    ["partial credit", "crédito parcial", "crédito parcial"],
+    ["Est. cost", "Custo est.", "Costo est."],
+    ["{x} per pass", "{x} / aprovação", "{x} / aprobación"],
+    ["Latency p50", "Latência p50", "Latencia p50"],
+    ["Tokens / test", "Tokens / teste", "Tokens / prueba"],
+    ["median completion", "resposta, mediana", "respuesta, mediana"],
+    ["Run", "Execução", "Ejecución"],
+    ["by", "por", "por"],
+    ["unpublished", "não publicada", "no publicada"],
+    ["Every test in the suite, grouped by category · click a failure to open it", "Todos os testes da suíte, agrupados por categoria · clique numa falha para abri-la", "Todas las pruebas de la suite, agrupadas por categoría · haz clic en un fallo para abrirlo"],
+    ["Where it stumbles", "Onde tropeça", "Dónde tropieza"],
+    ["weakest categories first", "categorias mais fracas primeiro", "categorías más débiles primero"],
+    ["Status", "Status", "Estado"],
+    ["Errored", "Com erro", "Con error"],
+    ["All", "Todos", "Todas"],
+    ["Filter by test id", "Filtrar por id do teste", "Filtrar por id de prueba"],
+    ["Filter tests by id", "Filtrar testes por id", "Filtrar pruebas por id"],
+    ["commit {sha}", "commit {sha}", "commit {sha}"],
+    ["Temperature", "Temperatura", "Temperatura"],
+    ["Seed · limit", "Seed · limite", "Seed · límite"],
+    ["Isolation", "Isolamento", "Aislamiento"],
+    ["concurrency {n}", "concorrência {n}", "concurrencia {n}"],
+    ["Grader", "Avaliador", "Evaluador"],
+    ["Runtime image", "Imagem de runtime", "Imagen de runtime"],
+    ["Schema", "Esquema", "Esquema"],
+    ["Other runs", "Outras execuções", "Otras ejecuciones"],
+    ["showing", "exibindo", "mostrando"],
+    ["{n} shown", "{n} exibidos", "{n} mostradas"],
+    ["in {cat}", "em {cat}", "en {cat}"],
+    ["all categories", "todas as categorias", "todas las categorías"],
+    ["click a category to narrow", "clique numa categoria para filtrar", "haz clic en una categoría para filtrar"],
+    ["No tests match these filters.", "Nenhum teste corresponde a estes filtros.", "Ninguna prueba coincide con estos filtros."],
+    ["How every model did on this test", "Como cada modelo foi neste teste", "Cómo le fue a cada modelo en esta prueba"],
+    ["Test definition", "Definição do teste", "Definición de la prueba"],
+    ["Full run output", "Saída completa da execução", "Salida completa de la ejecución"],
+    ["This run did not include the test.", "Esta execução não incluiu o teste.", "Esta ejecución no incluyó la prueba."],
+    ["Core source", "Código do core", "Código del core"],
+    ["Passed every runtime assertion with no forbidden pattern.", "Passou em todas as asserções de runtime, sem nenhum padrão proibido.", "Pasó todas las aserciones de runtime, sin ningún patrón prohibido."],
+    ["why", "motivo", "motivo"],
+    ["Failed assertions", "Asserções que falharam", "Aserciones que fallaron"],
+    ["No test called {id} in {suite}.", "Nenhum teste chamado {id} em {suite}.", "Ninguna prueba llamada {id} en {suite}."],
+    ["models in the ranking pass this test", "modelos do ranking passam neste teste", "modelos de la clasificación superan esta prueba"],
+    ["No model in the ranking ran this test.", "Nenhum modelo do ranking rodou este teste.", "Ningún modelo de la clasificación ejecutó esta prueba."],
+    ["No models in {suite} match the filters.", "Nenhum modelo em {suite} corresponde aos filtros.", "Ningún modelo en {suite} coincide con los filtros."],
+    ["Pass rate per category for the latest run of each model in {suite}; darker is higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked {chip}: one test moves them by 20 points or more.", "Taxa de aprovação por categoria da última execução de cada modelo em {suite}; mais escuro é mais alto. Clique numa célula para listar seus testes. Categorias com menos de 5 testes levam a marca {chip}: um único teste move o resultado em 20 pontos ou mais.", "Tasa de aprobación por categoría de la última ejecución de cada modelo en {suite}; más oscuro es más alto. Haz clic en una celda para listar sus pruebas. Las categorías con menos de 5 pruebas llevan la marca {chip}: una sola prueba mueve el resultado 20 puntos o más."],
+    ["overall", "geral", "general"],
+    ["{cat}: {p}/{n} passed", "{cat}: {p}/{n} passaram", "{cat}: {p}/{n} pasaron"],
+    ["{ok}/{n} passed", "{ok}/{n} passaram", "{ok}/{n} pasaron"],
+    ["Overall score against the estimated cost of the full run (log scale). Up and to the left is better. Hover a point for details, click it to open the model.", "Nota geral contra o custo estimado da execução completa (escala logarítmica). Quanto mais para cima e para a esquerda, melhor. Passe o mouse num ponto para ver detalhes e clique para abrir o modelo.", "Puntuación general frente al costo estimado de la ejecución completa (escala logarítmica). Cuanto más arriba y a la izquierda, mejor. Pasa el ratón por un punto para ver detalles y haz clic para abrir el modelo."],
+    ["Overall score versus estimated cost per run", "Nota geral versus custo estimado por execução", "Puntuación general frente al costo estimado por ejecución"],
+    ["real run", "execução real", "ejecución real"],
+    ["cost / run", "custo / execução", "costo / ejecución"],
+    ["passes per $", "aprovações por $", "aprobaciones por $"],
+    ["tokens / test", "tokens / teste", "tokens / prueba"],
+    ["latency p50", "latência p50", "latencia p50"],
+    ["No runs with cost estimates in this suite.", "Nenhuma execução com estimativa de custo nesta suíte.", "Ninguna ejecución con estimación de costo en esta suite."],
+    ["estimated cost of the full run (log)", "custo estimado da execução completa (log)", "costo estimado de la ejecución completa (log)"],
+    ["overall {a} · {b} per run", "geral {a} · {b} por execução", "general {a} · {b} por ejecución"],
+    ["{a} per passed test · p50 {b}", "{a} por teste aprovado · p50 {b}", "{a} por prueba aprobada · p50 {b}"],
+    ["No category called {cat} in {suite}.", "Nenhuma categoria chamada {cat} em {suite}.", "Ninguna categoría llamada {cat} en {suite}."],
+    ["categories", "categorias", "categorías"],
+    ["Test definitions", "Definições dos testes", "Definiciones de las pruebas"],
+    ["test", "teste", "prueba"],
+    ["passed by", "aprovado por", "superado por"],
+    ["Compare models", "Comparar modelos", "Comparar modelos"],
+    ["Tick two or three models in the {link} to line their tests up here.", "Marque dois ou três modelos no {link} para alinhar os testes deles aqui.", "Marca dos o tres modelos en la {link} para alinear aquí sus pruebas."],
+    ["ranking", "ranking", "clasificación"],
+    ["Picked so far: {list}.", "Escolhidos até agora: {list}.", "Elegidos hasta ahora: {list}."],
+    ["None.", "Nenhum.", "Ninguno."],
+    ["compare", "comparar", "comparar"],
+    ["{a}/{b} passed", "{a}/{b} passaram", "{a}/{b} pasaron"],
+    ["Strips line up test by test · hover to find a category or test", "As faixas se alinham teste a teste · passe o mouse para achar uma categoria ou um teste", "Las franjas se alinean prueba a prueba · pasa el ratón para encontrar una categoría o una prueba"],
+    ["Where they differ", "Onde diferem", "Dónde difieren"],
+    ["{n} tests split the models · {m} fail everywhere", "{n} testes dividem os modelos · {m} falham em todos", "{n} pruebas dividen a los modelos · {m} fallan en todos"],
+    ["Only {model} passed", "Só {model} passou", "Solo {model} aprobó"],
+    ["Split", "Divididos", "Divididas"],
+    ["Every model failed", "Todos os modelos falharam", "Todos los modelos fallaron"],
+    ["largest gaps first", "maiores diferenças primeiro", "mayores diferencias primero"],
+    ["category", "categoria", "categoría"],
+    ["gap", "diferença", "diferencia"],
+    ["pts", "pts", "pts"],
+    ["every commit that touched {dir} · pick one to see which runs it added, removed or changed and how the latest score per model moved", "todo commit que tocou {dir} · escolha um para ver quais execuções ele adicionou, removeu ou alterou e como mudou a última nota de cada modelo", "cada commit que tocó {dir} · elige uno para ver qué ejecuciones añadió, eliminó o modificó y cómo cambió la última puntuación de cada modelo"],
+    ["No commits recorded in the data file.", "Nenhum commit registrado no arquivo de dados.", "No hay commits registrados en el archivo de datos."],
+    ["files", "arquivos", "archivos"],
+    ["none", "nenhum", "ninguno"],
+    ["{a} model runs after this commit, {b} before.", "{a} execuções de modelos depois deste commit, {b} antes.", "{a} ejecuciones de modelos después de este commit, {b} antes."],
+    ["Models added", "Modelos adicionados", "Modelos añadidos"],
+    ["None", "Nenhum", "Ninguno"],
+    ["Models removed", "Modelos removidos", "Modelos eliminados"],
+    ["Latest run changed", "Última execução alterada", "Última ejecución modificada"],
+    ["raw run outputs are the source of truth; one small prebuilt data file is all this page needs", "as saídas brutas das execuções são a fonte da verdade; um pequeno arquivo de dados pré-gerado é tudo de que esta página precisa", "las salidas brutas de las ejecuciones son la fuente de la verdad; un pequeño archivo de datos precalculado es todo lo que necesita esta página"],
+    ["A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.", "Uma pessoa ou agente roda o wp-bench e abre um pull request com a saída bruta no repositório wp-bench-results; o build_data.py transforma a pasta de resultados e seu histórico do git em um arquivo de dados; o Spacefast serve o site estático, e o navegador busca apenas esse arquivo de dados.", "Una persona o agente ejecuta wp-bench y abre un pull request con la salida bruta en el repositorio wp-bench-results; build_data.py convierte la carpeta de resultados y su historial de git en un archivo de datos; Spacefast sirve el sitio estático y el navegador solo obtiene ese archivo de datos."],
+    ["Contributor or agent", "Pessoa ou agente", "Persona o agente"],
+    ["wp-bench-results repository", "repositório wp-bench-results", "repositorio wp-bench-results"],
+    ["public · pull requests · CI", "público · pull requests · CI", "público · pull requests · CI"],
+    ["raw run outputs,", "saídas brutas,", "salidas brutas,"],
+    ["copied unchanged", "copiadas sem alteração", "copiadas sin cambios"],
+    ["who published, when", "quem publicou, quando", "quién publicó, cuándo"],
+    ["aggregates per run", "agrega por execução", "agrega por ejecución"],
+    ["~65 KB per run", "~65 KB por execução", "~65 KB por ejecución"],
+    ["static page", "página estática", "página estática"],
+    ["serves site/ at", "serve o site/ em", "sirve site/ en"],
+    ["Your browser", "Seu navegador", "Tu navegador"],
+    ["fetches one data file,", "busca um arquivo de dados,", "obtiene un archivo de datos,"],
+    ["no API calls", "sem chamadas de API", "sin llamadas a la API"],
+    ["check here before a run", "confira aqui antes de rodar", "consulta aquí antes de ejecutar"],
+    ["copy + PR", "copiar + PR", "copiar + PR"],
+    ["reads the data", "lê os dados", "lee los datos"],
+    ["before a run", "antes de rodar", "antes de ejecutar"],
+    ["reads", "lê", "lee"],
+    ["attribution", "autoria", "autoría"],
+    ["writes", "gera", "genera"],
+    ["renders", "exibe", "muestra"],
+    ["push to main", "push no main", "push a main"],
+    ["→ deploy", "→ deploy", "→ deploy"],
+    ["The data file is the one thing the page reads; the repository's git history is the audit trail.", "O arquivo de dados é a única coisa que a página lê; o histórico do git do repositório é a trilha de auditoria.", "El archivo de datos es lo único que lee la página; el historial de git del repositorio es el registro de auditoría."],
+    ["Publishing a run", "Publicar uma execução", "Publicar una ejecución"],
+    ["Check the model is not already listed for the suite (this page, or {data}). {agents} in wp-bench makes agents do this before running anything.", "Confira se o modelo já está listado na suíte (nesta página ou em {data}). O {agents} do wp-bench faz os agentes conferirem isso antes de rodar qualquer coisa.", "Comprueba que el modelo no esté ya listado en la suite (en esta página o en {data}). El {agents} de wp-bench hace que los agentes lo comprueben antes de ejecutar nada."],
+    ["Run the benchmark: {run} writes {json} and {jsonl}.", "Rode o benchmark: {run} grava {json} e {jsonl}.", "Ejecuta el benchmark: {run} escribe {json} y {jsonl}."],
+    ["Fork {repo}, copy both files into {dir}, commit. That commit is the run's attribution here.", "Faça um fork de {repo}, copie os dois arquivos para {dir} e faça o commit. Esse commit é a autoria da execução aqui.", "Haz un fork de {repo}, copia los dos archivos en {dir} y haz commit. Ese commit es la autoría de la ejecución aquí."],
+    ["Run {cmd}, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.", "Rode {cmd}, faça o commit do arquivo de dados regenerado e abra um pull request. O CI confere o formato dos arquivos e se os dados estão atualizados.", "Ejecuta {cmd}, haz commit del archivo de datos regenerado y abre un pull request. El CI comprueba el formato de los archivos y que los datos estén al día."],
+    ["Merge → push to {main} → Spacefast redeploys {site}.", "Mescle → push no {main} → o Spacefast republica o {site}.", "Fusiona → push a {main} → Spacefast vuelve a publicar {site}."],
+    ["What gets ranked", "O que entra no ranking", "Qué se clasifica"],
+    ["Each model's latest {full} run per suite and scoring version. Runs with a different test count ({limit}, {cats}, or an earlier revision of the suite) and other scoring versions are listed under \"Not ranked\", never ranked with full runs.", "A última execução {full} de cada modelo, por suíte e versão de pontuação. Execuções com outra quantidade de testes ({limit}, {cats} ou uma revisão anterior da suíte) e outras versões de pontuação ficam em \"Fora do ranking\", nunca ranqueadas junto com as completas.", "La última ejecución {full} de cada modelo, por suite y versión de puntuación. Las ejecuciones con otra cantidad de pruebas ({limit}, {cats} o una revisión anterior de la suite) y otras versiones de puntuación aparecen en «Fuera de la clasificación», nunca clasificadas junto a las completas."],
+    ["full", "completa", "completa"],
+    ["Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.", "A nota geral é a taxa de aprovação estrita; ± é um intervalo de Wilson de 95% sobre o número de testes; os custos são estimativas do harness.", "La puntuación general es la tasa de aprobación estricta; ± es un intervalo de Wilson del 95 % sobre el número de pruebas; los costos son estimaciones del harness."],
+    ["Synthetic runs from {dir} exist only for developing this page and are never published.", "As execuções sintéticas de {dir} existem só para desenvolver esta página e nunca são publicadas.", "Las ejecuciones sintéticas de {dir} existen solo para desarrollar esta página y nunca se publican."],
+    ["To preview a run before publishing it, use Upload results or drop a file anywhere on this page: {json}, the {jsonl}, or the {partial} the harness writes while a run is going. Nothing leaves your browser; in Chromium a dropped {partial2} file is followed live.", "Para visualizar uma execução antes de publicá-la, use Carregar resultados ou solte um arquivo em qualquer lugar da página: {json}, o {jsonl} ou o {partial} que o harness grava enquanto a execução roda. Nada sai do seu navegador; no Chromium, um arquivo {partial2} solto é acompanhado ao vivo.", "Para previsualizar una ejecución antes de publicarla, usa Cargar resultados o suelta un archivo en cualquier parte de la página: {json}, el {jsonl} o el {partial} que el harness escribe mientras la ejecución está en marcha. Nada sale de tu navegador; en Chromium, un archivo {partial2} soltado se sigue en vivo."],
+    ["Breadcrumb", "Navegação estrutural", "Ruta de navegación"],
+    ["Remove {model}", "Remover {model}", "Quitar {model}"],
+    ["Compare {n}", "Comparar {n}", "Comparar {n}"],
+    ["pick one more", "escolha mais um", "elige uno más"],
+    ["Clear", "Limpar", "Limpiar"],
+    ["{n} tests · click to open the category", "{n} testes · clique para abrir a categoria", "{n} pruebas · haz clic para abrir la categoría"],
+    ["Nothing matches \"{q}\".", "Nada corresponde a \"{q}\".", "Nada coincide con \"{q}\"."],
+    ["no wp-bench run output found.", "nenhuma saída do wp-bench run encontrada.", "no se encontró ninguna salida de wp-bench run."],
+    ["{name} is gone: the run has probably finished. Upload the final results_<timestamp>.json to keep it.", "{name} não existe mais: a execução provavelmente terminou. Carregue o results_<timestamp>.json final para guardá-la.", "{name} ya no existe: la ejecución probablemente terminó. Carga el results_<timestamp>.json final para conservarla."],
+    ["Following", "Acompanhando", "Siguiendo"],
+    ["tests graded", "testes avaliados", "pruebas evaluadas"],
+    ["score", "nota", "puntuación"],
+    ["updated", "atualizado às", "actualizado a las"],
+    ["Previewing local results", "Visualizando resultados locais", "Previsualizando resultados locales"],
+    ["only in this tab, nothing is uploaded", "só nesta aba, nada é enviado", "solo en esta pestaña, no se sube nada"],
+    ["Stop following", "Parar de acompanhar", "Dejar de seguir"],
+    ["How well AI models write WordPress code: wp-bench scores per suite, model, category and test, cost against score, model comparisons and the full history of published runs.", "Quão bem modelos de IA escrevem código WordPress: notas do wp-bench por suíte, modelo, categoria e teste, custo contra nota, comparações entre modelos e o histórico completo das execuções publicadas.", "Qué tan bien escriben código WordPress los modelos de IA: puntuaciones de wp-bench por suite, modelo, categoría y prueba, costo frente a puntuación, comparaciones entre modelos y el historial completo de las ejecuciones publicadas."],
+    ["Loading runs…", "Carregando execuções…", "Cargando ejecuciones…"],
+    ["Could not load the leaderboard data.", "Não foi possível carregar os dados do ranking.", "No se pudieron cargar los datos de la clasificación."],
+    ["#", "#", "#"],
+    ["Model", "Modelo", "Modelo"],
+    ["Overall", "Geral", "General"],
+    ["Failures by category", "Falhas por categoria", "Fallos por categoría"],
+    ["Cost / run", "Custo total", "Costo total"],
+    ["$ / pass", "$ / aprovação", "$ / aprobación"],
+    ["Latency p50 / p90", "Latência p50 / p90", "Latencia p50 / p90"],
+    ["harness error", "erro do harness", "error del harness"],
+    ["timeout", "timeout", "timeout"],
+    ["forbidden static pattern", "padrão estático proibido", "patrón estático prohibido"],
+    ["runtime crash", "falha no runtime", "fallo en runtime"],
+    ["assertion failed", "asserção falhou", "aserción fallida"],
+    ["Models", "Modelos", "Modelos"],
+    ["leaderboard", "classificação", "clasificación"],
+    ["Upload results", "Carregar resultados", "Cargar resultados"],
+    ["Drop to preview", "Solte para visualizar", "Suelta para previsualizar"],
+    ["results_<timestamp>.json, .jsonl or .jsonl.partial · nothing is uploaded", "results_<timestamp>.json, .jsonl ou .jsonl.partial · nada é enviado", "results_<timestamp>.json, .jsonl o .jsonl.partial · no se sube nada"],
+    ["Suite", "Suíte", "Suite"],
+    ["Jump to a model, category or test", "Ir para um modelo, categoria ou teste", "Ir a un modelo, categoría o prueba"],
+    ["Preview a results file from this computer. Nothing is uploaded.", "Visualize um arquivo de resultados deste computador. Nada é enviado.", "Previsualiza un archivo de resultados de este equipo. No se sube nada."],
+    ["Language", "Idioma", "Idioma"],
+    ["Views", "Telas", "Vistas"],
+  ]) { I18N.pt[en] = pt; I18N.es[en] = es; }
+  /* i18n:end */
+
+  // ---------- language switcher ----------
+  /** Text and attributes in the static markup are marked with data-i18n / data-i18n-attr="attr:English text;…". */
+  function applyStatic() {
+    document.documentElement.lang = TAG();
+    document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
+    document.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      for (const pair of el.dataset.i18nAttr.split(';')) { const i = pair.indexOf(':'); el.setAttribute(pair.slice(0, i), t(pair.slice(i + 1))); }
+    });
+    document.querySelector('meta[name="description"]').content = t('How well AI models write WordPress code: wp-bench scores per suite, model, category and test, cost against score, model comparisons and the full history of published runs.');
+    $('lang').innerHTML = Object.entries(LANGS).map(([k, v]) => `<button type="button" data-lang="${k}" lang="${k}" title="${esc(v.name)}" aria-pressed="${k === LANG}">${k.toUpperCase()}</button>`).join('');
+  }
+  $('lang').addEventListener('click', e => {
+    const b = e.target.closest('[data-lang]'); if (!b || b.dataset.lang === LANG) return;
+    LANG = b.dataset.lang;
+    try { localStorage.setItem('wpb-lang', LANG); } catch {}
+    // A shared ?lang= link keeps following the choice, so a reload does not switch back.
+    if (qs.has('lang')) { qs.set('lang', LANG); history.replaceState(null, '', `?${qs}${location.hash}`); }
+    applyStatic();
+    if (S.loaded) render(); else main.innerHTML = `<div class="status">${esc(t('Loading runs…'))}</div>`;
+  });
+
   // ---------- boot ----------
+  applyStatic();
   window.addEventListener('hashchange', () => { render(); window.scrollTo({ top: 0 }); });
   fetch(DATA_URL, { cache: 'no-cache' })
     .then(res => { if (!res.ok) throw new Error(`${res.status} ${res.statusText}`); return res.json(); })
@@ -1677,10 +1996,10 @@
       S.runs = (d.runs || []).map(r => adapt(r));
       buildSuites();
       S.loaded = true;
-      $('srcLine').textContent = `${S.runs.length} runs · ${Object.keys(d.tests || {}).length} tests · data built ${String(d.generated_at || '').replace('T', ' ').slice(0, 16)} UTC${qs.get('data') ? ` · ${DATA_URL}` : d.source_commit ? ` from ${REPO}@${d.source_commit.slice(0, 7)}` : ''}`;
+      S.srcInfo = { runs: S.runs.length, tests: Object.keys(d.tests || {}).length, built: String(d.generated_at || '').replace('T', ' ').slice(0, 16), from: qs.get('data') ? ` · ${DATA_URL}` : d.source_commit ? ` · ${REPO}@${d.source_commit.slice(0, 7)}` : '' };
       render();
     })
-    .catch(e => { main.innerHTML = `<div class="status err">Couldn't load the leaderboard data.<br><span class="muted">${esc(DATA_URL)} · ${esc(e.message)}</span></div>`; });
+    .catch(e => { main.innerHTML = `<div class="status err">${esc(t('Could not load the leaderboard data.'))}<br><span class="muted">${esc(DATA_URL)} · ${esc(e.message)}</span></div>`; });
 })();
 </script>
 </body>
