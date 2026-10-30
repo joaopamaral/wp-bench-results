@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "generated_at": "2026-10-30T20:19:29+00:00",
- "source_commit": "d4a3e8be4b677c99203d8e6253616ea94305664c",
+ "generated_at": "2026-10-30T20:19:55+00:00",
+ "source_commit": "3e4feb351f902979b2ea442d8ee88e53c4a2c8bd",
  "results_dir": "results",
  "tests": {
   "e-abilities-api-001": {
@@ -8470,8 +8470,8 @@
    "published": {
     "by": "Joao Amaral",
     "date": "2026-10-30",
-    "sha": "d4a3e8be4b677c99203d8e6253616ea94305664c",
-    "short": "d4a3e8b",
+    "sha": "3e4feb351f902979b2ea442d8ee88e53c4a2c8bd",
+    "short": "3e4feb3",
     "message": "data: add deepseek/deepseek-flash and xai/grok-4 runs on wp-core-v1"
    }
   },
@@ -12707,16 +12707,16 @@
    "published": {
     "by": "Joao Amaral",
     "date": "2026-10-30",
-    "sha": "d4a3e8be4b677c99203d8e6253616ea94305664c",
-    "short": "d4a3e8b",
+    "sha": "3e4feb351f902979b2ea442d8ee88e53c4a2c8bd",
+    "short": "3e4feb3",
     "message": "data: add deepseek/deepseek-flash and xai/grok-4 runs on wp-core-v1"
    }
   }
  ],
  "history": [
   {
-   "sha": "d4a3e8be4b677c99203d8e6253616ea94305664c",
-   "short": "d4a3e8b",
+   "sha": "3e4feb351f902979b2ea442d8ee88e53c4a2c8bd",
+   "short": "3e4feb3",
    "date": "2026-10-30T17:19:11-03:00",
    "author": "Joao Amaral",
    "message": "data: add deepseek/deepseek-flash and xai/grok-4 runs on wp-core-v1\nRaw `wp-bench run` outputs (JSON + JSONL), scoring 3.0, run on 2026-10-30\nduring the WordCamp Brazil 2026 contributor day:\n- results_20261030_191544: deepseek/deepseek-flash, all 350 tests\n- results_20261030_185222: xai/grok-4, 300 tests (`--limit 300`), listed\n  but not ranked against full runs\nDiscussion: https://github.com/WordPress/wp-bench/issues/83\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>",
