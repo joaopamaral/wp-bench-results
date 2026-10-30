@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "generated_at": "2026-10-30T20:01:35+00:00",
- "source_commit": "86dd1eadb3d9e63b6a35a07a25ca9c9888c8b41d",
+ "generated_at": "2026-10-30T20:02:00+00:00",
+ "source_commit": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
  "results_dir": "results",
  "tests": {
   "e-abilities-api-001": {
@@ -95,7 +95,6 @@
    "category": "abilities-api",
    "source_refs": [
     "src/wp-includes/abilities-api.php",
-    "src/wp-includes/abilities-api/class-wp-ability.php",
     "src/wp-includes/abilities.php"
    ]
   },
@@ -2814,6 +2813,1118 @@
  },
  "runs": [
   {
+   "id": "results_20260930_132911:claude-fable-5-1",
+   "file": "results_20260930_132911.json",
+   "model": "claude-fable-5-1",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-30",
+   "run_ts": "20260930132911",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": 1337,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.5513513513513514,
+    "execution_pass_rate": 0.5459,
+    "runtime": 0.5514,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.5459
+   },
+   "usage": {
+    "prompt_tokens": 31796,
+    "completion_tokens": 72768,
+    "total_tokens": 104564,
+    "estimated_cost_usd": 3.95636,
+    "median_latency_ms": 7165.0,
+    "p95_latency_ms": 20991.2
+   },
+   "tests": {
+    "passed": 101,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 7165.0,
+    "p90": 16839.1,
+    "max": 36059.4,
+    "total_min": 26.4
+   },
+   "cost_usd": {
+    "total": 3.9564,
+    "per_test_p50": 0.012210000000000002,
+    "per_pass": 0.0392
+   },
+   "tokens": {
+    "completion_p50": 214,
+    "prompt_p50": 160,
+    "completion_total": 72768
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 9,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 4,
+     "total": 10
+    },
+    "caching": {
+     "passed": 4,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 3,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 4,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 0,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 2,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 4,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 2,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 2,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 4,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 4,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 2,
+     "total": 4
+    },
+    "media": {
+     "passed": 2,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 3,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 5,
+     "total": 8
+    },
+    "queries": {
+     "passed": 9,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 5,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 2,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 4,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 3,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 4,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 2,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-006",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-006",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-gb-block-api-001",
+    "e-gb-block-api-005",
+    "e-gb-block-bindings-001",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-003",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-011",
+    "e-gb-font-library-001",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-002",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-mail-url-001",
+    "e-mail-url-003",
+    "e-media-001",
+    "e-media-003",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-post-types-taxonomy-007",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-003",
+    "e-rest-api-007",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-001",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-004",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-004"
+   ],
+   "failures": {
+    "e-abilities-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The count-words ability is registered with schemas and executes correctly"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 959ms)",
+     "error": null
+    },
+    "e-abilities-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper returns results from executing the registered ability"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 922ms)",
+     "error": null
+    },
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 960ms)",
+     "error": null
+    },
+    "e-abilities-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_abilities_api_005()",
+      "Denied execution reports ability_invalid_permissions and permitted execution reports ok"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 945ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 838ms)",
+     "error": null
+    },
+    "e-ai-client-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Prevention is observed active during the support check and the filter is restored afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 889ms)",
+     "error": null
+    },
+    "e-ai-client-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_007()",
+      "Support is observed disabled during the call, a real builder is constructed for the attempt, and support is restored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 921ms)",
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 948ms)",
+     "error": null
+    },
+    "e-ai-client-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_011()",
+      "The returned builder carries the sticky bad-method error, surfaced before the prevention gate"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 845ms)",
+     "error": null
+    },
+    "e-ai-client-015": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_015()",
+      "The returned builder ran a real prevented support check and carries no stored error: prevented generation reports prompt_prevented, not a sticky builder error"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 854ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_caching_003()",
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 977ms)",
+     "error": null
+    },
+    "e-caching-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Salted batch reads preserve falsey current values and reject stale-salt values"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 878ms)",
+     "error": null
+    },
+    "e-comments-users-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_comments_users_003()",
+      "An approved comment is stored on the post and its text is returned"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 831ms)",
+     "error": null
+    },
+    "e-connectors-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom support desk connector is registered and publicly discoverable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 916ms)",
+     "error": null
+    },
+    "e-connectors-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The connector registers with the auto-generated setting name and default plugin callback"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 803ms)",
+     "error": null
+    },
+    "e-connectors-api-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_connectors_api_008()",
+      "The ai_provider connector registers with the requested data when AI is on and is silently rejected when AI is off"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 797ms)",
+     "error": null
+    },
+    "e-connectors-api-009": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_connectors_api_009()",
+      "The connector's own is_active callback is actually invoked: the same connector reports both states as the fixture toggles"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 850ms)",
+     "error": null
+    },
+    "e-connectors-api-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_connectors_api_010()",
+      "Only the name changes; every other stored field survives the round-trip"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 857ms)",
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 793ms)",
+     "error": null
+    },
+    "e-database-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_001()",
+      "The custom table row has the returned insert ID and requested values"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 890ms)",
+     "error": null
+    },
+    "e-database-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_002()",
+      "The prepared SQL matches only public custom-table rows containing the literal LIKE term"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 890ms)",
+     "error": null
+    },
+    "e-database-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_003()",
+      "The function reads the requested custom-table value and returns null for a missing row"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 847ms)",
+     "error": null
+    },
+    "e-database-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_004()",
+      "The function updates only the matching custom-table row and returns row counts"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 823ms)",
+     "error": null
+    },
+    "e-database-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_005()",
+      "The function deletes only the matching custom-table row and returns row counts"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 910ms)",
+     "error": null
+    },
+    "e-database-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_database_006()",
+      "dbDelta creates the custom table with the expected columns and slug index"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 905ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 888ms)",
+     "error": null
+    },
+    "e-gb-block-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The processor count includes nested and repeated explicit blocks and ignores freeform HTML"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 901ms)",
+     "error": null
+    },
+    "e-gb-block-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Code execution failed"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 873ms)",
+     "error": null
+    },
+    "e-gb-block-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first image block is extracted as a parsed block with attributes"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 872ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only wpbp/card gains a bindable title attribute, and rendering receives the bound value"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 830ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 890ms)",
+     "error": null
+    },
+    "e-gb-block-editor-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_block_editor_002()",
+      "Visible block markup renders while a block with metadata.blockVisibility false is omitted"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 838ms)",
+     "error": null
+    },
+    "e-gb-block-markup-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_001()",
+      "The markup parses into a paragraph and a heading with correct comment attributes and no invalid fragments",
+      "The paragraph is unclassed, the heading uses h3 with wp-block-heading, and the markup is round-trip stable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 789ms)",
+     "error": null
+    },
+    "e-gb-block-markup-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_002()",
+      "The image parses cleanly with id and sizeSlug in the comment JSON and no HTML-sourced attributes leaked into it",
+      "The figure and img elements carry the editor's wrapper classes, source URL, and alt text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 791ms)",
+     "error": null
+    },
+    "e-gb-block-markup-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_003()",
+      "The list parses into one attribute-free core/list with three core/list-item inner blocks in order",
+      "The ul carries wp-block-list, each item owns its li element, and innerContent reserves one slot per item"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 825ms)",
+     "error": null
+    },
+    "e-gb-block-markup-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_004()",
+      "The quote parses into one attribute-free core/quote wrapping a single paragraph inner block",
+      "The blockquote carries wp-block-quote and the citation lives in the quote's own HTML, not in the paragraph"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 899ms)",
+     "error": null
+    },
+    "e-gb-block-markup-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_005()",
+      "Site title and post content are attribute-free void blocks and the separator is the only closed block",
+      "The separator serializes an hr with the wp-block-separator and has-alpha-channel-opacity classes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 798ms)",
+     "error": null
+    },
+    "e-gb-block-markup-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_006()",
+      "The columns block nests two columns each wrapping one paragraph, with no legacy attributes",
+      "The wrappers are div.wp-block-columns and div.wp-block-column with no extra legacy classes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 881ms)",
+     "error": null
+    },
+    "e-gb-block-markup-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_007()",
+      "The buttons block nests two buttons whose URL and text stay out of the comment JSON",
+      "Each button anchor carries the editor's link classes, the requested href, and the requested text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 809ms)",
+     "error": null
+    },
+    "e-gb-block-markup-009": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_009()",
+      "The cover carries the url and dimRatio attributes and wraps a single paragraph inner block",
+      "The saved HTML has the background image, the aria-hidden dim overlay span, and the inner container"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 818ms)",
+     "error": null
+    },
+    "e-gb-block-markup-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_010()",
+      "The gallery nests two image blocks with id and sizeSlug in their comment JSON and linkTo none on the gallery",
+      "The gallery figure and each nested image carry the editor's classes, sources, and alt text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 807ms)",
+     "error": null
+    },
+    "e-gb-block-markup-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The navigation nests a void Home link and an About submenu wrapping two void links with label and url attributes",
+      "Exactly the navigation and submenu blocks close with delimiters while all three links are self-closing"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 894ms)",
+     "error": null
+    },
+    "e-gb-block-markup-013": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_013()",
+      "The paragraph parses cleanly and its metadata name decodes to the exact requested text",
+      "The comment JSON hex-escapes double hyphens, the greater-than sign, the ampersand, and double quotes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 857ms)",
+     "error": null
+    },
+    "e-gb-block-markup-014": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_014()",
+      "The HTML converts to heading, list with two list items, and paragraph blocks with only default attributes",
+      "The converted blocks carry the editor's wrapper classes: classed h2 and ul, unclassed p"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 840ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 854ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 885ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 839ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 857ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 943ms)",
+     "error": null
+    },
+    "e-hooks-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_hooks_001()",
+      "The title filter appends the required suffix to filtered titles"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 809ms)",
+     "error": null
+    },
+    "e-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_hooks_003()",
+      "The priority-0 callback is removed and no longer affects filtered values"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 898ms)",
+     "error": null
+    },
+    "e-internationalization-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_internationalization_005()",
+      "The gettext filter can change only the matching text and domain"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 806ms)",
+     "error": null
+    },
+    "e-mail-url-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_mail_url_002()",
+      "Valid addresses are returned unchanged and invalid addresses return false"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 809ms)",
+     "error": null
+    },
+    "e-mail-url-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_mail_url_004()",
+      "wp_mail receives the supplied message fields, HTML header, and embeds array"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-media-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_media_002()",
+      "The filtered image tag receives WordPress dimensions and responsive image attributes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 812ms)",
+     "error": null
+    },
+    "e-media-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_media_004()",
+      "The function reads embedded IPTC/XMP alternative text and returns an empty string when absent"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 835ms)",
+     "error": null
+    },
+    "e-media-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_media_005()",
+      "The function returns WordPress file-type results for allowed, unknown, and custom extensions"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-post-meta-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_post_meta_001()",
+      "The function increments and persists the supplied post meta counter"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 823ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_post_meta_002()",
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 819ms)",
+     "error": null
+    },
+    "e-post-meta-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_post_meta_005()",
+      "JSON text with escaped quotes is stored without being unslashed into invalid JSON"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 822ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 870ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 831ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 801ms)",
+     "error": null
+    },
+    "e-queries-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_queries_003()",
+      "The search query returns matching post IDs"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 792ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_queries_006()",
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 860ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 812ms)",
+     "error": null
+    },
+    "e-rest-api-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The public status endpoint returns status ok with an integer timestamp"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 822ms)",
+     "error": null
+    },
+    "e-rest-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Nonnumeric IDs fail REST argument validation"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 819ms)",
+     "error": null
+    },
+    "e-rest-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Parameter is sanitized"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 817ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 841ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 802ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Code execution failed"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 816ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 848ms)",
+     "error": null
+    },
+    "e-rewrite-permalinks-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_rewrite_permalinks_002()",
+      "The helper registers a top rewrite rule that captures wpbp-rule URLs into wpbp_rule"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 778ms)",
+     "error": null
+    },
+    "e-roles-caps-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_roles_caps_002()",
+      "The temporary capability is observed being added to the Subscriber role and is removed afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 788ms)",
+     "error": null
+    },
+    "e-roles-caps-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_roles_caps_003()",
+      "A switched Subscriber can read but cannot manage options"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 838ms)",
+     "error": null
+    },
+    "e-roles-caps-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_roles_caps_005()",
+      "The direct user capability is granted and recognized"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 893ms)",
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 839ms)",
+     "error": null
+    },
+    "e-security-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_security_001()",
+      "The first anchor href is updated with WordPress escaping, unsafe hrefs are rejected, and non-anchor fragments are unchanged"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 796ms)",
+     "error": null
+    },
+    "e-security-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_security_002()",
+      "Only the first token is serialized, with WordPress normalization for tags, attributes, text, and empty fragments"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 786ms)",
+     "error": null
+    },
+    "e-settings-options-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_settings_options_003()",
+      "The nested option is updated with sanitized data while preserving existing entries"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-shortcodes-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_shortcodes_002()",
+      "Attribute parsing lowercases named keys and does not execute shortcode callbacks"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 808ms)",
+     "error": null
+    },
+    "e-shortcodes-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Code execution failed"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 818ms)",
+     "error": null
+    },
+    "e-shortcodes-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The enclosing shortcode returns escaped content inside a span"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 877ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
+   }
+  },
+  {
    "id": "results_20261030_181720:claude-haiku-5-5",
    "file": "results_20261030_181720.json",
    "model": "claude-haiku-5-5",
@@ -3978,6 +5089,1303 @@
     "sha": "3724b0b6c83d783a41f169ef5857e85dbeb1d990",
     "short": "3724b0b",
     "message": "data: add claude-sonnet-5-5 and claude-haiku-5-5 runs on wp-core-v1"
+   }
+  },
+  {
+   "id": "results_20260923_125148:claude-opus-5-5",
+   "file": "results_20260923_125148.json",
+   "model": "claude-opus-5-5",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-23",
+   "run_ts": "20260923125148",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": null,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.8216216216216217,
+    "execution_pass_rate": 0.8216,
+    "runtime": 0.8216,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.8216
+   },
+   "usage": {
+    "prompt_tokens": 29906,
+    "completion_tokens": 101587,
+    "total_tokens": 131493,
+    "estimated_cost_usd": 2.151364,
+    "median_latency_ms": 5657.0,
+    "p95_latency_ms": 12238.2
+   },
+   "tests": {
+    "passed": 152,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 5657.0,
+    "p90": 9934.8,
+    "max": 309120.0,
+    "total_min": 24.1
+   },
+   "cost_usd": {
+    "total": 2.1514,
+    "per_test_p50": 0.009988,
+    "per_pass": 0.0142
+   },
+   "tokens": {
+    "completion_p50": 468,
+    "prompt_p50": 156,
+    "completion_total": 101587
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 12,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 6,
+     "total": 10
+    },
+    "caching": {
+     "passed": 5,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 4,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 8,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 6,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 5,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 4,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 4,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 12,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 1,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 6,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 5,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 3,
+     "total": 4
+    },
+    "media": {
+     "passed": 5,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 4,
+     "total": 8
+    },
+    "queries": {
+     "passed": 9,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 7,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 3,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 8,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 4,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 5,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-002",
+    "e-abilities-api-003",
+    "e-abilities-api-005",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-006",
+    "e-ai-client-010",
+    "e-ai-client-015",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-caching-006",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-003",
+    "e-connectors-api-004",
+    "e-connectors-api-006",
+    "e-connectors-api-009",
+    "e-connectors-api-010",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-database-001",
+    "e-database-002",
+    "e-database-003",
+    "e-database-004",
+    "e-database-005",
+    "e-database-006",
+    "e-gb-block-api-001",
+    "e-gb-block-api-003",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-api-006",
+    "e-gb-block-bindings-001",
+    "e-gb-block-bindings-002",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-003",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-011",
+    "e-gb-block-markup-012",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-001",
+    "e-rest-api-002",
+    "e-rest-api-003",
+    "e-rest-api-007",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-001",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-006",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005"
+   ],
+   "failures": {
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 978ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 906ms)",
+     "error": null
+    },
+    "e-ai-client-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_005()",
+      "Prevention is observed active during the support check and the filter is restored afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 898ms)",
+     "error": null
+    },
+    "e-ai-client-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_007()",
+      "Support is observed disabled during the call, a real builder is constructed for the attempt, and support is restored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 867ms)",
+     "error": null
+    },
+    "e-ai-client-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_ai_client_011()",
+      "The returned builder carries the sticky bad-method error, surfaced before the prevention gate"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 879ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 876ms)",
+     "error": null
+    },
+    "e-connectors-api-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_connectors_api_008()",
+      "The ai_provider connector registers with the requested data when AI is on and is silently rejected when AI is off"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 917ms)",
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_connectors_api_011()",
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 46ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 886ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 922ms)",
+     "error": null
+    },
+    "e-gb-block-markup-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_005()",
+      "Site title and post content are attribute-free void blocks and the separator is the only closed block",
+      "The separator serializes an hr with the wp-block-separator and has-alpha-channel-opacity classes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 865ms)",
+     "error": null
+    },
+    "e-gb-block-markup-013": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Defines test function wpbp_gb_markup_013()",
+      "The paragraph parses cleanly and its metadata name decodes to the exact requested text",
+      "The comment JSON hex-escapes double hyphens, the greater-than sign, the ampersand, and double quotes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 865ms)",
+     "error": null
+    },
+    "e-gb-font-library-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Calling the function disables the Font Library setting and preserves unrelated editor settings"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 849ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 832ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 846ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 851ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 850ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 825ms)",
+     "error": null
+    },
+    "e-mail-url-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "wp_mail receives the supplied message fields, HTML header, and embeds array"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 845ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 875ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 838ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The archive link is generated for the custom post type"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 831ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 805ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 873ms)",
+     "error": null
+    },
+    "e-queries-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The comment query returns the approved comment for the post"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 906ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 871ms)",
+     "error": null
+    },
+    "e-rest-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Parameter is sanitized"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 828ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 964ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 801ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 848ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 832ms)",
+     "error": null
+    },
+    "e-security-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first anchor href is updated with WordPress escaping, unsafe hrefs are rejected, and non-anchor fragments are unchanged"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 871ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
+   }
+  },
+  {
+   "id": "results_20260929_201740:claude-sonnet-5-5",
+   "file": "results_20260929_201740.json",
+   "model": "claude-sonnet-5-5",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-29",
+   "run_ts": "20260929201740",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": null,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.8243243243243243,
+    "execution_pass_rate": 0.8216,
+    "runtime": 0.8243,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.8216
+   },
+   "usage": {
+    "prompt_tokens": 29906,
+    "completion_tokens": 95654,
+    "total_tokens": 125560,
+    "estimated_cost_usd": 1.016352,
+    "median_latency_ms": 3781.5,
+    "p95_latency_ms": 9094.4
+   },
+   "tests": {
+    "passed": 152,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 3781.5,
+    "p90": 7838.1,
+    "max": 14997.8,
+    "total_min": 14.1
+   },
+   "cost_usd": {
+    "total": 1.0164,
+    "per_test_p50": 0.004562000000000001,
+    "per_pass": 0.0067
+   },
+   "tokens": {
+    "completion_p50": 426,
+    "prompt_p50": 156,
+    "completion_total": 95654
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 10,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 7,
+     "total": 10
+    },
+    "caching": {
+     "passed": 3,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 4,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 10,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 6,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 5,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 4,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 14,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 2,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 6,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 5,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 3,
+     "total": 4
+    },
+    "media": {
+     "passed": 5,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 4,
+     "total": 8
+    },
+    "queries": {
+     "passed": 10,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 6,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 2,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 7,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 5,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 5,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-005",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-005",
+    "e-ai-client-006",
+    "e-ai-client-011",
+    "e-ai-client-015",
+    "e-caching-001",
+    "e-caching-004",
+    "e-caching-005",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-003",
+    "e-connectors-api-004",
+    "e-connectors-api-006",
+    "e-connectors-api-008",
+    "e-connectors-api-009",
+    "e-connectors-api-010",
+    "e-connectors-api-011",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-database-001",
+    "e-database-002",
+    "e-database-003",
+    "e-database-004",
+    "e-database-005",
+    "e-database-006",
+    "e-gb-block-api-001",
+    "e-gb-block-api-003",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-api-006",
+    "e-gb-block-bindings-001",
+    "e-gb-block-bindings-002",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-005",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-011",
+    "e-gb-block-markup-012",
+    "e-gb-block-markup-013",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-001",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-001",
+    "e-rest-api-003",
+    "e-rest-api-007",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-001",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005"
+   ],
+   "failures": {
+    "e-abilities-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The count-words ability is registered with schemas and executes correctly"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 807ms)",
+     "error": null
+    },
+    "e-abilities-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper returns results from executing the registered ability"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 990ms)",
+     "error": null
+    },
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 838ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 842ms)",
+     "error": null
+    },
+    "e-ai-client-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Support is observed disabled during the call, a real builder is constructed for the attempt, and support is restored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 873ms)",
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 928ms)",
+     "error": null
+    },
+    "e-caching-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Multiple cache retrieval preserves falsey hits and includes false for a miss"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 864ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 843ms)",
+     "error": null
+    },
+    "e-caching-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Salted batch reads preserve falsey current values and reject stale-salt values"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 901ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 822ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 851ms)",
+     "error": null
+    },
+    "e-gb-block-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post-object processing inserts a root hooked block and reports the root ignored hooked block name by reference"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 899ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 883ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 925ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 849ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 896ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 886ms)",
+     "error": null
+    },
+    "e-mail-url-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "wp_mail receives the supplied message fields, HTML header, and embeds array"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 910ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 888ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 897ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 894ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The archive link is generated for the custom post type"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 868ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 886ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 866ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 831ms)",
+     "error": null
+    },
+    "e-rest-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "ID is validated and returned"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 847ms)",
+     "error": null
+    },
+    "e-rest-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Parameter is sanitized"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 908ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 866ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 812ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 938ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 811ms)",
+     "error": null
+    },
+    "e-rewrite-permalinks-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper registers the item rewrite tag, query var, and permastruct in WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 766ms)",
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 799ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
    }
   },
   {
@@ -5725,9 +8133,2301 @@
     "short": "86dd1ea",
     "message": "data: add gemini/gemini-4-argon run on wp-core-v1"
    }
+  },
+  {
+   "id": "results_20260923_125148:gpt-6-luna",
+   "file": "results_20260923_125148.json",
+   "model": "gpt-6-luna",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-23",
+   "run_ts": "20260923125148",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": null,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.7216216216216216,
+    "execution_pass_rate": 0.7189,
+    "runtime": 0.7216,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.7189
+   },
+   "usage": {
+    "prompt_tokens": 18461,
+    "completion_tokens": 123841,
+    "total_tokens": 142302,
+    "estimated_cost_usd": 0.063767,
+    "median_latency_ms": 6912.6,
+    "p95_latency_ms": 23607.0
+   },
+   "tests": {
+    "passed": 133,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 6912.6,
+    "p90": 20835.2,
+    "max": 48860.4,
+    "total_min": 30.0
+   },
+   "cost_usd": {
+    "total": 0.0638,
+    "per_test_p50": 0.0002231,
+    "per_pass": 0.0005
+   },
+   "tokens": {
+    "completion_p50": 427,
+    "prompt_p50": 95,
+    "completion_total": 123841
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 7,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 6,
+     "total": 10
+    },
+    "caching": {
+     "passed": 5,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 4,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 4,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 2,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 3,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 1,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 12,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 2,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 6,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 5,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 3,
+     "total": 4
+    },
+    "media": {
+     "passed": 5,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 4,
+     "total": 8
+    },
+    "queries": {
+     "passed": 10,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 6,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 2,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 7,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 5,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 5,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-006",
+    "e-ai-client-007",
+    "e-ai-client-011",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-caching-006",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-006",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-database-002",
+    "e-database-003",
+    "e-gb-block-api-001",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-005",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-011",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-001",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-001",
+    "e-rest-api-003",
+    "e-rest-api-007",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-001",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005"
+   ],
+   "failures": {
+    "e-abilities-api-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-tools category is discoverable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 880ms)",
+     "error": null
+    },
+    "e-abilities-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The count-words ability is registered with schemas and executes correctly"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 860ms)",
+     "error": null
+    },
+    "e-abilities-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper returns results from executing the registered ability"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 910ms)",
+     "error": null
+    },
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 12ms)",
+     "error": null
+    },
+    "e-abilities-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Denied execution reports ability_invalid_permissions and permitted execution reports ok"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 843ms)",
+     "error": null
+    },
+    "e-abilities-api-014": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A throwing callback surfaces ability_callback_exception and a working ability surfaces its value"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 845ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 997ms)",
+     "error": null
+    },
+    "e-ai-client-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Prevention is observed active during the support check and the filter is restored afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 976ms)",
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 885ms)",
+     "error": null
+    },
+    "e-ai-client-015": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The returned builder ran a real prevented support check and carries no stored error: prevented generation reports prompt_prevented, not a sticky builder error"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 978ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 914ms)",
+     "error": null
+    },
+    "e-connectors-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom support desk connector is registered and publicly discoverable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 882ms)",
+     "error": null
+    },
+    "e-connectors-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The connector registers with the auto-generated setting name and default plugin callback"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 878ms)",
+     "error": null
+    },
+    "e-connectors-api-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ai_provider connector registers with the requested data when AI is on and is silently rejected when AI is off"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 905ms)",
+     "error": null
+    },
+    "e-connectors-api-009": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The connector's own is_active callback is actually invoked: the same connector reports both states as the fixture toggles"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 969ms)",
+     "error": null
+    },
+    "e-connectors-api-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only the name changes; every other stored field survives the round-trip"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 917ms)",
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 876ms)",
+     "error": null
+    },
+    "e-database-001": {
+     "reason": "runtime crash",
+     "assertions": [],
+     "runtime_score": 0.0,
+     "stderr": "y_payload, WPBench\\Runtime\\Sandbox->execute_and_verify, WPBench\\Runtime\\Sandbox->run_assertion, WPBench\\Runtime\\Sandbox->assert_custom, WPBench\\Runtime\\Sandbox->safe_eval, eval, wpbp_database_001\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 856ms)",
+     "error": null
+    },
+    "e-database-004": {
+     "reason": "runtime crash",
+     "assertions": [],
+     "runtime_score": 0.0,
+     "stderr": "y_payload, WPBench\\Runtime\\Sandbox->execute_and_verify, WPBench\\Runtime\\Sandbox->run_assertion, WPBench\\Runtime\\Sandbox->assert_custom, WPBench\\Runtime\\Sandbox->safe_eval, eval, wpbp_database_004\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 951ms)",
+     "error": null
+    },
+    "e-database-005": {
+     "reason": "runtime crash",
+     "assertions": [],
+     "runtime_score": 0.0,
+     "stderr": "y_payload, WPBench\\Runtime\\Sandbox->execute_and_verify, WPBench\\Runtime\\Sandbox->run_assertion, WPBench\\Runtime\\Sandbox->assert_custom, WPBench\\Runtime\\Sandbox->safe_eval, eval, wpbp_database_005\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 881ms)",
+     "error": null
+    },
+    "e-database-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "dbDelta creates the custom table with the expected columns and slug index"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 875ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 888ms)",
+     "error": null
+    },
+    "e-gb-block-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The processor count includes nested and repeated explicit blocks and ignores freeform HTML"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 866ms)",
+     "error": null
+    },
+    "e-gb-block-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first image block is extracted as a parsed block with attributes",
+      "An image after the first ten block openings is ignored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 911ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/source source is registered and supplies paragraph content through block rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 834ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only wpbp/card gains a bindable title attribute, and rendering receives the bound value"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 934ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/meta-title source uses postId context to render post meta as paragraph content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 928ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 897ms)",
+     "error": null
+    },
+    "e-gb-block-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post-object processing inserts a root hooked block and reports the root ignored hooked block name by reference"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 73ms)",
+     "error": null
+    },
+    "e-gb-block-markup-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The navigation nests a void Home link and an About submenu wrapping two void links with label and url attributes",
+      "Exactly the navigation and submenu blocks close with delimiters while all three links are self-closing"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 896ms)",
+     "error": null
+    },
+    "e-gb-block-markup-013": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The paragraph parses cleanly and its metadata name decodes to the exact requested text",
+      "The comment JSON hex-escapes double hyphens, the greater-than sign, the ampersand, and double quotes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 899ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 872ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 871ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 953ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 902ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 914ms)",
+     "error": null
+    },
+    "e-mail-url-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "wp_mail receives the supplied message fields, HTML header, and embeds array"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 881ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 980ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 921ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 896ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The archive link is generated for the custom post type"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 951ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 956ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 22ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 898ms)",
+     "error": null
+    },
+    "e-rest-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "ID is validated and returned"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 914ms)",
+     "error": null
+    },
+    "e-rest-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Parameter is sanitized"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 875ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 964ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 867ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 933ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 848ms)",
+     "error": null
+    },
+    "e-rewrite-permalinks-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper registers the item rewrite tag, query var, and permastruct in WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 872ms)",
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 858ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
+   }
+  },
+  {
+   "id": "results_20260923_125148:gpt-6-sol",
+   "file": "results_20260923_125148.json",
+   "model": "gpt-6-sol",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-23",
+   "run_ts": "20260923125148",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": null,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.7945945945945946,
+    "execution_pass_rate": 0.7892,
+    "runtime": 0.7946,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.7892
+   },
+   "usage": {
+    "prompt_tokens": 18461,
+    "completion_tokens": 66953,
+    "total_tokens": 85414,
+    "estimated_cost_usd": 0.706452,
+    "median_latency_ms": 4929.6,
+    "p95_latency_ms": 13820.2
+   },
+   "tests": {
+    "passed": 146,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 4929.6,
+    "p90": 10922.1,
+    "max": 22883.1,
+    "total_min": 17.8
+   },
+   "cost_usd": {
+    "total": 0.7065,
+    "per_test_p50": 0.002852,
+    "per_pass": 0.0048
+   },
+   "tokens": {
+    "completion_p50": 264,
+    "prompt_p50": 95,
+    "completion_total": 66953
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 12,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 4,
+     "total": 10
+    },
+    "caching": {
+     "passed": 5,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 4,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 5,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 6,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 3,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 13,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 1,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 6,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 5,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 4,
+     "total": 4
+    },
+    "media": {
+     "passed": 5,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 5,
+     "total": 8
+    },
+    "queries": {
+     "passed": 10,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 6,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 3,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 7,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 5,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 5,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-002",
+    "e-abilities-api-003",
+    "e-abilities-api-005",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-ai-client-001",
+    "e-ai-client-003",
+    "e-ai-client-006",
+    "e-ai-client-011",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-caching-006",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-006",
+    "e-connectors-api-009",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-database-001",
+    "e-database-002",
+    "e-database-003",
+    "e-database-004",
+    "e-database-005",
+    "e-database-006",
+    "e-gb-block-api-001",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-bindings-001",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-005",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-012",
+    "e-gb-block-markup-013",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-mail-url-004",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-post-types-taxonomy-007",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-001",
+    "e-rest-api-003",
+    "e-rest-api-004",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-001",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-001",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005"
+   ],
+   "failures": {
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 918ms)",
+     "error": null
+    },
+    "e-ai-client-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The helper returns a usable builder without calling a provider"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 994ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 933ms)",
+     "error": null
+    },
+    "e-ai-client-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Prevention is observed active during the support check and the filter is restored afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 864ms)",
+     "error": null
+    },
+    "e-ai-client-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Support is observed disabled during the call, a real builder is constructed for the attempt, and support is restored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 832ms)",
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 852ms)",
+     "error": null
+    },
+    "e-ai-client-015": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The returned builder ran a real prevented support check and carries no stored error: prevented generation reports prompt_prevented, not a sticky builder error"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 977ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 937ms)",
+     "error": null
+    },
+    "e-connectors-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom support desk connector is registered and publicly discoverable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 956ms)",
+     "error": null
+    },
+    "e-connectors-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The connector registers with the auto-generated setting name and default plugin callback"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 925ms)",
+     "error": null
+    },
+    "e-connectors-api-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ai_provider connector registers with the requested data when AI is on and is silently rejected when AI is off"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 963ms)",
+     "error": null
+    },
+    "e-connectors-api-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only the name changes; every other stored field survives the round-trip"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 942ms)",
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 884ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 163ms)",
+     "error": null
+    },
+    "e-gb-block-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The processor count includes nested and repeated explicit blocks and ignores freeform HTML"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 878ms)",
+     "error": null
+    },
+    "e-gb-block-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first image block is extracted as a parsed block with attributes",
+      "An image after the first ten block openings is ignored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 872ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only wpbp/card gains a bindable title attribute, and rendering receives the bound value"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 908ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 926ms)",
+     "error": null
+    },
+    "e-gb-block-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post-object processing inserts a root hooked block and reports the root ignored hooked block name by reference"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 942ms)",
+     "error": null
+    },
+    "e-gb-block-markup-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The query block carries the requested query configuration and nests post-template around a void post-title"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 985ms)",
+     "error": null
+    },
+    "e-gb-font-library-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Calling the function disables the Font Library setting and preserves unrelated editor settings"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 786ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 899ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 874ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 870ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 831ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 957ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 959ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 859ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 939ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 918ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 998ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 858ms)",
+     "error": null
+    },
+    "e-rest-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "ID is validated and returned"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 900ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 867ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 943ms)",
+     "error": null
+    },
+    "e-rest-api-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The REST response includes total and total-pages headers"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 954ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 858ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 892ms)",
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 900ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
+   }
+  },
+  {
+   "id": "results_20260929_201740:gpt-6.1-sol",
+   "file": "results_20260929_201740.json",
+   "model": "gpt-6.1-sol",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.1",
+   "run_date": "2026-09-29",
+   "run_ts": "20260929201740",
+   "config": {
+    "kind": "openai",
+    "temperature": 1.0,
+    "max_tokens": null,
+    "runtime_image_id": null,
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": null,
+    "execution_concurrency": null,
+    "seed": null,
+    "grader": "docker",
+    "database": null,
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.7810810810810811,
+    "execution_pass_rate": 0.7784,
+    "runtime": 0.7811,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.7784
+   },
+   "usage": {
+    "prompt_tokens": 18461,
+    "completion_tokens": 44896,
+    "total_tokens": 63357,
+    "estimated_cost_usd": 0.485882,
+    "median_latency_ms": 4090.8,
+    "p95_latency_ms": 13858.2
+   },
+   "tests": {
+    "passed": 144,
+    "total": 185,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 4090.8,
+    "p90": 10991.2,
+    "max": 21148.6,
+    "total_min": 16.3
+   },
+   "cost_usd": {
+    "total": 0.4859,
+    "per_test_p50": 0.002052,
+    "per_pass": 0.0034
+   },
+   "tokens": {
+    "completion_p50": 186,
+    "prompt_p50": 95,
+    "completion_total": 44896
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 11,
+     "total": 13
+    },
+    "ai-client": {
+     "passed": 6,
+     "total": 10
+    },
+    "caching": {
+     "passed": 5,
+     "total": 6
+    },
+    "comments-users": {
+     "passed": 4,
+     "total": 4
+    },
+    "connectors-api": {
+     "passed": 5,
+     "total": 10
+    },
+    "cron": {
+     "passed": 5,
+     "total": 5
+    },
+    "database": {
+     "passed": 5,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 3,
+     "total": 6
+    },
+    "gb-block-bindings": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-editor": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-block-hooks": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 13,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 1,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 2,
+     "total": 4
+    },
+    "gb-templates-navigation": {
+     "passed": 1,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 6,
+     "total": 6
+    },
+    "internationalization": {
+     "passed": 5,
+     "total": 5
+    },
+    "mail-url": {
+     "passed": 3,
+     "total": 4
+    },
+    "media": {
+     "passed": 5,
+     "total": 5
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 4,
+     "total": 8
+    },
+    "queries": {
+     "passed": 10,
+     "total": 12
+    },
+    "rest-api": {
+     "passed": 7,
+     "total": 12
+    },
+    "rewrite-permalinks": {
+     "passed": 3,
+     "total": 3
+    },
+    "roles-caps": {
+     "passed": 7,
+     "total": 8
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 5,
+     "total": 5
+    },
+    "settings-options": {
+     "passed": 5,
+     "total": 5
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-002",
+    "e-abilities-api-003",
+    "e-abilities-api-005",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-006",
+    "e-ai-client-011",
+    "e-ai-client-015",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-caching-006",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-006",
+    "e-connectors-api-008",
+    "e-connectors-api-009",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-database-001",
+    "e-database-002",
+    "e-database-003",
+    "e-database-004",
+    "e-database-005",
+    "e-gb-block-api-001",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-bindings-002",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-005",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-012",
+    "e-gb-block-markup-013",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-templates-navigation-002",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-rest-api-001",
+    "e-rest-api-002",
+    "e-rest-api-003",
+    "e-rest-api-004",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rewrite-permalinks-001",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-001",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005"
+   ],
+   "failures": {
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 958ms)",
+     "error": null
+    },
+    "e-abilities-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Core abilities report their real REST visibility and unknown names report unregistered without notices"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 877ms)",
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 828ms)",
+     "error": null
+    },
+    "e-ai-client-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Prevention is observed active during the support check and the filter is restored afterward"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 877ms)",
+     "error": null
+    },
+    "e-ai-client-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Support is observed disabled during the call, a real builder is constructed for the attempt, and support is restored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 888ms)",
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 787ms)",
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 859ms)",
+     "error": null
+    },
+    "e-connectors-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom support desk connector is registered and publicly discoverable"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 870ms)",
+     "error": null
+    },
+    "e-connectors-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The connector registers with the auto-generated setting name and default plugin callback"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 842ms)",
+     "error": null
+    },
+    "e-connectors-api-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only the name changes; every other stored field survives the round-trip"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 906ms)",
+     "error": null
+    },
+    "e-connectors-api-013": {
+     "reason": "runtime crash",
+     "assertions": [
+      "All three outcomes are reported correctly and no registry notice fires"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 820ms)",
+     "error": null
+    },
+    "e-database-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "dbDelta creates the custom table with the expected columns and slug index"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 825ms)",
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 867ms)",
+     "error": null
+    },
+    "e-gb-block-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The processor count includes nested and repeated explicit blocks and ignores freeform HTML"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 855ms)",
+     "error": null
+    },
+    "e-gb-block-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first image block is extracted as a parsed block with attributes",
+      "An image after the first ten block openings is ignored"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 905ms)",
+     "error": null
+    },
+    "e-gb-block-bindings-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/source source is registered and supplies paragraph content through block rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 981ms)",
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 845ms)",
+     "error": null
+    },
+    "e-gb-block-editor-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/text-indent block is registered with typography textIndent support"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 811ms)",
+     "error": null
+    },
+    "e-gb-block-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post-object processing inserts a root hooked block and reports the root ignored hooked block name by reference"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 848ms)",
+     "error": null
+    },
+    "e-gb-block-markup-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The query block carries the requested query configuration and nests post-template around a void post-title"
+     ],
+     "runtime_score": 0.5,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 859ms)",
+     "error": null
+    },
+    "e-gb-font-library-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Calling the function disables the Font Library setting and preserves unrelated editor settings"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 851ms)",
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 835ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 813ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered template has the expected template object properties"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 824ms)",
+     "error": null
+    },
+    "e-gb-templates-navigation-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The registered pattern exposes the expected title, blockTypes, and navigation link content"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 798ms)",
+     "error": null
+    },
+    "e-mail-url-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "wp_mail receives the supplied message fields, HTML header, and embeds array"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 1s 124ms)",
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 823ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 841ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 806ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The archive link is generated for the custom post type"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 883ms)",
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 801ms)",
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 997ms)",
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 803ms)",
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 987ms)",
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 855ms)",
+     "error": null
+    },
+    "e-rest-api-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The REST response includes total and total-pages headers"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 857ms)",
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 832ms)",
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 888ms)",
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": "\u2139 Starting 'wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php' on the cli container. \n\n\u2714 Ran `wp eval-file /var/www/html/wp-content/plugins/runtime/verify-runtime.php` in 'cli'. (in 0s 824ms)",
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+    "short": "fa1ddb0",
+    "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)"
+   }
   }
  ],
  "history": [
+  {
+   "sha": "fa1ddb095f5ebfb1c6ed29a23400369411e5fc56",
+   "short": "fa1ddb0",
+   "date": "2026-10-30T17:02:00-03:00",
+   "author": "Joao Amaral",
+   "message": "data: add fellyph's September runs on wp-core-v1 (185-test suite revision)\nRaw `wp-bench run` outputs (JSON + JSONL), scoring 3.0, run by fellyph and\nposted in https://github.com/WordPress/wp-bench/issues/5:\n- results_20260923_125148: claude-opus-5-5, gpt-6-sol, gpt-6-luna (multi-model run, 2026-09-23)\n- results_20260929_201740: claude-sonnet-5-5, gpt-6.1-sol (multi-model run, 2026-09-29)\n- results_20260930_132911: claude-fable-5-1 (2026-09-30)\nThese ran against the 185-test revision of wp-core-v1, so the page lists\nthem but does not rank them against the current 350-test runs.\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>",
+   "added": [
+    "results_20260923_125148.json",
+    "results_20260929_201740.json",
+    "results_20260930_132911.json"
+   ],
+   "removed": [],
+   "modified": [],
+   "snapshot": [
+    {
+     "file": "results_20260923_125148.json",
+     "model": "gpt-6-sol",
+     "overall": 0.7892,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 146,
+     "total": 185
+    },
+    {
+     "file": "results_20260923_125148.json",
+     "model": "gpt-6-luna",
+     "overall": 0.7189,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 133,
+     "total": 185
+    },
+    {
+     "file": "results_20260923_125148.json",
+     "model": "claude-opus-5-5",
+     "overall": 0.8216,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 152,
+     "total": 185
+    },
+    {
+     "file": "results_20260929_201740.json",
+     "model": "gpt-6.1-sol",
+     "overall": 0.7784,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 144,
+     "total": 185
+    },
+    {
+     "file": "results_20260929_201740.json",
+     "model": "claude-sonnet-5-5",
+     "overall": 0.8216,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 152,
+     "total": 185
+    },
+    {
+     "file": "results_20260930_132911.json",
+     "model": "claude-fable-5-1",
+     "overall": 0.5459,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 101,
+     "total": 185
+    },
+    {
+     "file": "results_20261030_175905.json",
+     "model": "claude-sonnet-5-5",
+     "overall": 0.8857,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 310,
+     "total": 350
+    },
+    {
+     "file": "results_20261030_181406.json",
+     "model": "gemini/gemini-4-argon",
+     "overall": 0.9114,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 319,
+     "total": 350
+    },
+    {
+     "file": "results_20261030_181720.json",
+     "model": "claude-haiku-5-5",
+     "overall": 0.7943,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 278,
+     "total": 350
+    }
+   ]
+  },
   {
    "sha": "86dd1eadb3d9e63b6a35a07a25ca9c9888c8b41d",
    "short": "86dd1ea",
