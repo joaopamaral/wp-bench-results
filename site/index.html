@@ -62,7 +62,6 @@
   * { box-sizing: border-box; }
   html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   body { margin: 0; background: var(--admin-canvas); color: var(--ink); font: 14px/1.5 var(--sans); }
-  body.dropping { outline: 3px dashed var(--blueberry); outline-offset: -8px; }
   a { color: var(--blueberry-ink); text-decoration: none; }
   a:hover { text-decoration: underline; text-underline-offset: 2px; }
   :focus-visible { outline: 2px solid var(--blueberry); outline-offset: 2px; border-radius: 4px; }
@@ -126,6 +125,23 @@
   .notice { padding: 12px 16px; font-size: 13px; color: var(--ink-2); background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--notice); border-radius: 0 4px 4px 0; margin: 0 0 16px; }
   .notice.synthetic { background: var(--hatch), var(--sheet); }
   .notice.fail { border-left-color: var(--fail); }
+  .notice.live { border-left-color: var(--pass); }
+
+  /* local files: upload, drop and follow */
+  #uploadBtn { flex-shrink: 0; }
+  #localbar:not([hidden]) { padding-top: 16px; }
+  .localbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 16px; background: var(--blueberry-wash); border: 1px solid color-mix(in srgb, var(--blueberry) 30%, transparent); border-radius: 8px; font-size: 13px; color: var(--ink-2); }
+  .localbar > span:not(.livedot):not(.grow) { min-width: 0; overflow-wrap: anywhere; }
+  .localbar b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .localbar .grow { flex: 1; }
+  .localbar .msg { color: var(--notice-ink); }
+  .livedot { width: 8px; height: 8px; border-radius: 50%; background: var(--pass); animation: livepulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  .drophint { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: color-mix(in srgb, var(--ink) 55%, transparent); color: var(--sheet); pointer-events: none; }
+  .drophint[hidden] { display: none; }
+  .drophint div { display: grid; gap: 4px; padding: 24px 32px; border: 2px dashed currentColor; border-radius: 8px; text-align: center; }
+  .drophint strong { font-size: 20px; font-weight: 600; }
+  .drophint span { font-size: 13px; opacity: .85; }
 
   /* controls */
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--ink-3); }
@@ -151,6 +167,7 @@
   .chip.full { color: var(--pass-ink); border-color: color-mix(in srgb, var(--pass) 35%, transparent); background: color-mix(in srgb, var(--pass) 8%, transparent); }
   .chip.synthetic { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--hatch), var(--sheet); font-weight: 600; }
   .chip.subset, .chip.errored { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--notice-wash); }
+  .chip.live { color: var(--pass-ink); border-color: color-mix(in srgb, var(--pass) 45%, transparent); background: color-mix(in srgb, var(--pass) 10%, transparent); }
   .chip.local { color: var(--blueberry-ink); border-color: color-mix(in srgb, var(--blueberry) 40%, transparent); background: var(--blueberry-wash); }
 
   /* ledger (ranking) */
@@ -427,7 +444,7 @@
     svg.chart { height: 300px; }
     table.heat th.col { max-height: 110px; }
   }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .btn:active { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .btn:active { transform: none; } .livedot { animation: none; } }
 </style>
 </head>
 <body>
@@ -442,13 +459,16 @@
         <kbd aria-hidden="true">/</kbd>
         <ul class="results" id="qResults" role="listbox" hidden></ul>
       </div>
+      <button type="button" class="btn" id="uploadBtn" data-action="upload" title="Preview a results file from this computer. Nothing is uploaded.">Upload results</button>
     </div>
     <nav class="views" id="views" aria-label="Views"></nav>
   </div>
 </header>
 
+<div class="wrap" id="localbar" role="status" hidden></div>
 <main class="wrap" id="main"><div class="status">Loading runs…</div></main>
 
+<div class="drophint" id="dropHint" hidden><div><strong>Drop to preview</strong><span>results_&lt;timestamp&gt;.json, .jsonl or .jsonl.partial · nothing is uploaded</span></div></div>
 <div class="tray" id="tray" hidden></div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
@@ -472,6 +492,8 @@
   const RUN_FILE = /^results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.json$/;
   const $ = (id) => document.getElementById(id);
   const main = $('main');
+  /** Translation hook: the English text is the key and {name} marks a value. */
+  const t = (text, vars) => vars ? text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : text;
   $('buildLink').href = `https://github.com/${REPO}/blob/${REF}/site/build_data.py`;
   $('folderLink').href = `https://github.com/${REPO}/tree/${REF}/results`;
   $('folderLink').textContent = `${REPO}/results`;
@@ -513,35 +535,91 @@
     const stderr = (g.stderr || '').trim();
     return { reason, assertions: assertions.slice(0, 5), runtime_score: sc.runtime ?? null, stderr: stderr ? stderr.slice(-300) : null, error: rec.error ? JSON.stringify(rec.error).slice(0, 300) : null };
   }
+  // Runs the visitor brings along: raw `wp-bench run` outputs read in the browser, never uploaded anywhere.
+  const LOCAL_STAMP = /results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/;
+  const usageOf = (records, k) => records.map(x => x.usage?.[k]).filter(v => typeof v === 'number');
+  const sumOf = (list) => list.reduce((a, b) => a + b, 0);
+
+  /** A run shaped like the rows build_data.py writes, computed from a model's per-test records. */
+  function localRun(file, model, emd, records, extra = {}) {
+    const m = LOCAL_STAMP.exec(file);
+    const now = new Date().toISOString();
+    const passed_ids = [], failures = {}, categories = {};
+    for (const rec of records) {
+      const c = categories[rec.category] ||= { passed: 0, total: 0 };
+      c.total++;
+      if (rec.scores?.execution_pass) { c.passed++; passed_ids.push(rec.test_id); } else failures[rec.test_id] = failureDetail(rec);
+      S.data.tests[rec.test_id] ||= { suite: rec.suite, category: rec.category, source_refs: rec.metadata?.source_refs || [] };
+    }
+    const lat = usageOf(records, 'latency_ms'), cost = usageOf(records, 'cost_usd');
+    const total = cost.length === records.length && records.length ? sumOf(cost) : null;
+    return adapt({
+      id: `local:${file}:${model}`, file, model, suite: emd.suite, scoring_version: emd.scoring_version, result_schema_version: emd.result_schema_version,
+      run_date: m ? `${m[1]}-${m[2]}-${m[3]}` : now.slice(0, 10), run_ts: m ? m.slice(1).join('') : now.replace(/\D/g, '').slice(0, 14),
+      synthetic: !!emd.synthetic, limit: emd.limit ?? null,
+      config: { kind: emd.model?.kind, temperature: emd.model?.temperature, runtime_image_id: emd.runtime_image_id, runtime_isolation: emd.runtime_isolation, runtime_isolation_boundary: emd.runtime_isolation_boundary, execution_concurrency: emd.execution_concurrency, seed: emd.seed, grader: emd.grader?.kind, database: emd.grader?.database },
+      scores: emd.scores, usage: emd.usage || {},
+      tests: { passed: passed_ids.length, total: records.length, errored: records.filter(x => x.error).length },
+      latency_ms: { p50: pctl(lat, .5), p90: pctl(lat, .9), max: lat.length ? Math.max(...lat) : null, total_min: lat.length ? Math.round(sumOf(lat) / 6000) / 10 : null },
+      cost_usd: { total, per_pass: total != null && passed_ids.length ? total / passed_ids.length : null },
+      tokens: { completion_p50: pctl(usageOf(records, 'completion_tokens'), .5) },
+      categories, passed_ids, failures, published: null,
+    }, { local: true, localFile: file, ...extra });
+  }
+
+  /** A results_<timestamp>.json payload: one model (metadata + results) or several (metadata + models). */
   function runsFromRaw(file, doc) {
     const md = doc.metadata || {};
-    const m = RUN_FILE.exec(file);
+    if (md.mode === 'exploit_audit') throw new Error(t('Exploit audits are not leaderboard runs.'));
     const entries = Array.isArray(doc.results)
       ? (md.mode && md.mode !== 'model' ? [] : [[md.model?.name, md, doc.results]])
       : Object.values(doc.models || {}).filter(e => (e.variant?.kind ?? 'none') === 'none').map(e => [e.config?.name, { ...md, model: e.config, scores: e.scores }, e.results || []]);
-    return entries.filter(([name, emd]) => name && emd.scores).map(([model, emd, records]) => {
-      const passed_ids = [], failures = {}, categories = {};
-      for (const rec of records) {
-        const c = categories[rec.category] ||= { passed: 0, total: 0 };
-        c.total++;
-        if (rec.scores?.execution_pass) { c.passed++; passed_ids.push(rec.test_id); } else failures[rec.test_id] = failureDetail(rec);
-        S.data.tests[rec.test_id] ||= { suite: rec.suite, category: rec.category, source_refs: rec.metadata?.source_refs || [] };
-      }
-      const nums = (k) => records.map(x => x.usage?.[k]).filter(v => typeof v === 'number');
-      const lat = nums('latency_ms'), cost = nums('cost_usd');
-      const total = cost.length === records.length && records.length ? cost.reduce((a, b) => a + b, 0) : null;
-      return adapt({
-        id: `local:${file}:${model}`, file, model, suite: emd.suite, scoring_version: emd.scoring_version, result_schema_version: emd.result_schema_version,
-        run_date: m ? `${m[1]}-${m[2]}-${m[3]}` : null, run_ts: m ? m.slice(1).join('') : '', synthetic: !!emd.synthetic, limit: emd.limit ?? null,
-        config: { kind: emd.model?.kind, temperature: emd.model?.temperature, runtime_image_id: emd.runtime_image_id, runtime_isolation: emd.runtime_isolation, runtime_isolation_boundary: emd.runtime_isolation_boundary, execution_concurrency: emd.execution_concurrency, seed: emd.seed, grader: emd.grader?.kind, database: emd.grader?.database },
-        scores: emd.scores, usage: emd.usage || {},
-        tests: { passed: passed_ids.length, total: records.length, errored: records.filter(x => x.error).length },
-        latency_ms: { p50: pctl(lat, .5), p90: pctl(lat, .9), max: lat.length ? Math.max(...lat) : null },
-        cost_usd: { total, per_pass: total != null && passed_ids.length ? total / passed_ids.length : null },
-        tokens: { completion_p50: pctl(nums('completion_tokens'), .5) },
-        categories, passed_ids, failures, published: null,
-      }, { local: true });
+    return entries.filter(([name, emd]) => name && emd.scores).map(([model, emd, records]) => localRun(file, model, emd, records));
+  }
+
+  /** The published suite whose tests overlap these records the most; a new suite name when none does. */
+  function inferSuite(records) {
+    let best = null, bestN = 0;
+    for (const s of S.suites.values()) {
+      let n = 0;
+      for (const rec of records) if (s.tests.has(rec.test_id)) n++;
+      if (n > bestN) { best = s.name; bestN = n; }
+    }
+    return best || records[0]?.suite || t('uploaded');
+  }
+
+  /** Per-test records (results_<timestamp>.jsonl, or the .jsonl.partial a run is still writing): the scores are computed here, as the harness does. */
+  function runsFromRecords(file, records, partial) {
+    const groups = new Map();
+    for (const rec of records) {
+      if (!rec?.test_id || !rec.model?.name || (rec.variant?.kind ?? 'none') !== 'none' || (rec.mode && rec.mode !== 'model')) continue;
+      if (!groups.has(rec.model.name)) groups.set(rec.model.name, []);
+      groups.get(rec.model.name).push(rec);
+    }
+    return [...groups].map(([model, recs]) => {
+      const suite = inferSuite(recs);
+      const graded = recs.filter(r => !r.error);
+      const mean = (f) => { const v = graded.map(f).filter(x => typeof x === 'number'); return v.length ? sumOf(v) / v.length : null; };
+      const policy = graded.map(r => r.scores?.static_policy_pass).filter(v => v != null);
+      const overall = graded.length ? graded.filter(r => r.scores?.execution_pass).length / graded.length : null;
+      const scores = { correctness: mean(r => r.scores?.correctness), execution_pass_rate: overall, runtime: mean(r => r.scores?.runtime), static_policy_pass_rate: policy.length ? policy.filter(Boolean).length / policy.length : null, overall };
+      const usage = { prompt_tokens: sumOf(usageOf(recs, 'prompt_tokens')), completion_tokens: sumOf(usageOf(recs, 'completion_tokens')) };
+      return localRun(file, model, { suite, scoring_version: S.suites.get(suite)?.scoring ?? null, scores, usage, model: recs[0].model }, recs, { partial });
     });
+  }
+
+  /** Read one uploaded file: .json, .jsonl or .jsonl.partial. A last line still being written is skipped. */
+  async function parseUpload(file) {
+    const text = await file.text();
+    if (/\.jsonl(\.partial)?$/i.test(file.name)) {
+      const records = [];
+      for (const line of text.split('\n')) {
+        if (!line.trim()) continue;
+        try { records.push(JSON.parse(line)); } catch { /* the harness is mid-write */ }
+      }
+      return runsFromRecords(file.name, records, /\.partial$/i.test(file.name));
+    }
+    return runsFromRaw(file.name, JSON.parse(text));
   }
 
   /** Group runs by suite; the suite's test order (category, then id) is the x axis of every strip. */
@@ -568,7 +646,7 @@
       // The full suite is the largest test count among the current scoring version's runs; anything
       // smaller is a partial run or an earlier revision of the suite, never ranked with full runs.
       s.full = Math.max(0, ...s.runs.filter(r => r.scoring_version === s.scoring).map(r => r.total));
-      for (const r of s.runs) r.subset = r.total < s.full || !!r.limit;
+      for (const r of s.runs) r.subset = r.total < s.full || !!r.limit || !!r.partial;
     }
     S.suites = suites;
   }
@@ -598,7 +676,7 @@
   function catStats(run, s) {
     if (!run._cats) {
       run._cats = new Map(s.cats.map(c => [c.name, { name: c.name, total: 0, pass: 0, fail: 0, error: 0 }]));
-      for (const [id, cat] of s.order) { const st = statusOf(run, id); if (st === 'none') continue; const b = run._cats.get(cat); b.total++; b[st]++; }
+      for (const [id, cat] of s.order) { const st = statusOf(run, id); if (st === 'none') continue; const b = run._cats.get(cat); if (!b) continue; b.total++; b[st]++; }
     }
     return run._cats;
   }
@@ -628,7 +706,8 @@
   function chips(r, s, { full = false } = {}) {
     const out = [];
     if (r.synthetic) out.push('<span class="chip synthetic" title="Random scores generated to develop this page. Not a benchmark result.">synthetic</span>');
-    if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
+    if (r.partial) out.push(`<span class="chip live" title="${esc(t('The harness is still writing this run: the score covers only the tests graded so far.'))}">${esc(t('in progress'))} ${r.total}/${s.full}</span>`);
+    else if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
     else if (r.subset) out.push(`<span class="chip" title="Ran ${r.total} tests; the current full suite has ${s.full} (a partial run or an earlier revision of the suite)">${r.total} tests</span>`);
     else if (full) out.push('<span class="chip full" title="Every test in the suite was run">full suite</span>');
     if (r.scoring_version !== s.scoring) out.push(`<span class="chip subset" title="Scores from another scoring version are not comparable">scoring ${esc(r.scoring_version)}</span>`);
@@ -726,6 +805,7 @@
     const inSuite = (m) => S.suites.get(r.suite)?.runs.some(x => x.model === m);
     S.compare = (r.view === 'compare' ? r.models : S.compare).filter(inSuite).slice(0, 3);
     renderChrome(r);
+    renderLocalBar();
     hideTip();
     const s = S.suites.get(r.suite);
     if (!s && !GLOBAL_VIEWS.includes(r.view)) { main.innerHTML = '<div class="status">No runs found in the results folder yet.</div>'; return; }
@@ -793,6 +873,7 @@
         <label class="check"><input type="checkbox" id="optAll"${S.board.all ? ' checked' : ''}> Show older runs</label>
         ${filterToggles()}
         <span class="grow"></span>
+        ${canFollow() && $('localbar').hidden ? '<button type="button" class="btn" data-action="follow" title="Pick a results file the harness is still writing and watch it fill in.">Follow a running benchmark</button>' : ''}
         <button type="button" class="btn" id="exportCsv">Export CSV</button>
       </div>
       <div class="sheet grid-wrap">
@@ -880,7 +961,8 @@
     const h = wilson(run.scores.overall, run.total);
     const notes = [
       run.synthetic && '<p class="notice synthetic">Synthetic run: these results were randomly generated to build this page. They say nothing about the model.</p>',
-      run.subset && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
+      run.partial && `<p class="notice live">${esc(t('In progress: {done} of {full} tests graded so far. The score and the strip are partial and keep changing until the run ends.', { done: run.total, full: s.full }))}</p>`,
+      run.subset && !run.partial && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
       run.errored && `<p class="notice">${run.errored} tests errored before grading and are left out of the scores (continue_on_error).</p>`,
       run.scoring_version !== s.scoring && `<p class="notice">Scored with version ${esc(run.scoring_version)}, not ${esc(s.scoring)}: not ranked with the current runs.</p>`,
       cfg.runtime_isolation_boundary && cfg.runtime_isolation_boundary !== 'container_per_test' && `<p class="notice fail">Isolation "${esc(cfg.runtime_isolation_boundary)}" shares state between tests; not valid for published scores.</p>`,
@@ -1327,7 +1409,7 @@
           <p style="margin:0 0 8px">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite) and other scoring versions are listed under "Not ranked", never ranked with full runs.</p>
           <p style="margin:0 0 8px">Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
           <p class="muted" style="margin:0 0 8px">Synthetic runs from <code>examples/synthetic</code> exist only for developing this page and are never published.</p>
-          <p class="muted" style="margin:0">To preview a run before publishing it, drop its <code>output/results_&lt;timestamp&gt;.json</code> anywhere on this page; it stays in your browser tab.</p>
+          <p class="muted" style="margin:0">To preview a run before publishing it, use Upload results or drop a file anywhere on this page: <code>output/results_&lt;timestamp&gt;.json</code>, the <code>.jsonl</code>, or the <code>.jsonl.partial</code> the harness writes while a run is going. Nothing leaves your browser; in Chromium a dropped <code>.partial</code> file is followed live.</p>
         </section>
       </div>`;
   }
@@ -1448,27 +1530,129 @@
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.target.closest('input, textarea, select, [contenteditable]')) { e.preventDefault(); q.focus(); q.select(); }
   });
 
-  // ---------- local files and export ----------
-  const fileInput = Object.assign(document.createElement('input'), { type: 'file', accept: '.json,application/json', multiple: true, hidden: true });
+  // ---------- local files: upload, drop and follow ----------
+  const fileInput = Object.assign(document.createElement('input'), { type: 'file', accept: '.json,.jsonl,.partial,application/json', multiple: true, hidden: true });
   document.body.append(fileInput);
-  async function addLocalFiles(files) {
-    const added = [];
-    for (const f of files) {
-      if (!/\.json$/i.test(f.name)) continue;
-      try { added.push(...runsFromRaw(f.name, JSON.parse(await f.text()))); }
-      catch (e) { console.warn('skipping', f.name, e); }
-    }
-    if (!added.length) { alert('No wp-bench run outputs found. Open output/results_<timestamp>.json files from a model run.'); return; }
-    const keys = new Set(added.map(x => x.key));
-    S.runs = S.runs.filter(x => !keys.has(x.key)).concat(added);
+  const canFollow = () => typeof window.showOpenFilePicker === 'function';
+  // Files being followed while a run is still writing them (File System Access API, Chromium).
+  const LIVE = { handles: new Map(), timer: null, busy: false, message: '' };
+
+  /** Replace everything a file contributed with its latest runs, then rebuild the suites around them. */
+  function setLocalRuns(name, runs) {
+    // The final results_<timestamp>.json / .jsonl supersedes the .jsonl.partial the harness wrote for the same run.
+    const partial = /\.partial$/i.test(name) ? null : name.replace(/\.jsonl?$/i, '.jsonl.partial');
+    S.runs = S.runs.filter(x => x.localFile !== name && x.localFile !== partial).concat(runs);
+    for (const x of S.runs) delete x._cats;
     buildSuites();
-    location.hash = H.model(added[0].suite, added[0].model, added[0].file);
+  }
+
+  async function addLocalFiles(files) {
+    LIVE.message = '';
+    const added = [], failed = [];
+    for (const f of files) {
+      try {
+        const runs = await parseUpload(f);
+        if (runs.length) { setLocalRuns(f.name, runs); added.push(...runs); } else failed.push(`${f.name}: ${t('no wp-bench run output found.')}`);
+      } catch (e) { failed.push(`${f.name}: ${e.message}`); }
+    }
+    if (failed.length) LIVE.message = failed.join(' · ');
+    if (added.length) location.hash = H.model(added[0].suite, added[0].model, added[0].file);
     render();
   }
+
+  async function followHandle(handle) {
+    LIVE.handles.set(handle.name, { handle, stamp: '', runs: null, updated: null });
+    if (!LIVE.timer) LIVE.timer = setInterval(() => pollFollowed(false), 1500);
+    await pollFollowed(true);
+  }
+  function stopFollowing() {
+    LIVE.handles.clear();
+    clearInterval(LIVE.timer); LIVE.timer = null;
+  }
+  async function pollFollowed(initial) {
+    if (LIVE.busy || (document.hidden && !initial)) return;
+    LIVE.busy = true;
+    let changed = false, first = null;
+    try {
+      for (const [name, h] of [...LIVE.handles]) {
+        let file;
+        try { file = await h.handle.getFile(); }
+        catch { LIVE.handles.delete(name); LIVE.message = t('{name} is gone: the run has probably finished. Upload the final results_<timestamp>.json to keep it.', { name }); changed = true; continue; }
+        const stamp = `${file.lastModified}:${file.size}`;
+        if (stamp === h.stamp) continue;
+        h.stamp = stamp;
+        try {
+          const runs = await parseUpload(file);
+          if (runs.length) { setLocalRuns(name, runs); h.runs = runs; h.updated = new Date(); first ||= runs; changed = true; }
+        } catch (e) { LIVE.message = `${name}: ${e.message}`; changed = true; }
+      }
+    } finally { LIVE.busy = false; }
+    if (!LIVE.handles.size && LIVE.timer) stopFollowing();
+    if (!changed) return;
+    if (initial && first) location.hash = H.model(first[0].suite, first[0].model, first[0].file);
+    render();
+  }
+  async function pickToFollow() {
+    try {
+      const [handle] = await window.showOpenFilePicker({ multiple: false, types: [{ description: 'wp-bench output', accept: { 'application/json': ['.json', '.jsonl', '.partial'] } }] });
+      await followHandle(handle);
+    } catch (e) { if (e.name !== 'AbortError') { LIVE.message = e.message; render(); } }
+  }
+  function clearLocal() {
+    stopFollowing();
+    LIVE.message = '';
+    S.runs = S.runs.filter(x => !x.local);
+    for (const x of S.runs) delete x._cats;
+    buildSuites();
+    location.hash = '#/';
+    render();
+  }
+
+  /** The strip under the masthead: what is being previewed, the live status and the way out. */
+  function renderLocalBar() {
+    const bar = $('localbar'), local = S.runs.filter(x => x.local), following = [...LIVE.handles.values()];
+    if (!local.length && !following.length && !LIVE.message) { bar.hidden = true; bar.innerHTML = ''; return; }
+    bar.hidden = false;
+    const files = [...new Set(local.map(x => x.localFile))];
+    let text = '';
+    if (following.length) {
+      const h = following[0], run = h.runs?.[0];
+      text = `<span class="livedot" aria-hidden="true"></span><span>${t('Following')} <b>${esc(h.handle.name)}</b>${run ? ` · <b>${run.total}</b> ${t('tests graded')} · ${t('score')} <b>${pct(run.scores.overall)}</b>` : ''}${h.updated ? ` · ${t('updated')} ${h.updated.toLocaleTimeString()}` : ''}</span>`;
+    } else if (local.length) {
+      text = `<span>${t('Previewing local results')}: ${files.map(f => `<code>${esc(f)}</code>`).join(', ')} · ${t('only in this tab, nothing is uploaded')}</span>`;
+    }
+    bar.innerHTML = `<div class="localbar">${text}${LIVE.message ? `<span class="msg">${esc(LIVE.message)}</span>` : ''}<span class="grow"></span>
+      ${canFollow() && !following.length ? `<button type="button" class="btn" data-action="follow">${t('Follow a running benchmark')}</button>` : ''}
+      ${following.length ? `<button type="button" class="btn" data-action="stop">${t('Stop following')}</button>` : ''}
+      ${local.length || LIVE.message ? `<button type="button" class="btn" data-action="clear">${t('Clear')}</button>` : ''}</div>`;
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-action]'); if (!b) return;
+    const act = b.dataset.action;
+    if (act === 'upload') fileInput.click();
+    else if (act === 'follow') pickToFollow();
+    else if (act === 'stop') { stopFollowing(); render(); }
+    else if (act === 'clear') clearLocal();
+  });
   fileInput.addEventListener('change', e => { addLocalFiles([...e.target.files]); e.target.value = ''; });
-  document.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); document.body.classList.add('dropping'); } });
-  document.addEventListener('dragleave', e => { if (!e.relatedTarget) document.body.classList.remove('dropping'); });
-  document.addEventListener('drop', e => { if (!e.dataTransfer.files.length) return; e.preventDefault(); document.body.classList.remove('dropping'); addLocalFiles([...e.dataTransfer.files]); });
+
+  const dropHint = $('dropHint');
+  document.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); dropHint.hidden = false; } });
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) dropHint.hidden = true; });
+  document.addEventListener('drop', async e => {
+    if (!e.dataTransfer.files.length) return;
+    e.preventDefault();
+    dropHint.hidden = true;
+    // Handles must be requested while the event is still alive; a dropped .partial file can then be followed.
+    const files = [...e.dataTransfer.files];
+    const handles = await Promise.all([...e.dataTransfer.items].map(i => i.kind === 'file' && i.getAsFileSystemHandle ? i.getAsFileSystemHandle().catch(() => null) : null));
+    const plain = [];
+    for (const [i, f] of files.entries()) {
+      if (/\.partial$/i.test(f.name) && handles[i]?.kind === 'file') await followHandle(handles[i]); else plain.push(f);
+    }
+    if (plain.length) await addLocalFiles(plain);
+  });
 
   function exportCsv(s, rows) {
     const cols = [['rank', x => x.rank], ['model', x => x.model], ['suite', x => x.suite], ['overall', x => x.scores.overall], ['ci95', x => wilson(x.scores.overall, x.total)],
