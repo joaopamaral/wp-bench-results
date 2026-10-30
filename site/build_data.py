@@ -188,6 +188,9 @@ def summarize(
         "result_schema_version": md.get("result_schema_version"),
         "run_date": f"{y}-{mo}-{d}",
         "run_ts": f"{y}{mo}{d}{h}{mi}{s}",
+        # Runs from examples/synthetic carry metadata.synthetic; results/ never does.
+        "synthetic": bool(md.get("synthetic")),
+        "limit": md.get("limit"),
         "config": {
             "kind": model_cfg.get("kind"),
             "temperature": model_cfg.get("temperature"),
