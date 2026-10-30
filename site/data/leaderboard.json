@@ -1,7 +1,7 @@
 {
  "schema": 1,
- "generated_at": "2026-10-30T19:43:06+00:00",
- "source_commit": "6775a3f7745dbd4fa59aff972cd8d5758ca21c06",
+ "generated_at": "2026-10-30T20:01:35+00:00",
+ "source_commit": "86dd1eadb3d9e63b6a35a07a25ca9c9888c8b41d",
  "results_dir": "results",
  "tests": {
   "e-abilities-api-001": {
@@ -4890,9 +4890,885 @@
     "short": "3724b0b",
     "message": "data: add claude-sonnet-5-5 and claude-haiku-5-5 runs on wp-core-v1"
    }
+  },
+  {
+   "id": "results_20261030_181406:gemini/gemini-4-argon",
+   "file": "results_20261030_181406.json",
+   "model": "gemini/gemini-4-argon",
+   "suite": "wp-core-v1",
+   "scoring_version": "3.0",
+   "result_schema_version": "2.2",
+   "run_date": "2026-10-30",
+   "run_ts": "20261030181406",
+   "config": {
+    "kind": "openai",
+    "temperature": 0.0,
+    "max_tokens": null,
+    "runtime_image_id": "sha256:a812772a9fa57598c716578e5f63c6fc574423ea40004dda58634bbdf722ab8b",
+    "runtime_isolation": "reset_per_test",
+    "runtime_isolation_boundary": "container_per_test",
+    "execution_concurrency": 4,
+    "seed": 1337,
+    "grader": "docker",
+    "database": "sqlite",
+    "dataset": {
+     "source": "local",
+     "name": "wp-core-v1",
+     "revision": null,
+     "split": "test",
+     "cache_dir": null
+    },
+    "continue_on_error": false
+   },
+   "scores": {
+    "correctness": 0.914762,
+    "execution_pass_rate": 0.9114,
+    "runtime": 0.9148,
+    "static_policy_pass_rate": 1.0,
+    "overall": 0.9114
+   },
+   "usage": {
+    "prompt_tokens": 83848,
+    "completion_tokens": 79112,
+    "total_tokens": 162960,
+    "estimated_cost_usd": 0.958816,
+    "median_latency_ms": 4776.3,
+    "p95_latency_ms": 15824.9
+   },
+   "tests": {
+    "passed": 319,
+    "total": 350,
+    "errored": 0
+   },
+   "latency_ms": {
+    "p50": 4776.3,
+    "p90": 9018.5,
+    "max": 57578.5,
+    "total_min": 36.7
+   },
+   "cost_usd": {
+    "total": 0.9588,
+    "per_test_p50": 0.002206,
+    "per_pass": 0.003
+   },
+   "tokens": {
+    "completion_p50": 172,
+    "prompt_p50": 225,
+    "completion_total": 79112
+   },
+   "categories": {
+    "abilities-api": {
+     "passed": 11,
+     "total": 13
+    },
+    "admin": {
+     "passed": 12,
+     "total": 12
+    },
+    "ai-client": {
+     "passed": 8,
+     "total": 10
+    },
+    "auth": {
+     "passed": 9,
+     "total": 9
+    },
+    "block-patterns-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "caching": {
+     "passed": 8,
+     "total": 9
+    },
+    "comments-users": {
+     "passed": 7,
+     "total": 7
+    },
+    "connectors-api": {
+     "passed": 9,
+     "total": 10
+    },
+    "cron": {
+     "passed": 7,
+     "total": 7
+    },
+    "database": {
+     "passed": 8,
+     "total": 8
+    },
+    "dates-time": {
+     "passed": 6,
+     "total": 6
+    },
+    "gb-block-api": {
+     "passed": 13,
+     "total": 16
+    },
+    "gb-block-bindings": {
+     "passed": 6,
+     "total": 6
+    },
+    "gb-block-editor": {
+     "passed": 5,
+     "total": 6
+    },
+    "gb-block-hooks": {
+     "passed": 3,
+     "total": 4
+    },
+    "gb-block-markup": {
+     "passed": 13,
+     "total": 14
+    },
+    "gb-font-library": {
+     "passed": 2,
+     "total": 3
+    },
+    "gb-interactivity-api": {
+     "passed": 9,
+     "total": 11
+    },
+    "gb-templates-navigation": {
+     "passed": 3,
+     "total": 3
+    },
+    "hooks": {
+     "passed": 8,
+     "total": 8
+    },
+    "html-api": {
+     "passed": 8,
+     "total": 10
+    },
+    "http-api": {
+     "passed": 8,
+     "total": 8
+    },
+    "internationalization": {
+     "passed": 6,
+     "total": 6
+    },
+    "mail-url": {
+     "passed": 7,
+     "total": 7
+    },
+    "media": {
+     "passed": 9,
+     "total": 9
+    },
+    "performance": {
+     "passed": 6,
+     "total": 7
+    },
+    "plugin-lifecycle": {
+     "passed": 2,
+     "total": 2
+    },
+    "post-meta": {
+     "passed": 5,
+     "total": 6
+    },
+    "post-types-taxonomy": {
+     "passed": 10,
+     "total": 14
+    },
+    "posts-lifecycle": {
+     "passed": 12,
+     "total": 12
+    },
+    "queries": {
+     "passed": 17,
+     "total": 19
+    },
+    "rest-api": {
+     "passed": 20,
+     "total": 24
+    },
+    "rewrite-permalinks": {
+     "passed": 6,
+     "total": 6
+    },
+    "roles-caps": {
+     "passed": 9,
+     "total": 10
+    },
+    "scripts-styles": {
+     "passed": 5,
+     "total": 5
+    },
+    "security": {
+     "passed": 12,
+     "total": 12
+    },
+    "settings-options": {
+     "passed": 9,
+     "total": 10
+    },
+    "shortcodes": {
+     "passed": 5,
+     "total": 5
+    },
+    "theme-templates": {
+     "passed": 11,
+     "total": 11
+    }
+   },
+   "passed_ids": [
+    "e-abilities-api-001",
+    "e-abilities-api-003",
+    "e-abilities-api-005",
+    "e-abilities-api-006",
+    "e-abilities-api-007",
+    "e-abilities-api-008",
+    "e-abilities-api-009",
+    "e-abilities-api-011",
+    "e-abilities-api-012",
+    "e-abilities-api-013",
+    "e-abilities-api-014",
+    "e-admin-001",
+    "e-admin-002",
+    "e-admin-003",
+    "e-admin-004",
+    "e-admin-005",
+    "e-admin-006",
+    "e-admin-007",
+    "e-admin-008",
+    "e-admin-009",
+    "e-admin-010",
+    "e-admin-011",
+    "e-admin-012",
+    "e-ai-client-001",
+    "e-ai-client-002",
+    "e-ai-client-003",
+    "e-ai-client-005",
+    "e-ai-client-006",
+    "e-ai-client-007",
+    "e-ai-client-011",
+    "e-ai-client-015",
+    "e-auth-001",
+    "e-auth-002",
+    "e-auth-003",
+    "e-auth-004",
+    "e-auth-005",
+    "e-auth-006",
+    "e-auth-007",
+    "e-auth-008",
+    "e-auth-009",
+    "e-block-patterns-styles-001",
+    "e-block-patterns-styles-002",
+    "e-block-patterns-styles-003",
+    "e-block-patterns-styles-004",
+    "e-block-patterns-styles-005",
+    "e-caching-001",
+    "e-caching-002",
+    "e-caching-004",
+    "e-caching-005",
+    "e-caching-006",
+    "e-caching-007",
+    "e-caching-008",
+    "e-caching-009",
+    "e-comments-users-001",
+    "e-comments-users-002",
+    "e-comments-users-003",
+    "e-comments-users-004",
+    "e-comments-users-005",
+    "e-comments-users-006",
+    "e-comments-users-007",
+    "e-connectors-api-001",
+    "e-connectors-api-002",
+    "e-connectors-api-003",
+    "e-connectors-api-004",
+    "e-connectors-api-006",
+    "e-connectors-api-008",
+    "e-connectors-api-009",
+    "e-connectors-api-010",
+    "e-connectors-api-013",
+    "e-cron-001",
+    "e-cron-002",
+    "e-cron-003",
+    "e-cron-004",
+    "e-cron-005",
+    "e-cron-006",
+    "e-cron-007",
+    "e-database-001",
+    "e-database-002",
+    "e-database-003",
+    "e-database-004",
+    "e-database-005",
+    "e-database-006",
+    "e-database-007",
+    "e-database-008",
+    "e-dates-time-001",
+    "e-dates-time-002",
+    "e-dates-time-003",
+    "e-dates-time-004",
+    "e-dates-time-005",
+    "e-dates-time-006",
+    "e-gb-block-api-001",
+    "e-gb-block-api-003",
+    "e-gb-block-api-004",
+    "e-gb-block-api-005",
+    "e-gb-block-api-006",
+    "e-gb-block-api-007",
+    "e-gb-block-api-008",
+    "e-gb-block-api-009",
+    "e-gb-block-api-010",
+    "e-gb-block-api-012",
+    "e-gb-block-api-013",
+    "e-gb-block-api-014",
+    "e-gb-block-api-016",
+    "e-gb-block-bindings-001",
+    "e-gb-block-bindings-002",
+    "e-gb-block-bindings-003",
+    "e-gb-block-bindings-004",
+    "e-gb-block-bindings-005",
+    "e-gb-block-bindings-006",
+    "e-gb-block-editor-002",
+    "e-gb-block-editor-003",
+    "e-gb-block-editor-004",
+    "e-gb-block-editor-005",
+    "e-gb-block-editor-006",
+    "e-gb-block-hooks-001",
+    "e-gb-block-hooks-002",
+    "e-gb-block-hooks-004",
+    "e-gb-block-markup-001",
+    "e-gb-block-markup-002",
+    "e-gb-block-markup-003",
+    "e-gb-block-markup-004",
+    "e-gb-block-markup-005",
+    "e-gb-block-markup-006",
+    "e-gb-block-markup-007",
+    "e-gb-block-markup-008",
+    "e-gb-block-markup-009",
+    "e-gb-block-markup-010",
+    "e-gb-block-markup-012",
+    "e-gb-block-markup-013",
+    "e-gb-block-markup-014",
+    "e-gb-font-library-001",
+    "e-gb-font-library-003",
+    "e-gb-interactivity-api-001",
+    "e-gb-interactivity-api-002",
+    "e-gb-interactivity-api-005",
+    "e-gb-interactivity-api-006",
+    "e-gb-interactivity-api-007",
+    "e-gb-interactivity-api-008",
+    "e-gb-interactivity-api-009",
+    "e-gb-interactivity-api-010",
+    "e-gb-interactivity-api-011",
+    "e-gb-templates-navigation-001",
+    "e-gb-templates-navigation-002",
+    "e-gb-templates-navigation-003",
+    "e-hooks-001",
+    "e-hooks-002",
+    "e-hooks-003",
+    "e-hooks-004",
+    "e-hooks-005",
+    "e-hooks-006",
+    "e-hooks-007",
+    "e-hooks-008",
+    "e-html-api-001",
+    "e-html-api-002",
+    "e-html-api-004",
+    "e-html-api-005",
+    "e-html-api-006",
+    "e-html-api-007",
+    "e-html-api-008",
+    "e-html-api-009",
+    "e-http-api-001",
+    "e-http-api-002",
+    "e-http-api-003",
+    "e-http-api-004",
+    "e-http-api-005",
+    "e-http-api-006",
+    "e-http-api-007",
+    "e-http-api-008",
+    "e-internationalization-001",
+    "e-internationalization-002",
+    "e-internationalization-003",
+    "e-internationalization-004",
+    "e-internationalization-005",
+    "e-internationalization-006",
+    "e-mail-url-001",
+    "e-mail-url-002",
+    "e-mail-url-003",
+    "e-mail-url-004",
+    "e-mail-url-005",
+    "e-mail-url-006",
+    "e-mail-url-007",
+    "e-media-001",
+    "e-media-002",
+    "e-media-003",
+    "e-media-004",
+    "e-media-005",
+    "e-media-006",
+    "e-media-007",
+    "e-media-008",
+    "e-media-009",
+    "e-performance-001",
+    "e-performance-002",
+    "e-performance-003",
+    "e-performance-004",
+    "e-performance-005",
+    "e-performance-006",
+    "e-plugin-lifecycle-001",
+    "e-plugin-lifecycle-002",
+    "e-post-meta-001",
+    "e-post-meta-003",
+    "e-post-meta-004",
+    "e-post-meta-005",
+    "e-post-meta-006",
+    "e-post-types-taxonomy-001",
+    "e-post-types-taxonomy-002",
+    "e-post-types-taxonomy-003",
+    "e-post-types-taxonomy-006",
+    "e-post-types-taxonomy-009",
+    "e-post-types-taxonomy-010",
+    "e-post-types-taxonomy-011",
+    "e-post-types-taxonomy-012",
+    "e-post-types-taxonomy-013",
+    "e-post-types-taxonomy-014",
+    "e-posts-lifecycle-001",
+    "e-posts-lifecycle-002",
+    "e-posts-lifecycle-003",
+    "e-posts-lifecycle-004",
+    "e-posts-lifecycle-005",
+    "e-posts-lifecycle-006",
+    "e-posts-lifecycle-007",
+    "e-posts-lifecycle-008",
+    "e-posts-lifecycle-009",
+    "e-posts-lifecycle-010",
+    "e-posts-lifecycle-011",
+    "e-posts-lifecycle-012",
+    "e-queries-001",
+    "e-queries-002",
+    "e-queries-003",
+    "e-queries-004",
+    "e-queries-005",
+    "e-queries-007",
+    "e-queries-009",
+    "e-queries-010",
+    "e-queries-011",
+    "e-queries-012",
+    "e-queries-013",
+    "e-queries-014",
+    "e-queries-015",
+    "e-queries-016",
+    "e-queries-017",
+    "e-queries-018",
+    "e-queries-019",
+    "e-rest-api-001",
+    "e-rest-api-002",
+    "e-rest-api-003",
+    "e-rest-api-004",
+    "e-rest-api-007",
+    "e-rest-api-008",
+    "e-rest-api-009",
+    "e-rest-api-010",
+    "e-rest-api-013",
+    "e-rest-api-014",
+    "e-rest-api-015",
+    "e-rest-api-016",
+    "e-rest-api-017",
+    "e-rest-api-018",
+    "e-rest-api-019",
+    "e-rest-api-020",
+    "e-rest-api-021",
+    "e-rest-api-022",
+    "e-rest-api-023",
+    "e-rest-api-024",
+    "e-rewrite-permalinks-001",
+    "e-rewrite-permalinks-002",
+    "e-rewrite-permalinks-003",
+    "e-rewrite-permalinks-004",
+    "e-rewrite-permalinks-005",
+    "e-rewrite-permalinks-006",
+    "e-roles-caps-001",
+    "e-roles-caps-002",
+    "e-roles-caps-003",
+    "e-roles-caps-004",
+    "e-roles-caps-005",
+    "e-roles-caps-007",
+    "e-roles-caps-008",
+    "e-roles-caps-009",
+    "e-roles-caps-010",
+    "e-scripts-styles-001",
+    "e-scripts-styles-002",
+    "e-scripts-styles-003",
+    "e-scripts-styles-004",
+    "e-scripts-styles-005",
+    "e-security-001",
+    "e-security-002",
+    "e-security-003",
+    "e-security-004",
+    "e-security-005",
+    "e-security-006",
+    "e-security-007",
+    "e-security-008",
+    "e-security-009",
+    "e-security-010",
+    "e-security-011",
+    "e-security-012",
+    "e-settings-options-001",
+    "e-settings-options-002",
+    "e-settings-options-003",
+    "e-settings-options-004",
+    "e-settings-options-005",
+    "e-settings-options-006",
+    "e-settings-options-008",
+    "e-settings-options-009",
+    "e-settings-options-010",
+    "e-shortcodes-001",
+    "e-shortcodes-002",
+    "e-shortcodes-003",
+    "e-shortcodes-004",
+    "e-shortcodes-005",
+    "e-theme-templates-001",
+    "e-theme-templates-002",
+    "e-theme-templates-003",
+    "e-theme-templates-004",
+    "e-theme-templates-005",
+    "e-theme-templates-006",
+    "e-theme-templates-007",
+    "e-theme-templates-008",
+    "e-theme-templates-009",
+    "e-theme-templates-010",
+    "e-theme-templates-011"
+   ],
+   "failures": {
+    "e-abilities-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Code execution failed"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-abilities-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The ability is registered with REST visibility metadata"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-ai-client-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Ability names round-trip through AI function-call names"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-ai-client-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The resolver executes the allowed ability and rejects disallowed and non-ability calls with their codes"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-caching-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A salted cache read succeeds only when the supplied salt matches"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-connectors-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Valid IDs register with the requested data; space, uppercase, slash, and period IDs are all rejected before the registry"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-api-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp/auto block exposes autoRegister support, a message default, and server rendering"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "A paragraph is framed and its debug comment follows the frame"
+     ],
+     "runtime_score": 0.6667,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-api-015": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only the gallery's direct image children are reported, including the explicitly namespaced one",
+      "An image nested one level deeper inside the gallery, and one outside it, are both ignored",
+      "Nested galleries each contribute their own direct image children in document order"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-editor-001": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The function returns WordPress-normalized theme-origin dimension size presets"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-hooks-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post-object processing inserts a root hooked block and reports the root ignored hooked block name by reference"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-block-markup-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The query block carries the requested query configuration and nests post-template around a void post-title"
+     ],
+     "runtime_score": 0.5,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-font-library-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The wpbp-fonts collection is registered with the expected inline Bench Sans family"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-interactivity-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Server-side directive processing renders the derived summary text"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-gb-interactivity-api-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Both unique data-wp-class directives are applied to the same rendered element"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-html-api-003": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The first button's text is replaced and encoded while the rest of the document is byte-identical"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-html-api-010": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Encoded, case-varied and legacy-reference href values are classified as WordPress decodes them"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-performance-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Post content images lose lazy loading while other contexts, iframes and the decoding hint are unaffected"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-post-meta-002": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The protected subtitle meta is registered for posts with REST exposure, sanitization, and access"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-post-types-taxonomy-004": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The custom post type generates mapped edit capabilities"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-post-types-taxonomy-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The inserted category term can be read back from WordPress"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-post-types-taxonomy-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The archive link is generated for the custom post type"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-post-types-taxonomy-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The taxonomy stores the requested REST base"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-queries-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The user query returns users with the requested role"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-queries-008": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The term query includes empty terms"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-rest-api-005": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The WP_Error is converted to REST response data with status"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-rest-api-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Callback data is normalized to a WP_REST_Response"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-rest-api-011": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Authorization status differs for logged-out and logged-in users"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-rest-api-012": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The response exposes the custom related link"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-roles-caps-006": {
+     "reason": "runtime crash",
+     "assertions": [
+      "The filter preserves Administrator exclusion while allowing Editor"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    },
+    "e-settings-options-007": {
+     "reason": "runtime crash",
+     "assertions": [
+      "Only the option that needed a change reports true, the stored flags are correct, and the batch stays within its query budget"
+     ],
+     "runtime_score": 0.0,
+     "stderr": null,
+     "error": null
+    }
+   },
+   "published": {
+    "by": "Joao Amaral",
+    "date": "2026-10-30",
+    "sha": "86dd1eadb3d9e63b6a35a07a25ca9c9888c8b41d",
+    "short": "86dd1ea",
+    "message": "data: add gemini/gemini-4-argon run on wp-core-v1"
+   }
   }
  ],
  "history": [
+  {
+   "sha": "86dd1eadb3d9e63b6a35a07a25ca9c9888c8b41d",
+   "short": "86dd1ea",
+   "date": "2026-10-30T17:01:34-03:00",
+   "author": "Joao Amaral",
+   "message": "data: add gemini/gemini-4-argon run on wp-core-v1\nRaw `wp-bench run` output (JSON + JSONL), 350 tests, scoring 3.0, run on\n2026-10-30. Shared for publication at WordCamp Brazil 2026.\nDiscussion: https://github.com/WordPress/wp-bench/issues/83\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>",
+   "added": [
+    "results_20261030_181406.json"
+   ],
+   "removed": [],
+   "modified": [],
+   "snapshot": [
+    {
+     "file": "results_20261030_175905.json",
+     "model": "claude-sonnet-5-5",
+     "overall": 0.8857,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 310,
+     "total": 350
+    },
+    {
+     "file": "results_20261030_181406.json",
+     "model": "gemini/gemini-4-argon",
+     "overall": 0.9114,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 319,
+     "total": 350
+    },
+    {
+     "file": "results_20261030_181720.json",
+     "model": "claude-haiku-5-5",
+     "overall": 0.7943,
+     "suite": "wp-core-v1",
+     "scoring_version": "3.0",
+     "passed": 278,
+     "total": 350
+    }
+   ]
+  },
   {
    "sha": "3724b0b6c83d783a41f169ef5857e85dbeb1d990",
    "short": "3724b0b",

@@ -284,7 +284,7 @@
         <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
       </ol>
       <h3 style="margin:16px 0 8px;font-size:15px">What gets ranked</h3>
-      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Partial runs (<code>--limit</code>, <code>--categories</code>), older runs and runs on another suite are shown greyed out with “Show all runs”, never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
+      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite), older runs and runs on another suite are shown greyed out with “Show all runs”, never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
     </div>
   </section>
 
@@ -370,7 +370,7 @@
     });
     document.querySelectorAll('#board thead th').forEach(th => { th.querySelector('.dir')?.remove(); if (th.dataset.key === sortKey) th.insertAdjacentHTML('beforeend', `<span class="dir">${sortDir < 0 ? '▼' : '▲'}</span>`); });
     const partial = latestByModel(DATA.runs.filter(inGroup)).filter(r => !isFull(r)).length;
-    $('count').textContent = `${rows.length} models ranked · ${DATA.runs.length} runs total${partial ? ` · ${partial} partial run${partial > 1 ? 's' : ''} not ranked (tick “Show all runs”)` : ''}`;
+    $('count').textContent = `${rows.length} models ranked · ${DATA.runs.length} runs total${partial ? ` · ${partial} run${partial > 1 ? 's' : ''} with a different test count not ranked (tick “Show all runs”)` : ''}`;
     const tbody = document.querySelector('#board tbody');
     if (!shown.length) { tbody.innerHTML = '<tr><td colspan="12" class="status">No runs match.</td></tr>'; return; }
     tbody.innerHTML = shown.map(r => {
@@ -378,7 +378,7 @@
       const pub = r.published;
       return `<tr class="${r.dim ? 'dim' : ''}">
         <td class="rank">${r.rank ?? '—'}</td>
-        <td class="model left"><a href="${esc(fileUrl(r.file, pub?.sha))}" rel="noopener" target="_blank" style="color:inherit;text-decoration:none" title="${esc(r.file)}">${esc(r.model)}</a>${r.dim ? `<span class="tag" title="not ranked: ${!inGroup(r) ? 'other suite or scoring version' : !isFull(r) ? 'partial run (subset of the suite)' : 'superseded by a newer run'}">${!inGroup(r) ? esc(r.suite + ' · ' + r.scoring_version) : !isFull(r) ? `partial ${r.tests.total}/${fullTotal()}` : 'older run'}</span>` : ''}</td>
+        <td class="model left"><a href="${esc(fileUrl(r.file, pub?.sha))}" rel="noopener" target="_blank" style="color:inherit;text-decoration:none" title="${esc(r.file)}">${esc(r.model)}</a>${r.dim ? `<span class="tag" title="not ranked: ${!inGroup(r) ? 'other suite or scoring version' : !isFull(r) ? `ran ${r.tests.total} tests; the current full suite has ${fullTotal()} (partial run or an earlier suite revision)` : 'superseded by a newer run'}">${!inGroup(r) ? esc(r.suite + ' · ' + r.scoring_version) : !isFull(r) ? `${r.tests.total} tests` : 'older run'}</span>` : ''}</td>
         <td><strong>${pct(r.scores.overall)}</strong><span class="ci">±${(ci * 100).toFixed(1)}</span><span class="bar"><i style="width:${Math.round((r.scores.overall ?? 0) * 100)}%"></i></span></td>
         <td>${r.tests.passed}/${r.tests.total}${r.tests.errored ? `<span class="tag" title="${r.tests.errored} tests errored in the harness">${r.tests.errored} err</span>` : ''}</td>
         <td>${usd(r.cost_usd.total)}</td>
