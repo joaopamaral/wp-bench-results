@@ -4,584 +4,1369 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>WP-Bench Leaderboard</title>
-<meta name="description" content="How well AI models write WordPress code: scores, cost, latency, per-category breakdowns and head-to-head comparisons from WordPress/wp-bench runs, with the full history of changes.">
+<meta name="description" content="How well AI models write WordPress code: wp-bench scores per suite, model, category and test, cost against score, model comparisons and the full history of published runs.">
 <style>
+  /* Colors come from wp-admin: its canvas gray, the Gutenberg ink, the admin
+     theme blue, and the core notice green / red / yellow, each with one meaning.
+     Pass rates use one sequential blue ramp; red only ever marks a failed test. */
   :root {
-    color-scheme: light;
-    --bg: #f9f9f7; --surface: #fcfcfb; --surface-2: #f0efec; --text: #0b0b0b; --text-2: #52514e; --muted: #898781;
-    --grid: #e1e0d9; --axis: #c3c2b7; --border: rgba(11,11,11,.10); --accent: #2a78d6; --accent-ink: #ffffff;
-    --good: #006300; --bad: #d03b3b; --warn-bg: #fff6e0; --warn-text: #7a4b00; --tag-bg: #e8eef7;
+    --admin-canvas: #f0f0f1;
+    --sheet: #ffffff;
+    --sheet-sunk: #f6f7f7;
+    --ink: #1e1e1e;
+    --ink-2: #3c434a;
+    --ink-3: #646970;
+    --ink-4: #8c8f94;
+    --rule: rgba(30, 30, 30, .10);
+    --rule-strong: rgba(30, 30, 30, .20);
+    --blueberry: #3858e9;
+    --blueberry-ink: #2145e6;
+    --blueberry-wash: rgba(56, 88, 233, .09);
+    --pass: #00a32a;
+    --pass-ink: #007017;
+    --fail: #d63638;
+    --fail-ink: #b32d2e;
+    --notice: #dba617;
+    --notice-ink: #614a00;
+    --notice-wash: rgba(219, 166, 23, .16);
+    --tick-pass: rgba(30, 30, 30, .24);
+    --hatch: repeating-linear-gradient(135deg, var(--notice-wash) 0 3px, transparent 3px 7px);
     --seq-100: #cde2fb; --seq-200: #9ec5f4; --seq-300: #6da7ec; --seq-400: #3987e5; --seq-500: #256abf; --seq-600: #184f95; --seq-700: #0d366b;
+    --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, monospace;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    color-scheme: light;
   }
   @media (prefers-color-scheme: dark) {
     :root:not([data-theme="light"]) {
+      --admin-canvas: #141414; --sheet: #1e1e1e; --sheet-sunk: #171717;
+      --ink: #f0f0f1; --ink-2: #c3c4c7; --ink-3: #a7aaad; --ink-4: #8c8f94;
+      --rule: rgba(255, 255, 255, .09); --rule-strong: rgba(255, 255, 255, .17);
+      --blueberry: #7b90ff; --blueberry-ink: #9aa9ff; --blueberry-wash: rgba(123, 144, 255, .13);
+      --pass: #4ab866; --pass-ink: #68de7c; --fail: #f86368; --fail-ink: #ff8085;
+      --notice: #f0c33c; --notice-ink: #f0c33c; --notice-wash: rgba(240, 195, 60, .14);
+      --tick-pass: rgba(255, 255, 255, .26);
       color-scheme: dark;
-      --bg: #0d0d0d; --surface: #1a1a19; --surface-2: #242423; --text: #f0efec; --text-2: #c3c2b7; --muted: #898781;
-      --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,.10); --accent: #3987e5; --accent-ink: #0d0d0d;
-      --good: #0ca30c; --bad: #e66767; --warn-bg: #3a2d10; --warn-text: #f5d58a; --tag-bg: #223044;
     }
   }
   :root[data-theme="dark"] {
+    --admin-canvas: #141414; --sheet: #1e1e1e; --sheet-sunk: #171717;
+    --ink: #f0f0f1; --ink-2: #c3c4c7; --ink-3: #a7aaad; --ink-4: #8c8f94;
+    --rule: rgba(255, 255, 255, .09); --rule-strong: rgba(255, 255, 255, .17);
+    --blueberry: #7b90ff; --blueberry-ink: #9aa9ff; --blueberry-wash: rgba(123, 144, 255, .13);
+    --pass: #4ab866; --pass-ink: #68de7c; --fail: #f86368; --fail-ink: #ff8085;
+    --notice: #f0c33c; --notice-ink: #f0c33c; --notice-wash: rgba(240, 195, 60, .14);
+    --tick-pass: rgba(255, 255, 255, .26);
     color-scheme: dark;
-    --bg: #0d0d0d; --surface: #1a1a19; --surface-2: #242423; --text: #f0efec; --text-2: #c3c2b7; --muted: #898781;
-    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,.10); --accent: #3987e5; --accent-ink: #0d0d0d;
-    --good: #0ca30c; --bad: #e66767; --warn-bg: #3a2d10; --warn-text: #f5d58a; --tag-bg: #223044;
   }
+
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; }
-  a { color: var(--accent); }
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .92em; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 48px; }
-  header h1 { margin: 0 0 4px; font-size: 26px; }
-  header p { margin: 0; color: var(--text-2); }
-  .src { font-size: 13px; color: var(--muted); margin-top: 8px; }
-  .tabs { display: flex; gap: 2px; margin: 20px 0 14px; border-bottom: 1px solid var(--grid); overflow-x: auto; }
-  .tabs button { background: none; border: 0; border-bottom: 2px solid transparent; padding: 8px 14px; font: inherit; color: var(--text-2); cursor: pointer; white-space: nowrap; }
-  .tabs button[aria-selected="true"] { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
-  .panel[hidden] { display: none; }
-  .controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; margin-bottom: 12px; }
-  .controls label { font-size: 13px; color: var(--text-2); display: flex; gap: 6px; align-items: center; }
-  select, input[type=search] { font: inherit; font-size: 14px; padding: 5px 8px; border: 1px solid var(--axis); border-radius: 6px; background: var(--surface); color: var(--text); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; }
+  html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+  body { margin: 0; background: var(--admin-canvas); color: var(--ink); font: 14px/1.5 var(--sans); }
+  body.dropping { outline: 3px dashed var(--blueberry); outline-offset: -8px; }
+  a { color: var(--blueberry-ink); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 2px; }
+  :focus-visible { outline: 2px solid var(--blueberry); outline-offset: 2px; border-radius: 4px; }
+  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  h1 { font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
+  h2 { font-size: 16px; font-weight: 600; }
+  h3 { font-size: 14px; font-weight: 600; }
+  p { text-wrap: pretty; }
+  .num { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--ink-3); }
+  .faint { color: var(--ink-4); }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px; }
+  [hidden] { display: none !important; }
+
+  /* masthead */
+  .masthead { position: sticky; top: 0; z-index: 20; background: var(--admin-canvas); border-bottom: 1px solid var(--rule); }
+  .masthead .row { display: flex; align-items: center; gap: 16px; padding-top: 12px; }
+  .brand { display: flex; align-items: baseline; gap: 6px; color: var(--ink); font-weight: 600; font-size: 16px; white-space: nowrap; }
+  .brand:hover { text-decoration: none; }
+  .brand span { color: var(--ink-3); font-weight: 400; }
+  .suites { display: flex; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--sheet); flex-shrink: 0; }
+  .suites a { padding: 5px 12px; color: var(--ink-3); font-size: 13px; white-space: nowrap; }
+  .suites a + a { border-left: 1px solid var(--rule); }
+  .suites a:hover { background: var(--sheet-sunk); text-decoration: none; color: var(--ink); }
+  .suites a[aria-current="true"] { color: var(--ink); font-weight: 600; background: var(--sheet-sunk); }
+  .suites a small { color: var(--ink-4); font-weight: 400; margin-left: 4px; font-size: 12px; }
+  .search { position: relative; flex: 1; min-width: 0; max-width: 420px; margin-left: auto; }
+  .search input { width: 100%; font: inherit; font-size: 13px; padding: 7px 34px 7px 32px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet-sunk); color: var(--ink); }
+  .search input::placeholder { color: var(--ink-4); }
+  .search input:focus { outline: none; border-color: var(--blueberry); box-shadow: 0 0 0 1px var(--blueberry); background: var(--sheet); }
+  .search svg { position: absolute; left: 10px; top: 50%; translate: 0 -50%; color: var(--ink-4); pointer-events: none; }
+  .search kbd { position: absolute; right: 8px; top: 50%; translate: 0 -50%; font: 11px var(--mono); color: var(--ink-3); border: 1px solid var(--rule-strong); border-radius: 4px; padding: 0 5px; background: var(--sheet); }
+  .search input:focus ~ kbd { display: none; }
+  .results { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--sheet); border: 1px solid var(--rule-strong); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-height: min(70vh, 460px); overflow: auto; padding: 4px; margin: 0; list-style: none; }
+  .results .group { padding: 8px 10px 4px; font-size: 11px; font-weight: 600; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .results [role="option"] { display: flex; gap: 10px; align-items: baseline; padding: 7px 10px; border-radius: 5px; cursor: pointer; }
+  .results [role="option"] .k { font-family: var(--mono); font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .results [role="option"] .d { margin-left: auto; font-size: 12px; color: var(--ink-4); white-space: nowrap; }
+  .results [aria-selected="true"] { background: var(--blueberry-wash); }
+  .results .none { padding: 12px 10px; color: var(--ink-3); font-size: 13px; }
+  .views { display: flex; gap: 2px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
+  .views a { padding: 8px 10px 9px; color: var(--ink-3); font-size: 13px; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .views a:hover { color: var(--ink); text-decoration: none; }
+  .views a[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
+  .views .pill { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--blueberry); color: var(--sheet); font-size: 11px; font-weight: 600; text-align: center; }
+
+  /* page scaffolding */
+  main { padding-top: 20px; padding-bottom: 96px; }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--ink-4); margin-bottom: 12px; }
+  .crumbs a { color: var(--ink-3); }
+  .crumbs .here { color: var(--ink); font-family: var(--mono); font-size: 12.5px; }
+  .sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; }
   .pad { padding: 14px 16px; }
-  .table-wrap { overflow-x: auto; }
-  table { border-collapse: collapse; width: 100%; font-size: 14px; }
-  th, td { padding: 8px 10px; border-bottom: 1px solid var(--grid); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  th.left, td.left { text-align: left; }
-  thead th { position: sticky; top: 0; background: var(--surface-2); font-weight: 600; cursor: pointer; user-select: none; color: var(--text-2); }
-  thead th .dir { color: var(--muted); font-size: 11px; margin-left: 3px; }
-  tbody tr:hover { background: var(--surface-2); }
-  tr.dim td { opacity: .45; }
-  td.model { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 13px; }
-  td.rank { color: var(--muted); }
-  .tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; background: var(--tag-bg); color: var(--text); margin-left: 6px; vertical-align: middle; white-space: nowrap; }
-  .bar { display: inline-block; height: 6px; width: 64px; background: var(--surface-2); border-radius: 3px; vertical-align: middle; margin-left: 8px; overflow: hidden; }
-  .bar i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
-  .ci { color: var(--muted); font-size: 12px; margin-left: 4px; }
-  .note { background: var(--warn-bg); color: var(--warn-text); padding: 10px 12px; border-radius: 8px; font-size: 13px; margin: 0 0 12px; }
-  .muted { color: var(--muted); } .sub { color: var(--text-2); font-size: 13px; }
-  .status { padding: 24px; text-align: center; color: var(--muted); }
-  .err { color: var(--bad); }
-  .up { color: var(--good); } .down { color: var(--bad); }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
-  .tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
-  .tile .k { font-size: 12px; color: var(--text-2); } .tile .v { font-size: 22px; font-weight: 600; } .tile .s { font-size: 12px; color: var(--muted); }
-  details.drawer { margin: 0; } details.drawer summary { cursor: pointer; color: var(--accent); font-size: 12px; list-style: none; }
-  details.drawer summary::-webkit-details-marker { display: none; }
-  .drawer-body { text-align: left; white-space: normal; font-size: 13px; color: var(--text-2); padding: 8px 0 4px; max-width: 900px; }
-  .drawer-body dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 12px; margin: 0; }
-  .drawer-body dt { color: var(--muted); } .drawer-body dd { margin: 0; word-break: break-all; }
-  /* heatmap */
-  .heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
-  .heat th { background: none; position: static; cursor: default; color: var(--text-2); font-weight: 500; border: 0; }
-  .heat th.cat { text-align: left; white-space: nowrap; padding: 2px 8px 2px 0; }
-  .heat th.col { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 4px 2px; font-family: ui-monospace, Menlo, monospace; font-size: 11px; max-height: 160px; }
-  .heat td { border: 0; padding: 0; }
-  .heat td .cell { display: block; min-width: 44px; padding: 4px 6px; border-radius: 4px; text-align: center; cursor: pointer; color: var(--text); }
-  .heat td .cell.dark { color: #fff; }
-  .heat td .cell.na { background: var(--surface-2); color: var(--muted); }
-  .heat td .cell:hover { outline: 2px solid var(--text); outline-offset: -2px; }
-  .legend { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-2); margin: 10px 0 0; }
-  .legend i { display: inline-block; width: 22px; height: 12px; border-radius: 2px; }
-  /* scatter */
-  .chart { width: 100%; height: 360px; }
-  .diagram { display: block; width: 100%; max-width: 960px; height: auto; margin: 0 auto; color: var(--text); }
-  .chart text { fill: var(--text-2); font-size: 12px; font-family: inherit; }
-  .chart .grid line { stroke: var(--grid); } .chart .axis line, .chart .axis path { stroke: var(--axis); }
-  .chart .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
-  .chart .dot.dim { opacity: .35; }
-  .chart .lbl { fill: var(--text); font-size: 12px; }
-  .tip { position: fixed; pointer-events: none; background: var(--text); color: var(--bg); padding: 6px 9px; border-radius: 6px; font-size: 12px; z-index: 10; display: none; max-width: 320px; white-space: pre-line; }
-  /* head to head */
-  .h2h { display: grid; grid-template-columns: 1fr; gap: 12px; }
-  @media (min-width: 900px) { .h2h { grid-template-columns: 1fr 1fr 1fr; } }
-  .h2h h3 { margin: 0 0 6px; font-size: 14px; } .h2h ul { margin: 0; padding-left: 16px; font-size: 13px; }
-  .h2h li { margin: 2px 0; } .h2h .why { color: var(--muted); font-size: 12px; }
-  .pill { display: inline-block; min-width: 22px; text-align: center; font-size: 12px; padding: 0 7px; border-radius: 999px; background: var(--tag-bg); margin-left: 6px; }
+  .section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin: 28px 0 10px; }
+  .section-head p { margin: 0; color: var(--ink-3); font-size: 13px; }
+  .lede { margin: 0 0 12px; color: var(--ink-3); font-size: 13px; }
+  .status { padding: 48px 16px; text-align: center; color: var(--ink-3); }
+  .status.err { color: var(--fail-ink); }
+  .notice { padding: 10px 12px; font-size: 13px; color: var(--ink-2); background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--notice); border-radius: 0 6px 6px 0; margin: 0 0 12px; }
+  .notice.synthetic { background: var(--hatch), var(--sheet); }
+  .notice.fail { border-left-color: var(--fail); }
+
+  /* controls */
+  .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--ink-3); }
+  .toolbar .grow { flex: 1; }
+  .seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--sheet); }
+  .seg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--ink-3); padding: 5px 10px; cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--rule); }
+  .seg button:hover { color: var(--ink); background: var(--sheet-sunk); }
+  .seg button[aria-pressed="true"] { color: var(--ink); font-weight: 600; background: var(--sheet-sunk); }
+  .seg button .c { color: var(--ink-4); font-weight: 400; margin-left: 4px; }
+  .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; min-height: 32px; }
+  .check input { accent-color: var(--blueberry); margin: 0; }
+  .btn { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet); color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+  .btn:hover { background: var(--sheet-sunk); color: var(--ink); text-decoration: none; }
+  .btn:active { transform: scale(.97); }
+  .btn.primary { background: var(--blueberry); border-color: var(--blueberry); color: #fff; font-weight: 600; }
+  .btn.primary:hover { background: var(--blueberry-ink); color: #fff; }
+  input[type=search].field { font: inherit; font-size: 13px; padding: 5px 9px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet-sunk); color: var(--ink); min-width: 160px; }
+  input[type=search].field:focus { outline: none; border-color: var(--blueberry); box-shadow: 0 0 0 1px var(--blueberry); }
+
+  /* chips */
+  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; line-height: 18px; padding: 0 7px; border-radius: 999px; background: var(--sheet-sunk); color: var(--ink-3); border: 1px solid var(--rule); white-space: nowrap; vertical-align: middle; }
+  .chip.full { color: var(--pass-ink); border-color: color-mix(in srgb, var(--pass) 35%, transparent); background: color-mix(in srgb, var(--pass) 8%, transparent); }
+  .chip.synthetic { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--hatch), var(--sheet); font-weight: 600; }
+  .chip.subset, .chip.errored { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--notice-wash); }
+  .chip.local { color: var(--blueberry-ink); border-color: color-mix(in srgb, var(--blueberry) 40%, transparent); background: var(--blueberry-wash); }
+
+  /* ledger (ranking) */
+  .ledger { list-style: none; margin: 0; padding: 0; position: relative; }
+  .entry { padding: 12px 16px 10px; border-top: 1px solid var(--rule); }
+  .entry:first-child { border-top: 0; }
+  .entry:hover { background: color-mix(in srgb, var(--sheet-sunk) 70%, transparent); }
+  .entry.picked { background: var(--blueberry-wash); }
+  .line { display: grid; grid-template-columns: 22px 28px minmax(0, 1fr) auto 112px; align-items: center; gap: 0 10px; }
+  .rank { color: var(--ink-4); font-size: 13px; text-align: right; }
+  .pick { display: grid; place-items: center; width: 28px; height: 28px; margin: -4px 0; cursor: pointer; border-radius: 4px; }
+  .pick:hover { background: var(--sheet-sunk); }
+  .pick input { accent-color: var(--blueberry); margin: 0; cursor: pointer; }
+  .who { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
+  .model { font-family: var(--mono); font-size: 13.5px; color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
+  .model .prov { color: var(--ink-4); font-weight: 400; }
+  a.model:hover { text-decoration: none; color: var(--blueberry-ink); }
+  .facts { display: flex; gap: 14px; font-size: 12.5px; color: var(--ink-3); white-space: nowrap; }
+  .facts .by { color: var(--ink-4); }
+  .score { text-align: right; font-size: 22px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .score small { font-size: 13px; font-weight: 400; color: var(--ink-4); margin-left: 1px; }
+  .score .ci { font-size: 11px; font-weight: 400; color: var(--ink-4); margin-left: 4px; letter-spacing: 0; }
+  .lane { position: relative; margin: 8px 0 0 70px; }
+  .lane::after { content: ""; position: absolute; top: -3px; bottom: -3px; left: var(--band-l, 0); width: var(--band-w, 0); background: var(--blueberry-wash); border-left: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); border-right: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); pointer-events: none; display: var(--band-d, none); }
+  .lane.synthetic { background: var(--hatch); border-radius: 2px; }
+  .unranked-head { padding: 10px 16px; border-top: 1px solid var(--rule-strong); background: var(--sheet-sunk); font-size: 12.5px; color: var(--ink-3); }
+  .unranked-head strong { color: var(--ink-2); font-weight: 600; }
+  .ledger.dim .entry:first-child { border-top: 0; }
+  .ledger.dim .lane, .ledger.dim .score { opacity: .5; }
+  svg.strip { display: block; width: 100%; cursor: crosshair; overflow: visible; }
+  svg.strip .p { fill: var(--tick-pass); }
+  svg.strip .f { fill: var(--fail); }
+  svg.strip .e { fill: var(--notice); }
+  svg.strip .n { fill: var(--rule-strong); }
+  .ruler-wrap { padding: 10px 16px 8px; border-bottom: 1px solid var(--rule); background: var(--sheet-sunk); border-radius: 8px 8px 0 0; }
+  .ruler-wrap .lane { margin-top: 0; }
+  svg.ruler { display: block; width: 100%; cursor: pointer; }
+  svg.ruler rect { fill: var(--rule-strong); }
+  svg.ruler rect:nth-child(even) { fill: var(--ink-4); }
+  .ruler-label { display: flex; gap: 8px; align-items: baseline; margin: 0 0 6px 70px; font-size: 12px; color: var(--ink-3); min-height: 18px; }
+  .ruler-label strong { font-family: var(--mono); font-weight: 500; color: var(--ink); font-size: 12px; }
+  .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 12px; color: var(--ink-3); margin: 10px 2px 0; }
+  .legend i { display: inline-block; width: 2px; vertical-align: -1px; margin-right: 6px; }
+  .legend .ramp { display: inline-flex; gap: 2px; align-items: center; }
+  .legend .ramp i { width: 20px; height: 10px; border-radius: 2px; margin: 0; }
+
+  /* model page */
+  .hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; margin-bottom: 16px; }
+  .hero h1 { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -.01em; overflow-wrap: anywhere; }
+  .hero .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .big-score { text-align: right; }
+  .big-score .v { font-size: 44px; font-weight: 600; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
+  .big-score .v small { font-size: 18px; font-weight: 500; color: var(--ink-4); }
+  .big-score .l { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0; margin: 0; }
+  .stats div { padding: 10px 14px; border-left: 1px solid var(--rule); }
+  .stats div:first-child { border-left: 0; }
+  .stats dt { font-size: 11px; font-weight: 500; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .stats dd { margin: 2px 0 0; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+  .stats dd .sub { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .big-lane { padding: 12px 16px 14px; }
+  .big-lane .lane, .big-lane .ruler-label { margin-left: 0; }
+  .split { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  @media (min-width: 920px) { .split { grid-template-columns: 340px minmax(0, 1fr); } }
+  .cats { list-style: none; margin: 0; padding: 4px 0; }
+  .cats li a { display: grid; grid-template-columns: minmax(0, 1fr) 72px 44px; gap: 10px; align-items: center; padding: 6px 14px; color: var(--ink-2); font-size: 13px; }
+  .cats li a:hover { background: var(--sheet-sunk); text-decoration: none; }
+  .cats li a[aria-current="true"] { background: var(--blueberry-wash); color: var(--ink); }
+  .cats .name { font-family: var(--mono); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meter { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--rule); }
+  .meter i { display: block; height: 100%; }
+  .meter .mp { background: var(--ink-4); }
+  .meter .mf { background: var(--fail); }
+  .meter .me { background: var(--notice); }
+  .cats .r { text-align: right; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
+
+  /* tests */
+  .tests-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+  .tests-head .count { margin-left: auto; font-size: 12px; color: var(--ink-4); }
+  .test { border-bottom: 1px solid var(--rule); }
+  .test:last-child { border-bottom: 0; }
+  .test > summary { list-style: none; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+  .test > summary::-webkit-details-marker { display: none; }
+  .test > summary:hover { background: var(--sheet-sunk); }
+  .test[open] > summary { background: var(--sheet-sunk); }
+  .test .id { font-family: var(--mono); font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .test .id .cat { color: var(--ink-4); margin-left: 8px; }
+  .test .meta { font-size: 12px; color: var(--ink-4); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .st { display: inline-block; text-align: center; font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: 4px; }
+  .st.pass { color: var(--pass-ink); background: color-mix(in srgb, var(--pass) 12%, transparent); }
+  .st.fail { color: var(--fail-ink); background: color-mix(in srgb, var(--fail) 12%, transparent); }
+  .st.error { color: var(--notice-ink); background: var(--notice-wash); }
+  .st.none { color: var(--ink-4); background: var(--sheet-sunk); }
+  .test-body { padding: 4px 14px 16px 82px; font-size: 13px; }
+  .test-body h4 { margin: 14px 0 4px; font-size: 11px; font-weight: 600; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .test-body .links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 2px; font-size: 12.5px; }
+  .kv { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 0; font-size: 12.5px; color: var(--ink-3); }
+  .kv b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .checks { list-style: none; margin: 0; padding: 0; }
+  .checks li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 6px; padding: 3px 0; }
+  .checks .mark { color: var(--fail-ink); font-weight: 700; }
+  .refs { display: flex; flex-wrap: wrap; gap: 4px 6px; }
+  .refs code { font-size: 11.5px; padding: 1px 6px; border-radius: 4px; background: var(--sheet-sunk); border: 1px solid var(--rule); color: var(--ink-3); }
+  pre { background: var(--sheet-sunk); border: 1px solid var(--rule); padding: 10px 12px; border-radius: 6px; overflow: auto; max-height: 340px; font-size: 12px; margin: 0; font-family: var(--mono); white-space: pre-wrap; }
+  .empty { padding: 28px 16px; text-align: center; color: var(--ink-3); font-size: 13px; }
+  .why { color: var(--ink-3); font-size: 12px; margin-left: 6px; }
+
+  /* tables and heatmaps */
+  .grid-wrap { overflow-x: auto; }
+  table.grid { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+  table.grid th, table.grid td { padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: center; white-space: nowrap; }
+  table.grid thead th { position: sticky; top: 0; background: var(--sheet-sunk); font-weight: 500; color: var(--ink-3); font-size: 12px; vertical-align: bottom; }
+  table.grid thead th a { font-family: var(--mono); color: var(--ink-2); }
+  table.grid th.rowh { text-align: left; font-weight: 400; font-family: var(--mono); color: var(--ink-2); background: var(--sheet); position: sticky; left: 0; z-index: 1; }
+  table.grid thead th.rowh { background: var(--sheet-sunk); z-index: 2; }
+  table.grid tbody tr:hover th.rowh, table.grid tbody tr:hover td:not(.seq) { background-color: var(--sheet-sunk); }
+  table.grid td.left, table.grid th.left { text-align: left; }
+  table.grid td.right, table.grid th.right { text-align: right; font-variant-numeric: tabular-nums; }
+  table.grid td.mark a { display: block; font-weight: 700; }
+  table.grid td.mark .ok { color: var(--pass-ink); }
+  table.grid td.mark .ko { color: var(--fail-ink); }
+  table.grid td.mark .er { color: var(--notice-ink); }
+  table.grid td.mark .na { color: var(--ink-4); font-weight: 400; }
+  .seq { font-variant-numeric: tabular-nums; color: #0d1b2e; }
+  .seq.dark { color: #fff; }
+  .seq.na { background: var(--sheet-sunk); color: var(--ink-4); }
+  table.heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+  table.heat th { font-weight: 500; color: var(--ink-3); }
+  table.heat th.cat { text-align: left; white-space: nowrap; padding: 2px 10px 2px 0; font-family: var(--mono); font-weight: 400; color: var(--ink-2); }
+  table.heat th.cat a { color: inherit; }
+  table.heat th.cat .n { color: var(--ink-4); font-family: var(--sans); margin-left: 4px; }
+  table.heat th.col { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 6px 3px; font-family: var(--mono); font-size: 11px; max-height: 170px; white-space: nowrap; }
+  table.heat th.col a { color: var(--ink-2); }
+  table.heat th.col.synthetic { background: var(--hatch); border-radius: 3px; }
+  table.heat td { padding: 0; }
+  table.heat td .cell { display: block; min-width: 44px; padding: 4px 6px; border-radius: 4px; text-align: center; cursor: pointer; font-variant-numeric: tabular-nums; }
+  table.heat td .cell:hover, table.heat td .cell[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: -2px; }
+  table.heat tr.total th, table.heat tr.total td .cell { font-weight: 600; }
+  .delta-up { color: var(--pass-ink); } .delta-down { color: var(--fail-ink); }
+  .cmp-heads { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 12px; }
+  .cmp-heads .sheet { padding: 12px 14px; }
+  .cmp-heads .score { text-align: left; font-size: 28px; margin-top: 6px; }
+  .cmp-lanes .entry { padding: 10px 16px; }
+  .cmp-lanes .lane { margin-left: 0; }
+  .diff-groups { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .diff-groups .sheet { padding: 12px 14px; }
+  .diff-groups h3 { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .diff-groups h3 .c { color: var(--ink-4); font-weight: 400; }
+  .idlist { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 8px; }
+  .idlist a { font-family: var(--mono); font-size: 12px; padding: 1px 6px; border-radius: 4px; background: var(--sheet-sunk); border: 1px solid var(--rule); color: var(--ink-2); }
+  .idlist a:hover { border-color: var(--blueberry); color: var(--blueberry-ink); text-decoration: none; }
+
+  /* score vs cost */
+  svg.chart { display: block; width: 100%; height: 380px; }
+  svg.chart text { fill: var(--ink-3); font-size: 12px; font-family: var(--sans); }
+  svg.chart .gridline { stroke: var(--rule); }
+  svg.chart .axis { stroke: var(--rule-strong); }
+  svg.chart .dot { fill: var(--blueberry); stroke: var(--sheet); stroke-width: 2; cursor: pointer; }
+  svg.chart .dot.synthetic { fill: var(--sheet); stroke: var(--notice); stroke-width: 2; stroke-dasharray: 3 2; }
+  svg.chart .dot:hover { stroke: var(--ink); }
+  svg.chart .lbl { fill: var(--ink); font-family: var(--mono); font-size: 11.5px; pointer-events: none; }
+  svg.chart .lbl.synthetic { fill: var(--ink-3); }
+
+  /* how it works */
+  svg.diagram { display: block; width: 100%; max-width: 960px; height: auto; margin: 0 auto; color: var(--ink-2); }
+  svg.diagram text { font-family: var(--sans); }
+  svg.diagram text.m { font-family: var(--mono); font-size: 11px; }
+  svg.diagram text.t { font-weight: 600; fill: var(--ink); }
+  svg.diagram .dim { fill: var(--ink-3); }
+  svg.diagram .claim { fill: var(--blueberry-wash); stroke: var(--blueberry); stroke-width: 2.5; }
+
+  /* compare tray */
+  .tray { position: fixed; left: 50%; bottom: 16px; translate: -50% 0; z-index: 30; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; max-width: calc(100vw - 32px); padding: 8px 8px 8px 14px; border-radius: 10px; background: var(--ink); color: var(--sheet); box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 13px; }
+  .tray .names { display: flex; gap: 6px; flex-wrap: wrap; }
+  .tray .names span { font-family: var(--mono); font-size: 12px; padding: 1px 4px 1px 8px; border-radius: 4px; background: rgba(127,127,127,.25); display: inline-flex; align-items: center; gap: 2px; }
+  .tray .names button { border: 0; background: none; color: inherit; cursor: pointer; font-size: 14px; line-height: 1; padding: 2px 4px; opacity: .7; }
+  .tray .names button:hover { opacity: 1; }
+  .tray .btn { border-color: transparent; }
+  .tray .hint { opacity: .75; }
+
   /* history */
   .hist { display: grid; grid-template-columns: 1fr; gap: 16px; }
-  @media (min-width: 900px) { .hist { grid-template-columns: 360px 1fr; } }
+  @media (min-width: 900px) { .hist { grid-template-columns: 340px minmax(0, 1fr); } }
   .commits { max-height: 70vh; overflow: auto; }
-  .commit { padding: 10px 12px; border-bottom: 1px solid var(--grid); cursor: pointer; }
-  .commit:hover, .commit.active { background: var(--surface-2); }
-  .commit .msg { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .commit .meta { font-size: 12px; color: var(--muted); display: flex; gap: 8px; margin-top: 2px; flex-wrap: wrap; }
-  .diff h3 { margin: 14px 0 6px; font-size: 15px; } .diff h3:first-child { margin-top: 0; }
-  ul.plain { margin: 0; padding-left: 18px; }
-  footer { margin-top: 24px; font-size: 13px; color: var(--muted); }
-  @media (max-width: 700px) { .heat th.col { max-height: 110px; } .chart { height: 300px; } }
+  .commit { padding: 10px 14px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+  .commit:hover, .commit.active { background: var(--sheet-sunk); }
+  .commit.active { box-shadow: inset 2px 0 0 var(--ink); }
+  .commit .msg { font-weight: 500; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .commit .meta { font-size: 12px; color: var(--ink-4); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 2px; }
+  .diff { padding: 14px 16px; }
+  .diff h3 { margin: 16px 0 6px; }
+  .diff ul { margin: 0; padding-left: 18px; }
+
+  /* tooltip */
+  .tip { position: fixed; z-index: 40; pointer-events: none; padding: 6px 9px; border-radius: 6px; background: var(--ink); color: var(--sheet); font-size: 12px; line-height: 1.4; box-shadow: 0 6px 18px rgba(0,0,0,.2); max-width: 320px; }
+  .tip b { font-family: var(--mono); font-weight: 500; }
+  .tip .s-pass { color: #68de7c; } .tip .s-fail { color: #ff8085; } .tip .s-error { color: #f0c33c; }
+
+  footer.foot { padding: 0 16px 32px; font-size: 12.5px; color: var(--ink-4); }
+  footer.foot p { margin: 4px 0; }
+
+  @media (max-width: 720px) {
+    .masthead { position: static; }
+    .masthead .row { flex-wrap: wrap; gap: 10px; }
+    .search { order: 3; flex-basis: 100%; max-width: none; }
+    .line { grid-template-columns: 22px 28px minmax(0, 1fr) 84px; }
+    .facts { grid-column: 3 / -1; grid-row: 2; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; white-space: normal; }
+    .score { grid-column: 4; grid-row: 1; font-size: 20px; }
+    .score .ci { display: none; }
+    .lane, .ruler-label { margin-left: 0; }
+    .entry, .ruler-wrap { padding-left: 12px; padding-right: 12px; }
+    .stats div { border-left: 0; border-top: 1px solid var(--rule); }
+    .big-score { text-align: left; }
+    .test-body { padding-left: 14px; }
+    .test > summary { grid-template-columns: 54px minmax(0, 1fr); }
+    .test > summary .meta { grid-column: 2; }
+    svg.chart { height: 300px; }
+    table.heat th.col { max-height: 110px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .btn:active { transform: none; } }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <header>
-    <h1>WP-Bench Leaderboard</h1>
-    <p>How well AI models write WordPress code, from <a href="https://github.com/WordPress/wp-bench" rel="noopener">WordPress/wp-bench</a> runs published in <a id="repoLink" href="https://github.com/joaopamaral/wp-bench-results" rel="noopener">wp-bench-results</a>. Each model's latest full run on the selected suite and scoring version is ranked; partial runs, older runs and other suites are shown greyed out.</p>
-    <div class="src" id="srcLine">Loading data…</div>
-  </header>
-
-  <div class="tabs" role="tablist">
-    <button role="tab" aria-selected="true" data-tab="board">Leaderboard</button>
-    <button role="tab" aria-selected="false" data-tab="categories">Categories</button>
-    <button role="tab" aria-selected="false" data-tab="cost">Score vs cost</button>
-    <button role="tab" aria-selected="false" data-tab="h2h">Head-to-head</button>
-    <button role="tab" aria-selected="false" data-tab="hardest">Hardest tests</button>
-    <button role="tab" aria-selected="false" data-tab="history">History</button>
-    <button role="tab" aria-selected="false" data-tab="how">How it works</button>
+<header class="masthead">
+  <div class="wrap">
+    <div class="row">
+      <a class="brand" href="#/">WP-Bench <span>leaderboard</span></a>
+      <nav class="suites" id="suites" aria-label="Suite"></nav>
+      <div class="search" id="search">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="q" type="text" role="combobox" aria-expanded="false" aria-controls="qResults" aria-autocomplete="list" autocomplete="off" spellcheck="false" placeholder="Jump to a model, category or test" aria-label="Jump to a model, category or test">
+        <kbd aria-hidden="true">/</kbd>
+        <ul class="results" id="qResults" role="listbox" hidden></ul>
+      </div>
+    </div>
+    <nav class="views" id="views" aria-label="Views"></nav>
   </div>
+</header>
 
-  <div class="controls" id="globalControls">
-    <label>Suite <select id="suiteFilter"></select></label>
-    <label>Scoring <select id="scoringFilter"></select></label>
-    <label><input type="checkbox" id="allRuns"> Show older runs and other suites</label>
-    <label>Search <input type="search" id="search" placeholder="model or author"></label>
-    <span class="sub" id="count"></span>
-  </div>
+<main class="wrap" id="main"><div class="status">Loading runs…</div></main>
 
-  <section class="panel" id="panel-board">
-    <div class="tiles" id="tiles"></div>
-    <div class="card table-wrap">
-      <table id="board">
-        <thead><tr>
-          <th data-key="rank">#</th>
-          <th data-key="model" class="left">Model</th>
-          <th data-key="scores.overall">Overall <span class="muted" title="strict execution pass rate; ± is a 95% Wilson interval">±</span></th>
-          <th data-key="tests.passed">Passed</th>
-          <th data-key="cost_usd.total">Cost / run</th>
-          <th data-key="cost_usd.per_pass">$ / pass</th>
-          <th data-key="tokens.completion_p50">Tokens / test</th>
-          <th data-key="latency_ms.p50">Latency p50</th>
-          <th data-key="latency_ms.p90">p90</th>
-          <th data-key="run_date">Run date</th>
-          <th data-key="published.by" class="left">Published by</th>
-          <th class="left">Run details</th>
-        </tr></thead>
-        <tbody><tr><td colspan="12" class="status">Loading…</td></tr></tbody>
-      </table>
-    </div>
-    <p class="sub" style="margin:10px 0 0">Overall = strict execution pass rate (code runs, passes its runtime assertions, triggers no forbidden pattern). Costs are harness estimates, not billing. Tokens = median completion tokens per test.</p>
-  </section>
+<div class="tray" id="tray" hidden></div>
+<div class="tip" id="tip" role="tooltip" hidden></div>
 
-  <section class="panel" id="panel-categories" hidden>
-    <p class="sub" style="margin:0 0 10px">Pass rate per category for each model's latest run. Darker = higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked <span class="tag">n&lt;5</span>: one test moves them by 20 points or more.</p>
-    <div class="card pad table-wrap"><div id="heatmap" class="status">Loading…</div>
-      <div class="legend">0%<i style="background:var(--seq-100)"></i><i style="background:var(--seq-200)"></i><i style="background:var(--seq-300)"></i><i style="background:var(--seq-400)"></i><i style="background:var(--seq-500)"></i><i style="background:var(--seq-600)"></i><i style="background:var(--seq-700)"></i>100%</div>
-    </div>
-    <div class="card pad" id="cellDetail" hidden></div>
-  </section>
-
-  <section class="panel" id="panel-cost" hidden>
-    <p class="sub" style="margin:0 0 10px">Overall score against the estimated cost of the full run (log scale). Up and to the left is better. Hover a point for details.</p>
-    <div class="card pad"><svg id="scatter" class="chart" role="img" aria-label="Overall score versus cost per run"></svg></div>
-    <div class="card table-wrap" style="margin-top:12px"><table id="costTable"><thead><tr><th class="left">Model</th><th>Overall</th><th>Cost / run</th><th>$ / pass</th><th>Passes per $</th><th>Tokens / test</th><th>Latency p50</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section class="panel" id="panel-h2h" hidden>
-    <div class="controls">
-      <label>A <select id="h2hA"></select></label>
-      <span class="sub">vs</span>
-      <label>B <select id="h2hB"></select></label>
-      <span class="sub" id="h2hSummary"></span>
-    </div>
-    <div class="h2h" id="h2h"></div>
-  </section>
-
-  <section class="panel" id="panel-hardest" hidden>
-    <p class="sub" style="margin:0 0 10px">Tests that fail for the most models (latest run per model, selected suite and scoring). Tests failing for every model point at benchmark difficulty or a test issue rather than a model gap.</p>
-    <div class="card table-wrap"><table id="hardest"><thead><tr><th class="left">Test</th><th class="left">Category</th><th>Fails</th><th class="left">Models failing</th><th class="left">Failing assertion</th><th class="left">Source refs</th></tr></thead><tbody></tbody></table></div>
-  </section>
-
-  <section class="panel" id="panel-how" hidden>
-    <figure class="card pad" style="margin:0">
-      <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.">
-        <defs>
-          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
-        </defs>
-        <g fill="none" stroke="currentColor" stroke-width="1.5">
-          <!-- contributor -->
-          <rect x="20" y="130" width="190" height="120" rx="8"/>
-          <!-- results repo -->
-          <rect x="300" y="40" width="380" height="340" rx="8"/>
-          <rect x="325" y="110" width="150" height="70" rx="6"/>
-          <rect x="325" y="300" width="150" height="56" rx="6"/>
-          <rect x="505" y="110" width="150" height="56" rx="6"/>
-          <rect x="505" y="300" width="150" height="56" rx="6"/>
-          <!-- spacefast / browser -->
-          <rect x="755" y="100" width="200" height="80" rx="8"/>
-          <rect x="755" y="290" width="200" height="70" rx="8"/>
-          <!-- wp-bench AGENTS -->
-          <rect x="20" y="300" width="190" height="80" rx="8" stroke-dasharray="5 4"/>
-        </g>
-        <!-- the data file is the one element that carries the claim -->
-        <rect x="505" y="190" width="150" height="70" rx="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
-        <g fill="currentColor" font-size="12" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
-          <text x="115" y="155" text-anchor="middle" font-weight="600">Contributor or agent</text>
-          <text x="115" y="178" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">wp-bench run</text>
-          <text x="115" y="200" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.json</text>
-          <text x="115" y="216" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.jsonl</text>
-
-          <text x="490" y="68" text-anchor="middle" font-weight="600">wp-bench-results repository</text>
-          <text x="490" y="86" text-anchor="middle" font-size="11" opacity=".7">public · pull requests · CI</text>
-          <text x="400" y="135" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">results/</text>
-          <text x="400" y="152" text-anchor="middle" font-size="11">raw run outputs,</text>
-          <text x="400" y="167" text-anchor="middle" font-size="11">copied unchanged</text>
-          <text x="400" y="323" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">git log</text>
-          <text x="400" y="341" text-anchor="middle" font-size="11">who published, when</text>
-          <text x="580" y="133" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/build_data.py</text>
-          <text x="580" y="152" text-anchor="middle" font-size="11">aggregates per run</text>
-          <text x="580" y="215" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/data/</text>
-          <text x="580" y="231" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">leaderboard.json</text>
-          <text x="580" y="248" text-anchor="middle" font-size="11">~65 KB per run</text>
-          <text x="580" y="323" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/index.html</text>
-          <text x="580" y="341" text-anchor="middle" font-size="11">static page</text>
-
-          <text x="855" y="125" text-anchor="middle" font-weight="600">Spacefast</text>
-          <text x="855" y="145" text-anchor="middle" font-size="11">serves site/ at</text>
-          <text x="855" y="162" text-anchor="middle" font-size="11">wpbench-leaderboard.space.fast</text>
-          <text x="855" y="316" text-anchor="middle" font-weight="600">Your browser</text>
-          <text x="855" y="336" text-anchor="middle" font-size="11">fetches one data file,</text>
-          <text x="855" y="351" text-anchor="middle" font-size="11">no API calls</text>
-
-          <text x="115" y="325" text-anchor="middle" font-weight="600">WordPress/wp-bench</text>
-          <text x="115" y="343" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">AGENTS.md</text>
-          <text x="115" y="361" text-anchor="middle" font-size="11">check here before a run</text>
-        </g>
-        <g fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)">
-          <line x1="210" y1="170" x2="325" y2="150"/>
-          <line x1="475" y1="145" x2="505" y2="140"/>
-          <line x1="475" y1="320" x2="505" y2="222"/>
-          <line x1="580" y1="166" x2="580" y2="190"/>
-          <line x1="580" y1="260" x2="580" y2="300"/>
-          <line x1="680" y1="140" x2="755" y2="140"/>
-          <line x1="855" y1="180" x2="855" y2="290"/>
-        </g>
-        <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)">
-          <line x1="210" y1="310" x2="300" y2="250"/>
-        </g>
-        <g fill="currentColor" font-size="11" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
-          <text x="268" y="150" text-anchor="middle">copy + PR</text>
-          <text x="232" y="318" text-anchor="middle">reads the data</text>
-          <text x="232" y="331" text-anchor="middle">before a run</text>
-          <text x="490" y="104" text-anchor="middle">reads</text>
-          <text x="470" y="262" text-anchor="middle">attribution</text>
-          <text x="602" y="182" text-anchor="start">writes</text>
-          <text x="602" y="285" text-anchor="start">renders</text>
-          <text x="717" y="128" text-anchor="middle">push to main</text>
-          <text x="717" y="158" text-anchor="middle">→ deploy</text>
-          <text x="866" y="240" text-anchor="start">GET /data/</text>
-          <text x="866" y="254" text-anchor="start">leaderboard.json</text>
-        </g>
-      </svg>
-      <figcaption class="sub" style="margin-top:10px">Raw run outputs are the source of truth; one small prebuilt data file is all the page needs, and the repository's git history is the audit trail.</figcaption>
-    </figure>
-    <div class="card pad" style="margin-top:12px">
-      <h3 style="margin:0 0 8px;font-size:15px">Publishing a run</h3>
-      <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7">
-        <li>Check the model is not already listed for the suite (this page, or <code>site/data/leaderboard.json</code>). <code>AGENTS.md</code> in wp-bench makes agents do this before running anything.</li>
-        <li>Run the benchmark: <code>wp-bench run</code> writes <code>output/results_&lt;timestamp&gt;.json</code> and <code>.jsonl</code>.</li>
-        <li>Fork <a id="howRepo" href="#" rel="noopener">the results repository</a>, copy both files into <code>results/</code>, commit. That commit is the run's attribution on this page.</li>
-        <li>Run <code>python3 site/build_data.py</code>, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.</li>
-        <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
-      </ol>
-      <h3 style="margin:16px 0 8px;font-size:15px">What gets ranked</h3>
-      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite), older runs and runs on another suite are shown greyed out (older runs and other suites behind “Show older runs and other suites”), never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
-    </div>
-  </section>
-
-  <section class="panel" id="panel-history" hidden>
-    <p class="sub" style="margin:0 0 12px">Every commit that touched <code>results/</code>. Select one to see which runs it added, removed or changed and how the latest score per model moved.</p>
-    <div class="hist">
-      <div class="card commits" id="commits"></div>
-      <div class="card pad diff" id="diff"><div class="status">Select a commit.</div></div>
-    </div>
-  </section>
-
-  <footer>
-    Data: <a id="dataLink" href="data/leaderboard.json">data/leaderboard.json</a>, built by <a id="buildLink" href="#" rel="noopener">build_data.py</a> from the raw run outputs in <a id="folderLink" href="#" rel="noopener">results/</a>. No API calls at view time.
-  </footer>
-</div>
-<div class="tip" id="tip"></div>
+<footer class="wrap foot">
+  <p id="srcLine"></p>
+  <p>Scores are the strict execution pass rate (scoring 3.0): the code runs, passes its runtime assertions and triggers no forbidden pattern; ± is a 95% Wilson interval. Costs are harness estimates, not billing. Only compare runs from the same suite and scoring version. Data: <a id="dataLink" href="#">leaderboard.json</a>, built by <a id="buildLink" href="#" rel="noopener">build_data.py</a> from the raw run outputs in <a id="folderLink" href="#" rel="noopener">results/</a>; one file, no API calls. Drop <code>output/results_&lt;timestamp&gt;.json</code> files anywhere on the page to preview your own runs; they stay in this tab.</p>
+</footer>
 
 <script>
 (() => {
-  const REPO = new URLSearchParams(location.search).get('repo')?.replace(/[^\w.\/-]/g, '') || 'joaopamaral/wp-bench-results';
+  const qs = new URLSearchParams(location.search);
+  const clean = (v) => (v || '').replace(/[^\w.\/-]/g, '');
+  // The page and the data file built next to it live in the results repository; ?repo= and ?ref= only change links.
+  const REPO = clean(qs.get('repo')) || 'joaopamaral/wp-bench-results';
+  const REF = clean(qs.get('ref')) || 'main';
+  // ?data= swaps in another data file while developing: a .json path next to this page or a raw.githubusercontent.com URL.
+  const DATA_URL = ((d) => d && (/^https:\/\/raw\.githubusercontent\.com\/[\w.\/-]+\.json$/.test(d) || /^(?!.*\.\.)[\w.\/-]+\.json$/.test(d)) ? d
+    : 'data/leaderboard.json')(qs.get('data'));
+  // Test definitions live with the harness, not with the results.
+  const BENCH = 'WordPress/wp-bench';
+  let RESULTS = 'results';
+  const RUN_FILE = /^results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.json$/;
   const $ = (id) => document.getElementById(id);
-  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const get = (o, path) => path.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
-  const pct = (v, d = 1) => v == null ? '—' : (v * 100).toFixed(d) + '%';
-  const ms = (v) => v == null ? '—' : (v >= 1000 ? (v / 1000).toFixed(1) + ' s' : Math.round(v) + ' ms');
-  const usd = (v) => v == null ? '—' : '$' + (v < 0.01 ? v.toFixed(4) : v < 1 ? v.toFixed(3) : v.toFixed(2));
-  const num = (v) => v == null ? '—' : Math.round(v).toLocaleString();
-  const wilson = (p, n, z = 1.96) => { if (!n) return 0; const d = 1 + z * z / n; const c = (p + z * z / (2 * n)) / d; const h = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; return h; };
+  const main = $('main');
+  $('buildLink').href = `https://github.com/${REPO}/blob/${REF}/site/build_data.py`;
+  $('folderLink').href = `https://github.com/${REPO}/tree/${REF}/results`;
+  $('folderLink').textContent = `${REPO}/results`;
+  $('dataLink').href = DATA_URL;
   const commitUrl = (sha) => `https://github.com/${REPO}/commit/${sha}`;
-  const fileUrl = (file, sha) => `https://github.com/${REPO}/blob/${sha || 'main'}/${DATA.results_dir || 'results'}/${file}`;
-  const tip = $('tip');
-  const showTip = (e, text) => { tip.textContent = text; tip.style.display = 'block'; const x = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8); tip.style.left = x + 'px'; tip.style.top = (e.clientY + 12) + 'px'; };
-  const hideTip = () => tip.style.display = 'none';
+  const fileUrl = (run) => `https://github.com/${REPO}/blob/${run.published?.sha || REF}/${RESULTS}/${run.file}`;
+  const definitionUrl = (suite, category) => `https://github.com/${BENCH}/blob/trunk/datasets/suites/${suite}/execution/${category}.json`;
 
-  let DATA = { runs: [], tests: {}, history: [] };
-  let sortKey = 'scores.overall', sortDir = -1;
-  let h2hInit = false;
+  // ---------- data ----------
+  const S = {
+    data: { tests: {}, runs: [], history: [] }, runs: [], suites: new Map(), compare: [], loaded: false,
+    sort: 'score', tests: { status: 'fail', cat: '', q: '' },
+    showSynthetic: pref('synthetic', true),
+  };
+  function pref(k, d) { try { const v = localStorage.getItem('wpb-pref:' + k); return v == null ? d : v === '1'; } catch { return d; } }
+  function setPref(k, v) { try { localStorage.setItem('wpb-pref:' + k, v ? '1' : '0'); } catch {} }
 
-  $('buildLink').href = `https://github.com/${REPO}/blob/main/site/build_data.py`;
-  $('folderLink').href = `https://github.com/${REPO}/tree/main/results`;
-  $('repoLink').href = `https://github.com/${REPO}`; $('repoLink').textContent = REPO;
-  $('howRepo').href = `https://github.com/${REPO}`;
+  /** One run per model per file, from data/leaderboard.json (built by build_data.py). */
+  function adapt(r, extra = {}) {
+    return {
+      key: r.id, file: r.file, model: r.model, suite: r.suite ?? '—', scoring_version: r.scoring_version ?? '—',
+      result_schema_version: r.result_schema_version, run_date: r.run_date, run_ts: r.run_ts,
+      synthetic: !!r.synthetic, limit: r.limit ?? null, config: r.config || {}, scores: r.scores || {},
+      usage: r.usage || {}, cost: r.cost_usd || {}, latency: r.latency_ms || {}, tokens: r.tokens || {},
+      passed: r.tests.passed, total: r.tests.total, errored: r.tests.errored,
+      categories: r.categories || {}, passedSet: new Set(r.passed_ids || []), failures: r.failures || {},
+      published: r.published, ...extra,
+    };
+  }
+  const statusOf = (run, id) => run.passedSet.has(id) ? 'pass' : run.failures[id] ? (run.failures[id].reason === 'harness error' ? 'error' : 'fail') : 'none';
+  const STATUS = { pass: 'passed', fail: 'failed', error: 'errored', none: 'not run' };
 
-  // ---------- selection ----------
-  const suite = () => $('suiteFilter').value;
-  const scoring = () => $('scoringFilter').value;
-  const inGroup = (r) => (r.suite ?? '—') === suite() && (r.scoring_version ?? '—') === scoring();
-  function latestByModel(rows) {
+  // Local previews: the same summary build_data.py writes, computed in the browser from a raw output.
+  const pctl = (values, f) => { if (!values.length) return null; const o = [...values].sort((a, b) => a - b); return o[Math.min(o.length - 1, Math.max(0, Math.round(f * (o.length - 1))))]; };
+  function failureDetail(rec) {
+    const g = rec.grader || {}, raw = g.raw || {}, sc = rec.scores || {};
+    const reason = rec.error ? 'harness error' : g.timeout ? 'timeout' : sc.static_policy_pass === false ? 'forbidden static pattern' : !g.success ? 'runtime crash' : 'assertion failed';
+    const assertions = (raw.runtime?.details?.assertions || []).filter(a => a.passed === false).map(a => a.description || a.type || 'assertion');
+    const stderr = (g.stderr || '').trim();
+    return { reason, assertions: assertions.slice(0, 5), runtime_score: sc.runtime ?? null, stderr: stderr ? stderr.slice(-300) : null, error: rec.error ? JSON.stringify(rec.error).slice(0, 300) : null };
+  }
+  function runsFromRaw(file, doc) {
+    const md = doc.metadata || {};
+    const m = RUN_FILE.exec(file);
+    const entries = Array.isArray(doc.results)
+      ? (md.mode && md.mode !== 'model' ? [] : [[md.model?.name, md, doc.results]])
+      : Object.values(doc.models || {}).filter(e => (e.variant?.kind ?? 'none') === 'none').map(e => [e.config?.name, { ...md, model: e.config, scores: e.scores }, e.results || []]);
+    return entries.filter(([name, emd]) => name && emd.scores).map(([model, emd, records]) => {
+      const passed_ids = [], failures = {}, categories = {};
+      for (const rec of records) {
+        const c = categories[rec.category] ||= { passed: 0, total: 0 };
+        c.total++;
+        if (rec.scores?.execution_pass) { c.passed++; passed_ids.push(rec.test_id); } else failures[rec.test_id] = failureDetail(rec);
+        S.data.tests[rec.test_id] ||= { suite: rec.suite, category: rec.category, source_refs: rec.metadata?.source_refs || [] };
+      }
+      const nums = (k) => records.map(x => x.usage?.[k]).filter(v => typeof v === 'number');
+      const lat = nums('latency_ms'), cost = nums('cost_usd');
+      const total = cost.length === records.length && records.length ? cost.reduce((a, b) => a + b, 0) : null;
+      return adapt({
+        id: `local:${file}:${model}`, file, model, suite: emd.suite, scoring_version: emd.scoring_version, result_schema_version: emd.result_schema_version,
+        run_date: m ? `${m[1]}-${m[2]}-${m[3]}` : null, run_ts: m ? m.slice(1).join('') : '', synthetic: !!emd.synthetic, limit: emd.limit ?? null,
+        config: { kind: emd.model?.kind, temperature: emd.model?.temperature, runtime_image_id: emd.runtime_image_id, runtime_isolation: emd.runtime_isolation, runtime_isolation_boundary: emd.runtime_isolation_boundary, execution_concurrency: emd.execution_concurrency, seed: emd.seed, grader: emd.grader?.kind, database: emd.grader?.database },
+        scores: emd.scores, usage: emd.usage || {},
+        tests: { passed: passed_ids.length, total: records.length, errored: records.filter(x => x.error).length },
+        latency_ms: { p50: pctl(lat, .5), p90: pctl(lat, .9), max: lat.length ? Math.max(...lat) : null },
+        cost_usd: { total, per_pass: total != null && passed_ids.length ? total / passed_ids.length : null },
+        tokens: { completion_p50: pctl(nums('completion_tokens'), .5) },
+        categories, passed_ids, failures, published: null,
+      }, { local: true });
+    });
+  }
+
+  /** Group runs by suite; the suite's test order (category, then id) is the x axis of every strip. */
+  function buildSuites() {
+    const suites = new Map();
+    for (const r of S.runs) {
+      let s = suites.get(r.suite);
+      if (!s) suites.set(r.suite, s = { name: r.suite, runs: [], tests: new Map() });
+      s.runs.push(r);
+      for (const id of [...r.passedSet, ...Object.keys(r.failures)]) if (!s.tests.has(id)) s.tests.set(id, S.data.tests[id]?.category ?? '—');
+    }
+    for (const s of suites.values()) {
+      s.order = [...s.tests].sort((a, b) => a[1].localeCompare(b[1]) || a[0].localeCompare(b[0], undefined, { numeric: true }));
+      s.size = s.order.length;
+      s.index = new Map(s.order.map(([id], i) => [id, i]));
+      s.cats = [];
+      s.order.forEach(([, cat], i) => { const last = s.cats[s.cats.length - 1]; if (last && last.name === cat) last.count++; else s.cats.push({ name: cat, start: i, count: 1 }); });
+      let x = 0;
+      s.xs = new Float32Array(s.size);
+      for (const c of s.cats) { c.x = x; for (let k = 0; k < c.count; k++) { s.xs[c.start + k] = x; x += TICK; } c.w = x - c.x - (TICK - TICK_W); x += GAP; }
+      s.width = x - GAP;
+      // Rank only within the newest scoring version present in the suite.
+      s.scoring = [...new Set(s.runs.map(r => r.scoring_version))].sort((a, b) => parseFloat(b) - parseFloat(a) || String(b).localeCompare(String(a)))[0];
+      // The full suite is the largest test count among the current scoring version's runs; anything
+      // smaller is a partial run or an earlier revision of the suite, never ranked with full runs.
+      s.full = Math.max(0, ...s.runs.filter(r => r.scoring_version === s.scoring).map(r => r.total));
+      for (const r of s.runs) r.subset = r.total < s.full || !!r.limit;
+    }
+    S.suites = suites;
+  }
+
+  const latestOf = (runs) => {
     const best = new Map();
-    for (const r of rows) if (!best.has(r.model) || r.run_ts > best.get(r.model).run_ts) best.set(r.model, r);
+    for (const r of runs) if (!best.has(r.model) || r.run_ts > best.get(r.model).run_ts) best.set(r.model, r);
     return [...best.values()];
-  }
-  /** Full-suite test count for the selected group (a run with fewer tests used --limit/--categories and is not ranked). */
-  const fullTotal = () => Math.max(0, ...DATA.runs.filter(inGroup).map(r => r.tests.total));
-  const isFull = (r) => r.tests.total === fullTotal();
-  /** Ranked rows: latest full run per model inside the selected suite/scoring group. */
-  const ranked = () => latestByModel(DATA.runs.filter(r => inGroup(r) && isFull(r))).sort((a, b) => (b.scores.overall ?? -1) - (a.scores.overall ?? -1) || a.model.localeCompare(b.model));
-  const searchHit = (r) => { const q = $('search').value.trim().toLowerCase(); return !q || r.model.toLowerCase().includes(q) || (r.published?.by || '').toLowerCase().includes(q); };
-
-  // ---------- tabs ----------
-  function selectTab(name, push = true) {
-    const btn = document.querySelector(`.tabs button[data-tab="${name}"]`) || document.querySelector('.tabs button');
-    document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b === btn)));
-    document.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== 'panel-' + btn.dataset.tab);
-    $('globalControls').style.display = (btn.dataset.tab === 'history' || btn.dataset.tab === 'how') ? 'none' : '';
-    if (push && location.hash !== '#' + btn.dataset.tab) history.replaceState(null, '', '#' + btn.dataset.tab);
-    if (DATA.runs.length) renderAll();
-  }
-  document.querySelectorAll('.tabs button').forEach(btn => btn.addEventListener('click', () => selectTab(btn.dataset.tab)));
-  addEventListener('hashchange', () => selectTab(location.hash.slice(1), false));
-
-  // ---------- leaderboard ----------
-  function renderBoard() {
-    const rows = ranked();
+  };
+  /** The ranking for a suite: each model's latest full run at the suite's scoring version, never partial or other-version runs. */
+  function boardRuns(s) {
+    const pool = s.runs.filter(r => r.scoring_version === s.scoring && !r.subset && (S.showSynthetic || !r.synthetic));
+    const rows = latestOf(pool).sort((a, b) => (b.scores.overall ?? -1) - (a.scores.overall ?? -1) || b.passed - a.passed || a.model.localeCompare(b.model));
     rows.forEach((r, i) => r.rank = i + 1);
-    // Default view: every model's latest run in the selected group; only full runs carry a rank.
-    const unranked = latestByModel(DATA.runs.filter(inGroup)).filter(r => !rows.includes(r)).map(r => ({ ...r, rank: null, dim: true }));
-    let shown = $('allRuns').checked ? DATA.runs.map(r => (rows.includes(r) ? r : { ...r, rank: null, dim: true })) : [...rows, ...unranked];
-    shown = shown.filter(searchHit);
-    shown.sort((a, b) => {
-      let va = get(a, sortKey), vb = get(b, sortKey);
-      if (sortKey === 'rank') { va = a.rank ?? 1e9; vb = b.rank ?? 1e9; }
-      if (va == null && vb == null) return 0; if (va == null) return 1; if (vb == null) return -1;
-      return (typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb))) * sortDir;
-    });
-    document.querySelectorAll('#board thead th').forEach(th => { th.querySelector('.dir')?.remove(); if (th.dataset.key === sortKey) th.insertAdjacentHTML('beforeend', `<span class="dir">${sortDir < 0 ? '▼' : '▲'}</span>`); });
-    const partial = latestByModel(DATA.runs.filter(inGroup)).filter(r => !isFull(r)).length;
-    $('count').textContent = `${rows.length} models ranked · ${DATA.runs.length} runs total${partial ? ` · ${partial} listed unranked (different test count)` : ''}`;
-    const tbody = document.querySelector('#board tbody');
-    if (!shown.length) { tbody.innerHTML = '<tr><td colspan="12" class="status">No runs match.</td></tr>'; return; }
-    tbody.innerHTML = shown.map(r => {
-      const ci = wilson(r.scores.overall ?? 0, r.tests.total);
-      const pub = r.published;
-      return `<tr class="${r.dim ? 'dim' : ''}">
-        <td class="rank">${r.rank ?? '—'}</td>
-        <td class="model left"><a href="${esc(fileUrl(r.file, pub?.sha))}" rel="noopener" target="_blank" style="color:inherit;text-decoration:none" title="${esc(r.file)}">${esc(r.model)}</a>${r.dim ? `<span class="tag" title="not ranked: ${!inGroup(r) ? 'other suite or scoring version' : !isFull(r) ? `ran ${r.tests.total} tests; the current full suite has ${fullTotal()} (partial run or an earlier suite revision)` : 'superseded by a newer run'}">${!inGroup(r) ? esc(r.suite + ' · ' + r.scoring_version) : !isFull(r) ? `${r.tests.total} tests` : 'older run'}</span>` : ''}</td>
-        <td><strong>${pct(r.scores.overall)}</strong><span class="ci">±${(ci * 100).toFixed(1)}</span><span class="bar"><i style="width:${Math.round((r.scores.overall ?? 0) * 100)}%"></i></span></td>
-        <td>${r.tests.passed}/${r.tests.total}${r.tests.errored ? `<span class="tag" title="${r.tests.errored} tests errored in the harness">${r.tests.errored} err</span>` : ''}</td>
-        <td>${usd(r.cost_usd.total)}</td>
-        <td>${usd(r.cost_usd.per_pass)}</td>
-        <td>${num(r.tokens.completion_p50)}</td>
-        <td>${ms(r.latency_ms.p50)}</td>
-        <td>${ms(r.latency_ms.p90)}</td>
-        <td>${esc(r.run_date)}</td>
-        <td class="left">${pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a> <span class="muted">${esc(pub.date)}</span>` : '<span class="muted">uncommitted</span>'}</td>
-        <td class="left"><details class="drawer"><summary>details</summary><div class="drawer-body"><dl>
-          <dt>suite</dt><dd>${esc(r.suite)} · scoring ${esc(r.scoring_version)} · schema ${esc(r.result_schema_version)}</dd>
-          <dt>model</dt><dd>${esc(r.model)} (${esc(r.config.kind)}) · temperature ${esc(r.config.temperature)} · max_tokens ${esc(r.config.max_tokens ?? 'default')}</dd>
-          <dt>runtime</dt><dd>${esc(r.config.grader)} / ${esc(r.config.database)} · ${esc(r.config.runtime_isolation)} (${esc(r.config.runtime_isolation_boundary)}) · concurrency ${esc(r.config.execution_concurrency)} · seed ${esc(r.config.seed)}</dd>
-          <dt>image</dt><dd>${esc(r.config.runtime_image_id ?? '—')}</dd>
-          <dt>dataset</dt><dd>${esc(r.config.dataset?.source)} ${esc(r.config.dataset?.name)}${r.config.dataset?.revision ? ' @ ' + esc(r.config.dataset.revision) : ''}</dd>
-          <dt>scores</dt><dd>exec pass ${pct(r.scores.execution_pass_rate)} · runtime partial ${pct(r.scores.runtime)} · static policy ${pct(r.scores.static_policy_pass_rate)} · correctness (legacy) ${pct(r.scores.correctness)}</dd>
-          <dt>usage</dt><dd>${num(r.usage.prompt_tokens)} prompt + ${num(r.usage.completion_tokens)} completion tokens · wall ${r.latency_ms.total_min ?? '—'} min of model time · max latency ${ms(r.latency_ms.max)}</dd>
-          <dt>file</dt><dd><a href="${esc(fileUrl(r.file, pub?.sha))}" rel="noopener" target="_blank">${esc(r.file)}</a></dd>
-        </dl></div></details></td>
-      </tr>`;
-    }).join('');
-    // tiles
-    const top = rows[0];
-    const cheapest = rows.filter(r => r.cost_usd.per_pass != null).sort((a, b) => a.cost_usd.per_pass - b.cost_usd.per_pass)[0];
-    const fastest = rows.filter(r => r.latency_ms.p50 != null).sort((a, b) => a.latency_ms.p50 - b.latency_ms.p50)[0];
-    const hard = hardestRows(rows);
-    const allFail = hard.filter(h => h.fails === rows.length && rows.length > 1).length;
-    $('tiles').innerHTML = rows.length ? [
-      ['Top score', top ? pct(top.scores.overall) : '—', top?.model],
-      ['Cheapest per pass', cheapest ? usd(cheapest.cost_usd.per_pass) : '—', cheapest?.model],
-      ['Fastest (p50)', fastest ? ms(fastest.latency_ms.p50) : '—', fastest?.model],
-      ['Tests', top ? top.tests.total : '—', `${Object.keys(categoriesIn(rows)).length} categories`],
-      ['Fail for every model', rows.length > 1 ? allFail : '—', rows.length > 1 ? 'likely benchmark hardness' : 'needs ≥2 models'],
-    ].map(([k, v, s]) => `<div class="tile"><div class="k">${esc(k)}</div><div class="v">${esc(v)}</div><div class="s">${esc(s ?? '')}</div></div>`).join('') : '';
+    return rows;
   }
-  document.querySelectorAll('#board thead th[data-key]').forEach(th => th.addEventListener('click', () => {
-    const k = th.dataset.key;
-    if (sortKey === k) sortDir = -sortDir; else { sortKey = k; sortDir = (k === 'model' || k === 'published.by' || k === 'rank') ? 1 : -1; }
-    renderBoard();
-  }));
+  /** Runs the ranking leaves out: a model's latest partial or other-version run, when it has no ranked run or is newer than it. */
+  function unrankedRuns(s, ranked) {
+    const rankedBy = new Map(ranked.map(r => [r.model, r]));
+    return latestOf(s.runs.filter(r => !ranked.includes(r) && (S.showSynthetic || !r.synthetic)))
+      .filter(r => !rankedBy.has(r.model) || r.run_ts > rankedBy.get(r.model).run_ts)
+      .sort((a, b) => (b.scores.overall ?? -1) - (a.scores.overall ?? -1) || a.model.localeCompare(b.model));
+  }
+  const latestRun = (s, model) => latestOf(s.runs.filter(r => r.model === model))[0] || null;
+  /** The run that stands for a model: its latest full run at the suite's scoring version, else its latest run. */
+  const primaryRun = (s, model) => latestOf(s.runs.filter(r => r.model === model && !r.subset && r.scoring_version === s.scoring))[0] || latestRun(s, model);
+  function catStats(run, s) {
+    if (!run._cats) {
+      run._cats = new Map(s.cats.map(c => [c.name, { name: c.name, total: 0, pass: 0, fail: 0, error: 0 }]));
+      for (const [id, cat] of s.order) { const st = statusOf(run, id); if (st === 'none') continue; const b = run._cats.get(cat); b.total++; b[st]++; }
+    }
+    return run._cats;
+  }
+  const rate = (b) => b && b.total - b.error > 0 ? b.pass / (b.total - b.error) : null;
+  const wilson = (p, n, z = 1.96) => { if (!n || p == null) return null; const d = 1 + z * z / n; return z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / d; };
 
-  // ---------- categories ----------
-  const categoriesIn = (rows) => { const c = {}; for (const r of rows) for (const [k, v] of Object.entries(r.categories)) c[k] = Math.max(c[k] || 0, v.total); return c; };
+  // ---------- formatting ----------
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const pct = (v, d = 1) => v == null ? '—' : (v * 100).toFixed(d) + '%';
+  const secs = (v) => v == null ? '—' : v >= 1000 ? (v / 1000).toFixed(1) + ' s' : Math.round(v) + ' ms';
+  const usd = (v) => v == null ? '—' : '$' + v.toFixed(v >= 0.1 ? 2 : v >= 0.01 ? 3 : 4);
+  const int = (v) => v == null ? '—' : Math.round(v).toLocaleString('en-US');
+  const day = (iso) => { if (!iso) return '—'; const d = new Date(iso.slice(0, 10) + 'T00:00:00Z'); return isNaN(d) ? iso : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }); };
   const seqClass = (p) => p == null ? 'na' : p >= .99 ? 'seq-700 dark' : p >= .9 ? 'seq-600 dark' : p >= .8 ? 'seq-500 dark' : p >= .7 ? 'seq-400 dark' : p >= .55 ? 'seq-300' : p >= .35 ? 'seq-200' : 'seq-100';
-  function renderHeatmap() {
-    const rows = ranked().filter(searchHit);
-    const el = $('heatmap');
-    if (!rows.length) { el.innerHTML = '<div class="status">No models in this group.</div>'; return; }
-    const cats = Object.entries(categoriesIn(rows)).sort((a, b) => {
-      const avg = (c) => rows.reduce((s, r) => s + (r.categories[c]?.total ? r.categories[c].passed / r.categories[c].total : 0), 0) / rows.length;
-      return avg(b[0]) - avg(a[0]) || a[0].localeCompare(b[0]);
-    });
-    el.className = '';
-    el.innerHTML = `<table class="heat"><thead><tr><th class="cat"></th>${rows.map(r => `<th class="col" title="${esc(r.model)}">${esc(r.model)}</th>`).join('')}</tr></thead><tbody>
-      <tr><th class="cat"><strong>overall</strong> <span class="muted">n=${rows[0].tests.total}</span></th>${rows.map(r => cell(r, null, r.tests.passed, r.tests.total)).join('')}</tr>
-      ${cats.map(([c, n]) => `<tr><th class="cat">${esc(c)} <span class="muted">n=${n}</span>${n < 5 ? '<span class="tag">n&lt;5</span>' : ''}</th>${rows.map(r => { const v = r.categories[c]; return cell(r, c, v?.passed, v?.total); }).join('')}</tr>`).join('')}
-    </tbody></table>`;
-    el.querySelectorAll('.cell[data-model]').forEach(td => {
-      td.addEventListener('click', () => showCell(td.dataset.model, td.dataset.cat || null));
-      td.addEventListener('mousemove', e => showTip(e, `${td.dataset.model}\n${td.dataset.cat || 'overall'}: ${td.dataset.p}/${td.dataset.n} passed`));
-      td.addEventListener('mouseleave', hideTip);
-    });
+  const seqCell = (p, text, attrs = '') => { const cls = seqClass(p); return `<td class="seq ${cls}"${p == null ? '' : ` style="background:var(--${cls.split(' ')[0]})"`}${attrs}>${text}</td>`; };
+  function score(run, cls = 'score', ci = true) {
+    const v = run.scores.overall, h = ci ? wilson(v, run.total) : null;
+    return `<span class="${cls}">${v == null ? '—' : (v * 100).toFixed(1)}<small>%</small>${h != null ? `<span class="ci" title="95% Wilson interval over ${run.total} tests">±${(h * 100).toFixed(1)}</span>` : ''}</span>`;
   }
-  function cell(r, cat, p, n) {
-    if (!n) return `<td><span class="cell na">—</span></td>`;
-    const rate = p / n; const cls = seqClass(rate);
-    return `<td><span class="cell ${cls}" style="background:var(--${cls.split(' ')[0]})" data-model="${esc(r.model)}" data-cat="${esc(cat ?? '')}" data-p="${p}" data-n="${n}">${Math.round(rate * 100)}</span></td>`;
+  function modelName(name, href) {
+    const i = name.indexOf('/');
+    const inner = i > 0 ? `<span class="prov">${esc(name.slice(0, i + 1))}</span>${esc(name.slice(i + 1))}` : esc(name);
+    return href ? `<a class="model" href="${href}">${inner}</a>` : `<span class="model">${inner}</span>`;
   }
-  function showCell(model, cat) {
-    const r = ranked().find(x => x.model === model); if (!r) return;
-    const ids = Object.keys(DATA.tests).filter(t => !cat || DATA.tests[t].category === cat).filter(t => r.passed_ids.includes(t) || r.failures[t]).sort();
-    const el = $('cellDetail'); el.hidden = false;
-    el.innerHTML = `<h3 style="margin:0 0 8px;font-size:15px"><code>${esc(model)}</code> · ${esc(cat || 'all categories')} <span class="muted">${ids.filter(t => r.passed_ids.includes(t)).length}/${ids.length} passed</span></h3>
-      <ul class="plain" style="font-size:13px">${ids.map(t => { const f = r.failures[t]; return `<li>${f ? '✗' : '✓'} <code>${esc(t)}</code>${f ? ` <span class="muted">— ${esc(f.reason)}${f.assertions.length ? ': ' + esc(f.assertions.join('; ')) : ''}</span>` : ''}</li>`; }).join('')}</ul>`;
+  const shortName = (m) => m.includes('/') ? m.split('/').pop() : m;
+  /** Provenance chips; the ranking only flags exceptions, a model page also confirms the full suite. */
+  function chips(r, s, { full = false } = {}) {
+    const out = [];
+    if (r.synthetic) out.push('<span class="chip synthetic" title="Random scores generated to develop this page. Not a benchmark result.">synthetic</span>');
+    if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
+    else if (r.subset) out.push(`<span class="chip" title="Ran ${r.total} tests; the current full suite has ${s.full} (a partial run or an earlier revision of the suite)">${r.total} tests</span>`);
+    else if (full) out.push('<span class="chip full" title="Every test in the suite was run">full suite</span>');
+    if (r.scoring_version !== s.scoring) out.push(`<span class="chip subset" title="Scores from another scoring version are not comparable">scoring ${esc(r.scoring_version)}</span>`);
+    if (r.errored) out.push(`<span class="chip errored" title="Errored tests are left out of the scores">${r.errored} errored</span>`);
+    if (r.local) out.push('<span class="chip local" title="Opened from this computer; not published">local file</span>');
+    return out.join('');
+  }
+
+  // ---------- routes ----------
+  const enc = encodeURIComponent;
+  const H = {
+    board: (s) => `#/${enc(s)}`,
+    model: (s, m, file) => `#/${enc(s)}/m/${enc(m)}${file ? `/r/${enc(file)}` : ''}`,
+    test: (s, t) => `#/${enc(s)}/t/${enc(t)}`,
+    cat: (s, c) => `#/${enc(s)}/c/${enc(c)}`,
+    cats: (s) => `#/${enc(s)}/categories`,
+    cost: (s) => `#/${enc(s)}/cost`,
+    compare: (s, ms) => `#/${enc(s)}/compare/${ms.map(enc).join(',')}`,
+    history: () => '#/history',
+    how: () => '#/how',
+  };
+  const orderedSuites = () => [...S.suites.values()].sort((a, b) => latestOf(b.runs).length - latestOf(a.runs).length || a.name.localeCompare(b.name));
+  const defaultSuite = () => orderedSuites()[0]?.name;
+  // Links from the earlier tabbed page (#categories, #cost, ...) keep working.
+  const LEGACY = { board: '', categories: 'categories', cost: 'cost', h2h: 'compare', hardest: '', history: 'history', how: 'how' };
+  const GLOBAL_VIEWS = ['history', 'how'];
+  function route() {
+    const hash = location.hash.replace(/^#\/?/, '');
+    if (hash in LEGACY && !S.suites.has(hash)) return GLOBAL_VIEWS.includes(LEGACY[hash]) ? { view: LEGACY[hash], suite: S.lastSuite || defaultSuite() } : { view: LEGACY[hash] || 'board', suite: S.lastSuite || defaultSuite(), models: S.compare };
+    const raw = hash.split('/');
+    const dec = (v) => { try { return decodeURIComponent(v || ''); } catch { return ''; } };
+    if (GLOBAL_VIEWS.includes(raw[0])) return { view: raw[0], suite: S.lastSuite || defaultSuite() };
+    const suite = S.suites.has(dec(raw[0])) ? dec(raw[0]) : defaultSuite();
+    const kind = raw[1];
+    if (kind === 'm') return { view: 'model', suite, model: dec(raw[2]), file: raw[3] === 'r' ? dec(raw[4]) : '' };
+    if (kind === 't') return { view: 'test', suite, test: dec(raw[2]) };
+    if (kind === 'c') return { view: 'category', suite, cat: dec(raw[2]) };
+    if (kind === 'categories') return { view: 'categories', suite };
+    if (kind === 'cost') return { view: 'cost', suite };
+    if (kind === 'compare') return { view: 'compare', suite, models: (raw[2] || '').split(',').map(dec).filter(Boolean) };
+    return { view: 'board', suite };
+  }
+
+  // ---------- strips ----------
+  const TICK = 1.6, TICK_W = 1.1, GAP = 4, LANE_H = 22;
+  function strip(run, s, h = LANE_H) {
+    let out = '';
+    for (let i = 0; i < s.size; i++) {
+      const st = statusOf(run, s.order[i][0]);
+      const x = s.xs[i].toFixed(1);
+      if (st === 'pass') out += `<rect class="p" x="${x}" y="${h - 7}" width="${TICK_W}" height="7"/>`;
+      else if (st === 'fail') out += `<rect class="f" x="${x}" y="0" width="${TICK_W}" height="${h}"/>`;
+      else if (st === 'error') out += `<rect class="e" x="${x}" y="0" width="${TICK_W}" height="${h}"/>`;
+      else out += `<rect class="n" x="${x}" y="${h - 1}" width="${TICK_W}" height="1"/>`;
+    }
+    const failed = run.total - run.passed - run.errored;
+    return `<svg class="strip" data-run="${esc(run.key)}" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${run.passed} passed, ${failed} failed${run.errored ? `, ${run.errored} errored` : ''} of ${s.size} tests">${out}</svg>`;
+  }
+  function ruler(s) {
+    return `<svg class="ruler" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} 6" preserveAspectRatio="none" height="6" role="img" aria-label="${s.cats.length} categories">${s.cats.map(c => `<rect x="${c.x.toFixed(1)}" y="0" width="${c.w.toFixed(1)}" height="6" rx="1"/>`).join('')}</svg>`;
+  }
+  const xAt = (s, svg, clientX) => { const box = svg.getBoundingClientRect(); return (clientX - box.left) / box.width * s.width; };
+  const testIndexAt = (s, svg, clientX) => {
+    const x = xAt(s, svg, clientX);
+    let lo = 0, hi = s.size - 1;
+    while (lo < hi) { const mid = (lo + hi + 1) >> 1; if (s.xs[mid] <= x) lo = mid; else hi = mid - 1; }
+    return (lo + 1 < s.size && Math.abs(s.xs[lo + 1] - x) < Math.abs(x - s.xs[lo])) ? lo + 1 : lo;
+  };
+  const catAt = (s, svg, clientX) => { const x = xAt(s, svg, clientX); return s.cats.find(c => x >= c.x - GAP / 2 && x <= c.x + c.w + GAP / 2) || null; };
+  function setBand(container, s, c) {
+    if (!container) return;
+    if (!c) { container.style.setProperty('--band-d', 'none'); return; }
+    container.style.setProperty('--band-d', 'block');
+    container.style.setProperty('--band-l', `${(c.x - 1) / s.width * 100}%`);
+    container.style.setProperty('--band-w', `${(c.w + 2) / s.width * 100}%`);
+  }
+
+  // ---------- views ----------
+  function render() {
+    if (!S.loaded) return;
+    const r = route();
+    if (r.suite) S.lastSuite = r.suite;
+    const inSuite = (m) => S.suites.get(r.suite)?.runs.some(x => x.model === m);
+    S.compare = (r.view === 'compare' ? r.models : S.compare).filter(inSuite).slice(0, 3);
+    renderChrome(r);
+    hideTip();
+    const s = S.suites.get(r.suite);
+    if (!s && !GLOBAL_VIEWS.includes(r.view)) { main.innerHTML = '<div class="status">No runs found in the results folder yet.</div>'; return; }
+    ({ board: viewBoard, model: viewModel, test: viewTest, category: viewCategory, categories: viewCategories, cost: viewCost, compare: viewCompare, history: viewHistory, how: viewHow })[r.view](r, s);
+    renderTray(r);
+  }
+
+  function renderChrome(r) {
+    $('suites').innerHTML = orderedSuites().map(s => `<a href="${H.board(s.name)}" aria-current="${s.name === r.suite && !GLOBAL_VIEWS.includes(r.view)}">${esc(s.name)}<small class="num">${s.full}</small></a>`).join('');
+    const views = [
+      ['board', 'Ranking', H.board(r.suite)],
+      ['compare', `Compare${S.compare.length ? `<span class="pill num">${S.compare.length}</span>` : ''}`, H.compare(r.suite, S.compare)],
+      ['categories', 'Categories', H.cats(r.suite)],
+      ['cost', 'Score vs cost', H.cost(r.suite)],
+      ['history', 'History', H.history()],
+      ['how', 'How it works', H.how()],
+    ];
+    const current = r.view === 'model' || r.view === 'test' ? 'board' : r.view === 'category' ? 'categories' : r.view;
+    $('views').innerHTML = views.map(([k, label, href]) => `<a href="${href}"${k === current ? ' aria-current="page"' : ''}>${label}</a>`).join('');
+  }
+
+  function syntheticNotice(s) {
+    const synthetic = s.runs.filter(x => x.synthetic).length;
+    if (!synthetic) return '';
+    const real = latestOf(s.runs.filter(x => !x.synthetic)).length;
+    return `<p class="notice synthetic">${synthetic} of ${s.runs.length} runs in ${esc(s.name)} are synthetic: random scores generated to build this page, tagged below. ${real} model${real === 1 ? ' has' : 's have'} real runs.${S.showSynthetic ? '' : ' They are hidden now.'}</p>`;
+  }
+
+  function viewBoard(r, s) {
+    const rows = boardRuns(s);
+    const sorted = [...rows];
+    const by = {
+      score: () => 0,
+      cost: (a, b) => (a.cost.total ?? Infinity) - (b.cost.total ?? Infinity),
+      latency: (a, b) => (a.latency.p50 ?? Infinity) - (b.latency.p50 ?? Infinity),
+      newest: (a, b) => b.run_ts.localeCompare(a.run_ts),
+    }[S.sort];
+    sorted.sort((a, b) => by(a, b) || a.rank - b.rank);
+    const unranked = unrankedRuns(s, rows);
+    main.innerHTML = `
+      ${syntheticNotice(s)}
+      <div class="toolbar">
+        <span class="seg" role="group" aria-label="Sort by">${[['score', 'Score'], ['cost', 'Cost'], ['latency', 'Latency'], ['newest', 'Newest']].map(([k, l]) => `<button type="button" data-sort="${k}" aria-pressed="${S.sort === k}">${l}</button>`).join('')}</span>
+        ${filterToggles()}
+        <span class="grow"></span>
+        <button type="button" class="btn" id="openLocal" title="Preview your own output/results_*.json next to the published runs. Nothing is uploaded.">Open local results</button>
+        <button type="button" class="btn" id="exportCsv">Export CSV</button>
+      </div>
+      <div class="sheet" id="board">
+        <div class="ruler-wrap">
+          <div class="ruler-label" id="rulerLabel"><span>${s.full} tests in ${s.cats.length} categories · hover the bar to find a category, a strip to find a test</span></div>
+          <div class="lane">${ruler(s)}</div>
+        </div>
+        ${sorted.length ? `<ol class="ledger">${sorted.map(x => entry(x, s)).join('')}</ol>` : `<div class="empty">No full runs to rank in ${esc(s.name)}.${S.showSynthetic ? '' : ' Synthetic runs are hidden.'}</div>`}
+        ${unranked.length ? `<div class="unranked-head"><strong>Not ranked</strong> · runs with a different test count (a partial run or an earlier revision of the suite) or another scoring version cover different tests, so they are never ranked with full runs</div><ol class="ledger dim">${unranked.map(x => entry(x, s)).join('')}</ol>` : ''}
+      </div>
+      <div class="legend"><span><i style="height:12px;background:var(--fail)"></i>failed test</span><span><i style="height:12px;background:var(--notice)"></i>errored</span><span><i style="height:5px;background:var(--tick-pass)"></i>passed</span><span><i style="height:1px;background:var(--rule-strong)"></i>not run</span><span>Rank is by score; tick boxes to compare models.</span></div>`;
+    main.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => { S.sort = b.dataset.sort; render(); }));
+    bindFilterToggles();
+    $('openLocal').addEventListener('click', () => fileInput.click());
+    $('exportCsv').addEventListener('click', () => exportCsv(s, rows));
+  }
+  // Synthetic runs only exist in development data (examples/synthetic); the toggle appears only then.
+  const filterToggles = () => S.runs.some(r => r.synthetic) ? `<label class="check"><input type="checkbox" id="optSynthetic"${S.showSynthetic ? ' checked' : ''}> Synthetic runs</label>` : '';
+  function bindFilterToggles() {
+    $('optSynthetic')?.addEventListener('change', e => { S.showSynthetic = e.target.checked; setPref('synthetic', S.showSynthetic); render(); });
+  }
+
+  function entry(x, s) {
+    const picked = S.compare.includes(x.model);
+    const by = x.published?.by || (x.local ? 'local file' : '');
+    const ranked = s.runs.includes(x) && boardRuns(s).includes(x);
+    return `<li class="entry${picked ? ' picked' : ''}">
+      <div class="line">
+        <span class="rank num">${ranked ? x.rank : '—'}</span>
+        <label class="pick" title="Compare"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="Compare ${esc(x.model)}"></label>
+        <span class="who">${modelName(x.model, H.model(s.name, x.model))}${chips(x, s)}</span>
+        <span class="facts num"><span title="Tests passed">${x.passed}/${x.total}</span><span title="Estimated cost of the run · ${usd(x.cost.per_pass)} per passed test">${usd(x.cost.total)}</span><span title="Median model latency">${secs(x.latency.p50)}</span><span class="by" title="${esc(x.published?.message || x.file)}">${day(x.run_date)}${by ? ` · ${esc(by)}` : ''}</span></span>
+        ${score(x)}
+      </div>
+      <div class="lane${x.synthetic ? ' synthetic' : ''}">${strip(x, s)}</div>
+    </li>`;
+  }
+
+  function viewModel(r, s) {
+    const runs = s.runs.filter(x => x.model === r.model).sort((a, b) => b.run_ts.localeCompare(a.run_ts));
+    const run = runs.find(x => x.file === r.file) || primaryRun(s, r.model);
+    if (!run) { main.innerHTML = `${crumbs(s, [[esc(r.model)]])}<div class="status">${esc(r.model)} has no run in ${esc(s.name)}.</div>`; return; }
+    if (S.testsFor !== run.key) { S.testsFor = run.key; S.tests = { status: run.total - run.passed ? 'fail' : 'all', cat: '', q: '' }; }
+    const cfg = run.config;
+    const failed = run.total - run.passed - run.errored;
+    const timeouts = Object.values(run.failures).filter(f => f.reason === 'timeout').length;
+    const cats = [...catStats(run, s).values()].filter(b => b.total).sort((a, b) => (rate(a) ?? 2) - (rate(b) ?? 2) || b.fail - a.fail || a.name.localeCompare(b.name));
+    const h = wilson(run.scores.overall, run.total);
+    const notes = [
+      run.synthetic && '<p class="notice synthetic">Synthetic run: these results were randomly generated to build this page. They say nothing about the model.</p>',
+      run.subset && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
+      run.errored && `<p class="notice">${run.errored} tests errored before grading and are left out of the scores (continue_on_error).</p>`,
+      run.scoring_version !== s.scoring && `<p class="notice">Scored with version ${esc(run.scoring_version)}, not ${esc(s.scoring)}: not ranked with the current runs.</p>`,
+      cfg.runtime_isolation_boundary && cfg.runtime_isolation_boundary !== 'container_per_test' && `<p class="notice fail">Isolation "${esc(cfg.runtime_isolation_boundary)}" shares state between tests; not valid for published scores.</p>`,
+    ].filter(Boolean).join('');
+    main.innerHTML = `
+      ${crumbs(s, [[modelName(run.model)]])}
+      <div class="hero">
+        <div>
+          <h1>${esc(run.model)}</h1>
+          <div class="chips">${chips(run, s, { full: true })}${runs.length > 1 ? `<span class="chip">${runs.length} runs in this suite</span>` : ''}</div>
+        </div>
+        <div class="big-score"><div class="v">${run.scores.overall == null ? '—' : (run.scores.overall * 100).toFixed(1)}<small>%</small></div><div class="l">strict pass rate${h != null ? ` ±${(h * 100).toFixed(1)}` : ''} · ${esc(s.name)} · scoring ${esc(run.scoring_version)}</div></div>
+      </div>
+      ${notes}
+      <div class="sheet">
+        <dl class="stats">
+          <div><dt>Passed</dt><dd>${run.passed}<span class="sub"> / ${run.total}</span></dd></div>
+          <div><dt>Failed</dt><dd>${failed}${timeouts ? `<span class="sub"> · ${timeouts} timeouts</span>` : ''}</dd></div>
+          <div><dt>Runtime mean</dt><dd>${pct(run.scores.runtime)}</dd></div>
+          <div><dt>Est. cost</dt><dd>${usd(run.cost.total)}<span class="sub"> · ${usd(run.cost.per_pass)}/pass</span></dd></div>
+          <div><dt>Latency p50 / p90</dt><dd>${secs(run.latency.p50)}<span class="sub"> / ${secs(run.latency.p90)}</span></dd></div>
+          <div><dt>Tokens per test</dt><dd>${int(run.tokens.completion_p50)}<span class="sub"> completion, median</span></dd></div>
+          <div><dt>Run</dt><dd>${day(run.run_date)}${run.published ? `<span class="sub"> · <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank" title="${esc(run.published.message)}">${esc(run.published.by)}</a></span>` : run.local ? '<span class="sub"> · local file</span>' : ''}</dd></div>
+        </dl>
+        <div class="big-lane" style="border-top:1px solid var(--rule)">
+          <div class="ruler-label" id="rulerLabel"><span>Every test in the suite, grouped by category · click a failure to open it</span></div>
+          <div class="lane">${ruler(s)}</div>
+          <div class="lane${run.synthetic ? ' synthetic' : ''}" style="margin-top:6px">${strip(run, s, 36)}</div>
+        </div>
+      </div>
+      <div class="split" style="margin-top:20px">
+        <section>
+          <div class="section-head" style="margin-top:0"><h2>Where it stumbles</h2><p>weakest categories first</p></div>
+          <div class="sheet"><ul class="cats" id="catList">${cats.map(b => `<li><a href="#" data-cat="${esc(b.name)}"${S.tests.cat === b.name ? ' aria-current="true"' : ''} title="${b.pass} passed, ${b.fail} failed${b.error ? `, ${b.error} errored` : ''}">
+              <span class="name">${esc(b.name)}</span>
+              <span class="meter"><i class="mp" style="width:${b.pass / b.total * 100}%"></i><i class="me" style="width:${b.error / b.total * 100}%"></i><i class="mf" style="width:${b.fail / b.total * 100}%"></i></span>
+              <span class="r">${b.pass}/${b.total}</span></a></li>`).join('')}</ul></div>
+        </section>
+        <section>
+          <div class="section-head" style="margin-top:0"><h2>Tests</h2><p id="testScope"></p></div>
+          <div class="sheet">
+            <div class="tests-head">
+              <span class="seg" role="group" aria-label="Status">${[['fail', 'Failed', failed], ['error', 'Errored', run.errored], ['pass', 'Passed', run.passed], ['all', 'All', run.total]].filter(([k, , n]) => k !== 'error' || n).map(([k, l, n]) => `<button type="button" data-status="${k}" aria-pressed="${S.tests.status === k}">${l}<span class="c num">${n}</span></button>`).join('')}</span>
+              <input type="search" class="field" id="testSearch" placeholder="Filter by test id" value="${esc(S.tests.q)}" aria-label="Filter tests by id">
+              <span class="count num" id="testCount"></span>
+            </div>
+            <div id="testList"></div>
+          </div>
+        </section>
+      </div>
+      <div class="section-head"><h2>Run details</h2><p>${run.local ? esc(run.file) : `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">${esc(run.file)}</a>`}${run.published ? ` · <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank">commit ${esc(run.published.short)}</a>` : ''}</p></div>
+      <div class="sheet"><dl class="stats">
+        <div><dt>Temperature</dt><dd>${esc(cfg.temperature ?? '—')}<span class="sub"> · ${esc(cfg.kind ?? '')}</span></dd></div>
+        <div><dt>Seed · limit</dt><dd>${esc(cfg.seed ?? '—')}<span class="sub"> · ${esc(run.limit ?? 'full suite')}</span></dd></div>
+        <div><dt>Isolation</dt><dd>${esc(cfg.runtime_isolation ?? '—')}<span class="sub"> · concurrency ${esc(cfg.execution_concurrency ?? '—')}</span></dd></div>
+        <div><dt>Grader</dt><dd>${esc(cfg.grader ?? '—')}<span class="sub"> · ${esc(cfg.database ?? '')}</span></dd></div>
+        <div><dt>Runtime image</dt><dd class="mono" style="font-size:12px">${esc(String(cfg.runtime_image_id ?? '—').slice(0, 19))}</dd></div>
+        <div><dt>Schema · scoring</dt><dd>${esc(run.result_schema_version ?? '—')}<span class="sub"> · ${esc(run.scoring_version)}</span></dd></div>
+      </dl></div>
+      ${runs.length > 1 ? `<div class="section-head"><h2>Other runs</h2></div><div class="sheet"><ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto 112px"><span class="who"><a href="${H.model(s.name, x.model, x.file)}" class="mono">${esc(x.file)}</a>${x === run ? '<span class="chip">showing</span>' : ''}${chips(x, s)}</span><span class="facts num"><span>${x.passed}/${x.total}</span><span>${day(x.run_date)}</span></span>${score(x, 'score', false)}</div></li>`).join('')}</ol></div>` : ''}`;
+    main.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', () => { S.tests.status = b.dataset.status; main.querySelectorAll('[data-status]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderTestList(run, s); }));
+    $('testSearch').addEventListener('input', e => { S.tests.q = e.target.value; renderTestList(run, s); });
+    $('catList').addEventListener('click', e => {
+      const a = e.target.closest('[data-cat]'); if (!a) return;
+      e.preventDefault();
+      S.tests.cat = S.tests.cat === a.dataset.cat ? '' : a.dataset.cat;
+      $('catList').querySelectorAll('[data-cat]').forEach(x => x.toggleAttribute('aria-current', x.dataset.cat === S.tests.cat));
+      if (S.tests.cat && S.tests.status !== 'all' && !s.order.some(([id, cat]) => cat === S.tests.cat && statusOf(run, id) === S.tests.status)) {
+        S.tests.status = 'all';
+        main.querySelectorAll('[data-status]').forEach(x => x.setAttribute('aria-pressed', String(x.dataset.status === 'all')));
+      }
+      renderTestList(run, s);
+    });
+    renderTestList(run, s);
+  }
+
+  function renderTestList(run, s) {
+    const q = S.tests.q.trim().toLowerCase();
+    const ids = s.order.filter(([id, cat]) => {
+      const st = statusOf(run, id);
+      return st !== 'none' && (S.tests.status === 'all' || st === S.tests.status) && (!S.tests.cat || cat === S.tests.cat) && (!q || id.toLowerCase().includes(q));
+    }).map(([id]) => id);
+    $('testCount').textContent = `${ids.length} shown`;
+    $('testScope').innerHTML = S.tests.cat ? `in <code>${esc(S.tests.cat)}</code> · <a href="#" id="clearCat">all categories</a>` : 'click a category to narrow';
+    $('clearCat')?.addEventListener('click', e => { e.preventDefault(); S.tests.cat = ''; $('catList').querySelectorAll('[data-cat]').forEach(x => x.removeAttribute('aria-current')); renderTestList(run, s); });
+    $('testList').innerHTML = ids.length ? ids.map((id, i) => testRow(run, id, s, { i, showCat: !S.tests.cat })).join('') : '<div class="empty">No tests match these filters.</div>';
+    bindTestBodies($('testList'), (i) => [run, ids[i]], s);
+  }
+
+  function testRow(run, id, s, { label, showCat = true, i } = {}) {
+    const st = statusOf(run, id), f = run.failures[id];
+    const cat = S.data.tests[id]?.category ?? '';
+    const meta = st === 'pass' ? '' : f ? `${esc(f.reason)}${f.runtime_score != null ? ` · rt ${pct(f.runtime_score, 0)}` : ''}` : '';
+    return `<details class="test" data-i="${i}"><summary>
+      <span class="st ${st}">${STATUS[st]}</span>
+      <span class="id">${label || esc(id)}${showCat ? `<span class="cat">${esc(cat)}</span>` : ''}</span>
+      <span class="meta">${meta}</span>
+    </summary><div class="test-body"></div></details>`;
+  }
+  /** Test bodies render on first open; the container keeps one listener that reads the latest list. */
+  function bindTestBodies(container, at, s, { across = true } = {}) {
+    container._bodies = { at, s, across };
+    if (container._bound) return;
+    container._bound = true;
+    container.addEventListener('toggle', e => {
+      const d = e.target;
+      if (!d.matches?.('details.test') || !d.open || d.dataset.filled) return;
+      d.dataset.filled = '1';
+      const { at: get, s: suite, across: link } = container._bodies;
+      const [run, id] = get(+d.dataset.i);
+      d.querySelector('.test-body').innerHTML = testBody(run, id, suite, link);
+    }, true);
+  }
+  // WordPress notices (_doing_it_wrong and friends) carry HTML; show their text.
+  const plain = (t) => String(t ?? '').replace(/<[^>]+>/g, '').replace(/&quot;/g, '"').replace(/&#0?39;/g, "'");
+
+  function testBody(run, id, s, across = true) {
+    const st = statusOf(run, id), f = run.failures[id], meta = S.data.tests[id] || {};
+    const links = [
+      across && `<a href="${H.test(s.name, id)}">How every model did on this test</a>`,
+      meta.category && `<a href="${esc(definitionUrl(s.name, meta.category))}" rel="noopener" target="_blank">Test definition</a>`,
+      !run.local && `<a href="${esc(fileUrl(run))}" rel="noopener" target="_blank">Full run output</a>`,
+    ].filter(Boolean).join('');
+    if (st === 'none') return `<div class="links">${links}</div><p class="muted">This run did not include the test.</p>`;
+    const refs = (meta.source_refs || []).length ? `<h4>Core source</h4><div class="refs">${meta.source_refs.map(x => `<code>${esc(x.replace(/^src\//, ''))}</code>`).join('')}</div>` : '';
+    if (st === 'pass') return `<div class="links">${links}</div><p class="muted" style="margin:8px 0 0">Passed every runtime assertion with no forbidden pattern.</p>${refs}`;
+    return `
+      <div class="links">${links}</div>
+      <div class="kv"><span>why <b>${esc(f.reason)}</b></span>${f.runtime_score != null ? `<span>runtime <b>${pct(f.runtime_score)}</b></span>` : ''}</div>
+      ${f.error ? `<p class="notice fail" style="margin:10px 0 0">${esc(plain(f.error))}</p>` : ''}
+      ${f.assertions?.length ? `<h4>Failed assertions</h4><ul class="checks">${f.assertions.map(a => `<li><span class="mark" aria-label="failed">✗</span><div>${esc(plain(a))}</div></li>`).join('')}</ul>` : ''}
+      ${f.stderr ? `<h4>stderr</h4><pre><code>${esc(plain(f.stderr))}</code></pre>` : ''}
+      ${refs}`;
+  }
+
+  function viewTest(r, s) {
+    const cat = s.tests.get(r.test);
+    if (!cat) { main.innerHTML = `${crumbs(s, [[esc(r.test)]])}<div class="status">No test called <code>${esc(r.test)}</code> in ${esc(s.name)}.</div>`; return; }
+    const rows = boardRuns(s);
+    const ran = rows.filter(x => statusOf(x, r.test) !== 'none');
+    const passed = ran.filter(x => statusOf(x, r.test) === 'pass');
+    const order = { fail: 0, error: 1, pass: 2, none: 3 };
+    const listed = [...rows].sort((a, b) => order[statusOf(a, r.test)] - order[statusOf(b, r.test)] || a.rank - b.rank);
+    const idx = s.index.get(r.test);
+    const prev = s.order[idx - 1], next = s.order[idx + 1];
+    main.innerHTML = `
+      ${crumbs(s, [[esc(cat), H.cat(s.name, cat)], [esc(r.test)]])}
+      <div class="hero">
+        <div>
+          <h1>${esc(r.test)}</h1>
+          <div class="chips"><a class="chip" href="${H.cat(s.name, cat)}">${esc(cat)}</a><a class="chip" href="${esc(definitionUrl(s.name, cat))}" rel="noopener" target="_blank">Test definition ↗</a></div>
+        </div>
+        <div class="big-score"><div class="v">${passed.length}<small> / ${ran.length}</small></div><div class="l">models in the ranking pass this test</div></div>
+      </div>
+      <div class="toolbar">${prev ? `<a class="btn" href="${H.test(s.name, prev[0])}">← ${esc(prev[0])}</a>` : ''}${next ? `<a class="btn" href="${H.test(s.name, next[0])}">${esc(next[0])} →</a>` : ''}</div>
+      <div class="sheet" id="testList">${listed.map((x, i) => testRow(x, r.test, s, { i, showCat: false, label: `${modelName(x.model)} ${x.synthetic ? '<span class="chip synthetic">synthetic</span>' : ''}${x.failures[r.test]?.assertions?.[0] ? `<span class="why">${esc(plain(x.failures[r.test].assertions[0]))}</span>` : ''}` })).join('') || '<div class="empty">No model in the ranking ran this test.</div>'}</div>`;
+    bindTestBodies($('testList'), (i) => [listed[i], r.test], s, { across: false });
+  }
+
+  /** Categories (from the build_data page): pass rate per category per model, one sequential ramp. */
+  function viewCategories(r, s) {
+    const rows = boardRuns(s);
+    if (!rows.length) { main.innerHTML = `<div class="sheet empty">No models in ${esc(s.name)} match the filters.</div>`; return; }
+    const stat = (x, c) => catStats(x, s).get(c);
+    const avg = (c) => rows.reduce((acc, x) => acc + (rate(stat(x, c)) ?? 0), 0) / rows.length;
+    const cats = s.cats.map(c => c.name).sort((a, b) => avg(b) - avg(a) || a.localeCompare(b));
+    const cell = (x, c) => {
+      const b = c ? stat(x, c) : { pass: x.passed, total: x.total, error: x.errored };
+      const v = rate(b), cls = seqClass(v);
+      if (!b || !b.total) return '<td><span class="cell seq na">—</span></td>';
+      return `<td><span class="cell seq ${cls}" style="background:var(--${cls.split(' ')[0]})" role="button" tabindex="0" data-model="${esc(x.model)}" data-cat="${esc(c ?? '')}" data-p="${b.pass}" data-n="${b.total - b.error}">${Math.round(v * 100)}</span></td>`;
+    };
+    main.innerHTML = `
+      ${syntheticNotice(s)}
+      <div class="toolbar"><span>Pass rate per category for each model's latest run in ${esc(s.name)}; darker is higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked <span class="chip">n&lt;5</span>: one test moves them by 20 points or more.</span><span class="grow"></span>${filterToggles()}</div>
+      <div class="sheet pad grid-wrap">
+        <table class="heat"><thead><tr><th class="cat"></th>${rows.map(x => `<th class="col${x.synthetic ? ' synthetic' : ''}" title="${esc(x.model)}${x.synthetic ? ' · synthetic' : ''}"><a href="${H.model(s.name, x.model)}">${esc(x.model)}</a></th>`).join('')}</tr></thead>
+        <tbody>
+          <tr class="total"><th class="cat">overall<span class="n">n=${s.full}</span></th>${rows.map(x => cell(x, null)).join('')}</tr>
+          ${cats.map(c => { const n = s.cats.find(x => x.name === c).count; return `<tr><th class="cat"><a href="${H.cat(s.name, c)}">${esc(c)}</a><span class="n">n=${n}</span>${n < 5 ? ' <span class="chip">n&lt;5</span>' : ''}</th>${rows.map(x => cell(x, c)).join('')}</tr>`; }).join('')}
+        </tbody></table>
+        <div class="legend">0%<span class="ramp">${[100, 200, 300, 400, 500, 600, 700].map(n => `<i style="background:var(--seq-${n})"></i>`).join('')}</span>100%</div>
+      </div>
+      <div class="sheet pad" id="cellDetail" style="margin-top:12px" hidden></div>`;
+    bindFilterToggles();
+    const heat = main.querySelector('table.heat');
+    const open = (el) => {
+      heat.querySelectorAll('.cell[aria-pressed]').forEach(x => x.removeAttribute('aria-pressed'));
+      el.setAttribute('aria-pressed', 'true');
+      showCell(s, rows.find(x => x.model === el.dataset.model), el.dataset.cat || null);
+    };
+    heat.addEventListener('click', e => { const el = e.target.closest('.cell[data-model]'); if (el) open(el); });
+    heat.addEventListener('keydown', e => { const el = e.target.closest('.cell[data-model]'); if (el && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); open(el); } });
+    heat.addEventListener('mousemove', e => { const el = e.target.closest('.cell[data-model]'); if (!el) return hideTip(); showTip(`<b>${esc(el.dataset.model)}</b><br>${esc(el.dataset.cat || 'overall')}: ${el.dataset.p}/${el.dataset.n} passed`, e.clientX, e.target.getBoundingClientRect().top); });
+    heat.addEventListener('mouseleave', hideTip);
+  }
+  function showCell(s, run, cat) {
+    if (!run) return;
+    const ids = s.order.filter(([id, c]) => (!cat || c === cat) && statusOf(run, id) !== 'none').map(([id]) => id);
+    const ok = ids.filter(id => statusOf(run, id) === 'pass').length;
+    const el = $('cellDetail');
+    el.hidden = false;
+    el.innerHTML = `<div class="section-head" style="margin:0 0 8px"><h2>${modelName(run.model, H.model(s.name, run.model))} · ${cat ? `<a href="${H.cat(s.name, cat)}" class="mono">${esc(cat)}</a>` : 'all categories'}</h2><p>${ok}/${ids.length} passed</p></div>
+      <div id="cellTests" style="margin:0 -16px -14px">${ids.map((id, i) => testRow(run, id, s, { i, showCat: !cat })).join('')}</div>`;
+    bindTestBodies($('cellTests'), (i) => [run, ids[i]], s);
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
-  // ---------- score vs cost ----------
-  function renderScatter() {
-    const rows = ranked();
-    const pts = rows.filter(r => r.cost_usd.total != null && r.scores.overall != null);
-    const svg = $('scatter'); const W = svg.clientWidth || 800, H = svg.clientHeight || 360; const m = { t: 16, r: 24, b: 44, l: 52 };
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-    if (pts.length < 1) { svg.innerHTML = `<text x="${W / 2}" y="${H / 2}" text-anchor="middle">No runs with cost estimates in this group.</text>`; return; }
-    const costs = pts.map(p => p.cost_usd.total);
+  /** Score vs cost (from the build_data page): overall against the run's estimated cost, log scale. */
+  function viewCost(r, s) {
+    const rows = boardRuns(s);
+    main.innerHTML = `
+      ${syntheticNotice(s)}
+      <div class="toolbar"><span>Overall score against the estimated cost of the full run (log scale). Up and to the left is better. Hover a point for details, click it to open the model.</span><span class="grow"></span>${filterToggles()}</div>
+      <div class="sheet pad"><svg id="scatter" class="chart" role="img" aria-label="Overall score versus estimated cost per run"></svg>
+        ${rows.some(x => x.synthetic) ? `<div class="legend"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--blueberry)"/></svg> real run</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" fill="var(--sheet)" stroke="var(--notice)" stroke-width="1.5" stroke-dasharray="2 1.5"/></svg> synthetic</span></div>` : ''}
+      </div>
+      <div class="sheet grid-wrap" style="margin-top:12px"><table class="grid">
+        <thead><tr><th class="left">model</th><th class="right">overall</th><th class="right">cost / run</th><th class="right">$ / pass</th><th class="right">passes per $</th><th class="right">tokens / test</th><th class="right">latency p50</th></tr></thead>
+        <tbody>${rows.map(x => `<tr><td class="left">${modelName(x.model, H.model(s.name, x.model))} ${chips(x, s)}</td><td class="right"><strong>${pct(x.scores.overall)}</strong></td><td class="right">${usd(x.cost.total)}</td><td class="right">${usd(x.cost.per_pass)}</td><td class="right">${x.cost.total ? (x.passed / x.cost.total).toFixed(1) : '—'}</td><td class="right">${int(x.tokens.completion_p50)}</td><td class="right">${secs(x.latency.p50)}</td></tr>`).join('')}</tbody>
+      </table></div>`;
+    bindFilterToggles();
+    drawScatter(s, rows);
+  }
+  function drawScatter(s, rows) {
+    const svg = $('scatter'); if (!svg) return;
+    const pts = rows.filter(x => x.cost.total != null && x.scores.overall != null);
+    const W = svg.clientWidth || 800, Hh = svg.clientHeight || 380, m = { t: 16, r: 28, b: 44, l: 52 };
+    svg.setAttribute('viewBox', `0 0 ${W} ${Hh}`);
+    if (!pts.length) { svg.innerHTML = `<text x="${W / 2}" y="${Hh / 2}" text-anchor="middle">No runs with cost estimates in this suite.</text>`; return; }
+    const costs = pts.map(p => p.cost.total);
     const lo = Math.pow(10, Math.floor(Math.log10(Math.min(...costs)))), hi = Math.pow(10, Math.ceil(Math.log10(Math.max(...costs))));
     const x = (c) => m.l + (Math.log10(c) - Math.log10(lo)) / (Math.log10(hi) - Math.log10(lo) || 1) * (W - m.l - m.r);
-    const y = (s) => m.t + (1 - s) * (H - m.t - m.b);
-    let xt = []; for (let v = lo; v <= hi * 1.0001; v *= 10) xt.push(v);
+    const y = (v) => m.t + (1 - v) * (Hh - m.t - m.b);
+    const xt = []; for (let v = lo; v <= hi * 1.0001; v *= 10) xt.push(v);
     const yt = [0, .2, .4, .6, .8, 1];
-    const q = $('search').value.trim().toLowerCase();
     svg.innerHTML = `
-      <g class="grid">${yt.map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>`).join('')}</g>
-      <g class="axis"><line x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}"/><line x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${y(0)}"/></g>
-      ${yt.map(v => `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${v * 100}%</text>`).join('')}
-      ${xt.map(v => `<text x="${x(v)}" y="${H - m.b + 18}" text-anchor="middle">$${v}</text>`).join('')}
-      <text x="${(m.l + W - m.r) / 2}" y="${H - 6}" text-anchor="middle">estimated cost of the full run (log)</text>
-      ${pts.map(p => `<circle class="dot ${q && !p.model.toLowerCase().includes(q) ? 'dim' : ''}" r="6" cx="${x(p.cost_usd.total)}" cy="${y(p.scores.overall)}" data-i="${rows.indexOf(p)}"/>`).join('')}
-      ${pts.map(p => { const px = x(p.cost_usd.total); const flip = px > W - m.r - 160; return `<text class="lbl" x="${px + (flip ? -10 : 10)}" y="${y(p.scores.overall) + 4}" text-anchor="${flip ? 'end' : 'start'}">${esc(p.model)}</text>`; }).join('')}`;
+      ${yt.map(v => `<line class="gridline" x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}"/>`).join('')}
+      <line class="axis" x1="${m.l}" x2="${W - m.r}" y1="${y(0)}" y2="${y(0)}"/><line class="axis" x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${y(0)}"/>
+      ${yt.map(v => `<text x="${m.l - 8}" y="${y(v) + 4}" text-anchor="end">${Math.round(v * 100)}%</text>`).join('')}
+      ${xt.map(v => `<text x="${x(v)}" y="${Hh - m.b + 18}" text-anchor="middle">$${v >= 1 ? v : v.toFixed(-Math.floor(Math.log10(v)))}</text>`).join('')}
+      <text x="${(m.l + W - m.r) / 2}" y="${Hh - 6}" text-anchor="middle">estimated cost of the full run (log)</text>
+      ${pts.map((p, i) => `<circle class="dot${p.synthetic ? ' synthetic' : ''}" r="6" cx="${x(p.cost.total)}" cy="${y(p.scores.overall)}" data-i="${i}" tabindex="0" role="link" aria-label="${esc(p.model)}: ${pct(p.scores.overall)}, ${usd(p.cost.total)}"/>`).join('')}
+      ${pts.map(p => `<text class="lbl${p.synthetic ? ' synthetic' : ''}" x="${x(p.cost.total) + 10}" y="${y(p.scores.overall) + 4}">${esc(shortName(p.model))}</text>`).join('')}`;
     svg.querySelectorAll('.dot').forEach(d => {
-      const p = rows[+d.dataset.i];
-      d.addEventListener('mousemove', e => showTip(e, `${p.model}\noverall ${pct(p.scores.overall)} · ${usd(p.cost_usd.total)} per run\n${usd(p.cost_usd.per_pass)} per passed test · p50 ${ms(p.latency_ms.p50)}`));
+      const p = pts[+d.dataset.i];
+      d.addEventListener('mousemove', e => showTip(`<b>${esc(p.model)}</b>${p.synthetic ? ' · synthetic' : ''}<br>overall ${pct(p.scores.overall)} · ${usd(p.cost.total)} per run<br>${usd(p.cost.per_pass)} per passed test · p50 ${secs(p.latency.p50)}`, e.clientX, d.getBoundingClientRect().top));
       d.addEventListener('mouseleave', hideTip);
+      const go = () => { location.hash = H.model(s.name, p.model); };
+      d.addEventListener('click', go);
+      d.addEventListener('keydown', e => { if (e.key === 'Enter') go(); });
     });
-    document.querySelector('#costTable tbody').innerHTML = rows.filter(searchHit).map(r => `<tr><td class="left model">${esc(r.model)}</td><td>${pct(r.scores.overall)}</td><td>${usd(r.cost_usd.total)}</td><td>${usd(r.cost_usd.per_pass)}</td><td>${r.cost_usd.total ? (r.tests.passed / r.cost_usd.total).toFixed(1) : '—'}</td><td>${num(r.tokens.completion_p50)}</td><td>${ms(r.latency_ms.p50)}</td></tr>`).join('');
+  }
+  addEventListener('resize', () => { const r = S.loaded && route(); if (r && r.view === 'cost') drawScatter(S.suites.get(r.suite), boardRuns(S.suites.get(r.suite))); });
+
+  function viewCategory(r, s) {
+    const c = s.cats.find(x => x.name === r.cat);
+    if (!c) { main.innerHTML = `${crumbs(s, [[esc(r.cat)]])}<div class="status">No category called <code>${esc(r.cat)}</code> in ${esc(s.name)}.</div>`; return; }
+    const rows = boardRuns(s);
+    const ids = s.order.slice(c.start, c.start + c.count).map(([id]) => id);
+    const mark = (st) => st === 'pass' ? '<span class="ok" aria-label="passed">✓</span>' : st === 'fail' ? '<span class="ko" aria-label="failed">✗</span>' : st === 'error' ? '<span class="er" aria-label="errored">!</span>' : '<span class="na" aria-label="not run">·</span>';
+    main.innerHTML = `
+      ${crumbs(s, [['categories', H.cats(s.name)], [esc(c.name)]])}
+      <div class="hero"><div><h1>${esc(c.name)}</h1><div class="chips"><span class="chip">${c.count} tests</span><a class="chip" href="${esc(definitionUrl(s.name, c.name))}" rel="noopener" target="_blank">Test definitions ↗</a></div></div></div>
+      <div class="sheet grid-wrap"><table class="grid">
+        <thead><tr><th class="rowh">test</th><th>passed by</th>${rows.map(x => `<th title="${esc(x.model)}"><a href="${H.model(s.name, x.model)}">${esc(shortName(x.model))}</a>${x.synthetic ? '<br><span class="chip synthetic">synthetic</span>' : ''}</th>`).join('')}</tr></thead>
+        <tbody>${ids.map(id => {
+          const sts = rows.map(x => statusOf(x, id));
+          const ran = sts.filter(v => v !== 'none').length, ok = sts.filter(v => v === 'pass').length;
+          return `<tr><th class="rowh"><a href="${H.test(s.name, id)}">${esc(id)}</a></th>${seqCell(ran ? ok / ran : null, `${ok}/${ran}`)}${sts.map(st => `<td class="mark"><a href="${H.test(s.name, id)}" title="${STATUS[st]}">${mark(st)}</a></td>`).join('')}</tr>`;
+        }).join('')}</tbody>
+      </table></div>`;
   }
 
-  // ---------- head to head ----------
-  function renderH2H() {
-    const rows = ranked();
-    const a = $('h2hA'), b = $('h2hB');
-    const prevA = a.value, prevB = b.value;
-    const opts = rows.map(r => `<option value="${esc(r.model)}">${esc(r.model)} (${pct(r.scores.overall, 0)})</option>`).join('');
-    a.innerHTML = opts; b.innerHTML = opts;
-    a.value = rows.some(r => r.model === prevA) ? prevA : rows[0]?.model; b.value = rows.some(r => r.model === prevB) && prevB !== a.value ? prevB : (rows[1] || rows[0])?.model;
-    if (!h2hInit) { a.addEventListener('change', renderH2H); b.addEventListener('change', renderH2H); h2hInit = true; }
-    const A = rows.find(r => r.model === a.value), B = rows.find(r => r.model === b.value);
-    const box = $('h2h');
-    if (!A || !B) { box.innerHTML = '<div class="card pad status">Need two models in this group.</div>'; $('h2hSummary').textContent = ''; return; }
-    const ids = Object.keys(DATA.tests).filter(t => (A.passed_ids.includes(t) || A.failures[t]) && (B.passed_ids.includes(t) || B.failures[t]));
-    const onlyA = ids.filter(t => A.failures[t] && !B.failures[t]), onlyB = ids.filter(t => B.failures[t] && !A.failures[t]), both = ids.filter(t => A.failures[t] && B.failures[t]);
-    const d = (A.scores.overall - B.scores.overall) * 100;
-    $('h2hSummary').innerHTML = `${ids.length} shared tests · <code>${esc(A.model)}</code> ${d >= 0 ? '+' : ''}${d.toFixed(1)} pts · ${A.cost_usd.total && B.cost_usd.total ? (A.cost_usd.total / B.cost_usd.total).toFixed(1) + '× the cost' : ''}`;
-    const list = (ts, who) => ts.length ? `<ul>${ts.map(t => { const f = who?.failures[t]; return `<li><code>${esc(t)}</code> <span class="muted">${esc(DATA.tests[t]?.category)}</span>${f?.assertions?.length ? `<div class="why">${esc(f.assertions[0])}</div>` : ''}</li>`; }).join('')}</ul>` : '<p class="muted">None</p>';
-    box.innerHTML = `
-      <div class="card pad"><h3>Only <code>${esc(A.model)}</code> fails<span class="pill">${onlyA.length}</span></h3>${list(onlyA, A)}</div>
-      <div class="card pad"><h3>Only <code>${esc(B.model)}</code> fails<span class="pill">${onlyB.length}</span></h3>${list(onlyB, B)}</div>
-      <div class="card pad"><h3>Both fail<span class="pill">${both.length}</span></h3>${list(both, A)}</div>`;
+  function viewCompare(r, s) {
+    const runs = S.compare.map(m => primaryRun(s, m)).filter(Boolean);
+    if (runs.length < 2) {
+      main.innerHTML = `<div class="section-head" style="margin-top:0"><h2>Compare models</h2></div><div class="sheet empty">Tick two or three models in the <a href="${H.board(s.name)}">ranking</a> to line their tests up here.${runs.length ? ` Picked so far: ${runs.map(x => `<code>${esc(x.model)}</code>`).join(', ')}.` : ''}</div>`;
+      return;
+    }
+    const [a] = runs;
+    const only = runs.map(() => []), allFailed = [], mixed = [];
+    for (const [id] of s.order) {
+      const st = runs.map(x => statusOf(x, id));
+      if (st.every(v => v === 'none')) continue;
+      const pass = st.map(v => v === 'pass');
+      const n = pass.filter(Boolean).length;
+      if (n === runs.length) continue;
+      if (n === 0) { if (st.some(v => v === 'fail' || v === 'error')) allFailed.push(id); continue; }
+      if (n === 1) only[pass.indexOf(true)].push(id); else mixed.push(id);
+    }
+    const catRows = s.cats.map(c => ({ c, rates: runs.map(x => rate(catStats(x, s).get(c.name))) }))
+      .map(row => ({ ...row, spread: Math.max(...row.rates.map(v => v ?? 0)) - Math.min(...row.rates.map(v => v ?? 0)) }))
+      .sort((x, y) => y.spread - x.spread || x.c.name.localeCompare(y.c.name));
+    const ids = (list) => list.length ? `<div class="idlist">${list.map(id => `<a href="${H.test(s.name, id)}">${esc(id)}</a>`).join('')}</div>` : '<p class="muted" style="margin:6px 0 0">None.</p>';
+    const delta = (x) => { const d = (x.scores.overall - a.scores.overall) * 100; return `<span class="${d >= 0 ? 'delta-up' : 'delta-down'}" style="font-size:13px;font-weight:500">${d >= 0 ? '+' : ''}${d.toFixed(1)}</span>`; };
+    main.innerHTML = `
+      ${crumbs(s, [['compare']])}
+      <div class="cmp-heads">${runs.map((x, i) => `<div class="sheet">${modelName(x.model, H.model(s.name, x.model))}<div>${chips(x, s)}</div><div class="score" style="text-align:left">${(x.scores.overall * 100).toFixed(1)}<small>%</small> ${i ? delta(x) : ''}</div><div class="muted num" style="font-size:12.5px">${x.passed}/${x.total} passed · ${usd(x.cost.total)}${i && a.cost.total && x.cost.total ? ` (${(x.cost.total / a.cost.total).toFixed(1)}×)` : ''} · ${secs(x.latency.p50)}</div></div>`).join('')}</div>
+      <div class="sheet cmp-lanes" id="board">
+        <div class="ruler-wrap"><div class="ruler-label" id="rulerLabel" style="margin-left:0"><span>Strips line up test by test · hover to find a category or test</span></div><div class="lane">${ruler(s)}</div></div>
+        <ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto"><span class="who">${modelName(x.model)}</span><span class="facts num">${x.passed}/${x.total}</span></div><div class="lane${x.synthetic ? ' synthetic' : ''}">${strip(x, s)}</div></li>`).join('')}</ol>
+      </div>
+      <div class="section-head"><h2>Where they differ</h2><p>${only.reduce((n, l) => n + l.length, 0) + mixed.length} tests split the models · ${allFailed.length} fail everywhere</p></div>
+      <div class="diff-groups">
+        ${runs.map((x, i) => `<div class="sheet"><h3>Only ${modelName(x.model)} passed <span class="c num">${only[i].length}</span></h3>${ids(only[i])}</div>`).join('')}
+        ${runs.length > 2 ? `<div class="sheet"><h3>Split <span class="c num">${mixed.length}</span></h3>${ids(mixed)}</div>` : ''}
+        <div class="sheet"><h3>Every model failed <span class="c num">${allFailed.length}</span></h3>${ids(allFailed)}</div>
+      </div>
+      <div class="section-head"><h2>Categories</h2><p>largest gaps first</p></div>
+      <div class="sheet grid-wrap"><table class="grid">
+        <thead><tr><th class="rowh">category</th>${runs.map(x => `<th>${esc(shortName(x.model))}</th>`).join('')}<th>gap</th></tr></thead>
+        <tbody>${catRows.map(({ c, rates, spread }) => `<tr><th class="rowh"><a href="${H.cat(s.name, c.name)}">${esc(c.name)}</a></th>${rates.map(v => seqCell(v, pct(v, 0))).join('')}<td class="num muted">${spread ? (spread * 100).toFixed(0) + ' pts' : '—'}</td></tr>`).join('')}</tbody>
+      </table></div>`;
   }
 
-  // ---------- hardest ----------
-  function hardestRows(rows) {
-    const fails = {};
-    for (const r of rows) for (const [t, f] of Object.entries(r.failures)) (fails[t] ||= { models: [], why: new Set() }).models.push(r.model), f.assertions.forEach(a => fails[t].why.add(a));
-    return Object.entries(fails).map(([t, v]) => ({ t, fails: v.models.length, models: v.models, why: [...v.why], ...DATA.tests[t] })).sort((a, b) => b.fails - a.fails || a.t.localeCompare(b.t));
-  }
-  function renderHardest() {
-    const rows = ranked();
-    const hard = hardestRows(rows).filter(h => h.fails > 0);
-    document.querySelector('#hardest tbody').innerHTML = hard.length ? hard.slice(0, 80).map(h => `<tr>
-      <td class="left"><code>${esc(h.t)}</code></td><td class="left">${esc(h.category)}</td>
-      <td><strong>${h.fails}</strong>/${rows.length}${h.fails === rows.length && rows.length > 1 ? '<span class="tag">all</span>' : ''}</td>
-      <td class="left" style="white-space:normal;max-width:260px">${h.models.map(m => `<code>${esc(m)}</code>`).join(', ')}</td>
-      <td class="left" style="white-space:normal;max-width:360px">${esc(h.why.slice(0, 2).join('; ') || '—')}</td>
-      <td class="left" style="white-space:normal;max-width:300px">${(h.source_refs || []).slice(0, 3).map(s => `<code>${esc(s.replace(/^src\//, ''))}</code>`).join('<br>')}</td>
-    </tr>`).join('') : '<tr><td colspan="6" class="status">No failures in this group.</td></tr>';
-  }
-
-  // ---------- history ----------
-  function renderHistory() {
-    const H = DATA.history; const el = $('commits');
-    if (!H.length) { el.innerHTML = '<div class="status">No commits recorded in the data file.</div>'; return; }
-    if (el.dataset.done) return; el.dataset.done = '1';
-    el.innerHTML = H.map((c, i) => `<div class="commit" data-i="${i}">
-      <div class="msg" title="${esc(c.message)}">${esc(c.message.split('\n')[0])}</div>
-      <div class="meta"><span>${esc(c.author)}</span><span>${esc(c.date.slice(0, 10))}</span><a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank" onclick="event.stopPropagation()"><code>${esc(c.short)}</code></a><span>${c.added.length ? `+${c.added.length} ` : ''}${c.removed.length ? `−${c.removed.length} ` : ''}${c.modified.length ? `~${c.modified.length}` : ''}</span></div></div>`).join('');
-    el.querySelectorAll('.commit').forEach(d => d.addEventListener('click', () => showCommit(+d.dataset.i)));
+  /** History (from the build_data page): every commit that touched the results folder, with score snapshots. */
+  function viewHistory() {
+    const Hs = S.data.history || [];
+    main.innerHTML = `
+      <div class="section-head" style="margin-top:0"><h2>History</h2><p>every commit that touched <code>${RESULTS}</code> · pick one to see which runs it added, removed or changed and how the latest score per model moved</p></div>
+      ${Hs.length ? `<div class="hist"><div class="sheet commits" id="commits">${Hs.map((c, i) => `
+        <div class="commit" data-i="${i}" tabindex="0">
+          <div class="msg" title="${esc(c.message)}">${esc(c.message.split('\n')[0])}</div>
+          <div class="meta"><span>${esc(c.author)}</span><span>${esc(c.date.slice(0, 10))}</span><a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank" onclick="event.stopPropagation()"><code>${esc(c.short)}</code></a><span>${c.added.length ? `+${c.added.length} ` : ''}${c.removed.length ? `−${c.removed.length} ` : ''}${c.modified.length ? `~${c.modified.length}` : ''}</span></div>
+        </div>`).join('')}</div><div class="sheet diff" id="diff"></div></div>` : '<div class="sheet empty">No commits recorded in the data file.</div>'}`;
+    if (!Hs.length) return;
+    $('commits').querySelectorAll('.commit').forEach(el => {
+      const open = () => showCommit(+el.dataset.i);
+      el.addEventListener('click', open);
+      el.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+    });
     showCommit(0);
   }
   function showCommit(i) {
-    const H = DATA.history; const c = H[i]; const prev = H[i + 1];
-    document.querySelectorAll('.commit').forEach(d => d.classList.toggle('active', +d.dataset.i === i));
-    const latest = (snap) => { const m = new Map(); for (const s of snap) { const ts = (s.file.match(/results_(\d{8}_\d{6})/) || [])[1] || ''; if (!m.has(s.model) || ts > m.get(s.model).ts) m.set(s.model, { ...s, ts }); } return m; };
+    const Hs = S.data.history, c = Hs[i], prev = Hs[i + 1];
+    $('commits').querySelectorAll('.commit').forEach(d => d.classList.toggle('active', +d.dataset.i === i));
+    const synth = new Set(S.runs.filter(r => r.synthetic).map(r => `${r.file}#${r.model}`));
+    const latest = (snap) => { const m = new Map(); for (const x of snap) { const k = `${x.suite} · ${x.model}`; const ts = (x.file.match(/results_(\d{8}_\d{6})/) || [])[1] || ''; if (!m.has(k) || ts > m.get(k).ts) m.set(k, { ...x, ts }); } return m; };
     const A = latest(c.snapshot), B = latest(prev ? prev.snapshot : []);
     const added = [...A.keys()].filter(k => !B.has(k)), removed = [...B.keys()].filter(k => !A.has(k));
     const changed = [...A.keys()].filter(k => B.has(k) && (A.get(k).overall !== B.get(k).overall || A.get(k).file !== B.get(k).file));
-    const row = (s) => `<li><code>${esc(s.model)}</code> <span class="muted">${esc(s.suite)} · ${esc(s.file)}</span> — ${pct(s.overall)} <span class="muted">(${s.passed}/${s.total})</span></li>`;
+    const tag = (x) => synth.has(`${x.file}#${x.model}`) ? ' <span class="chip synthetic">synthetic</span>' : '';
+    const row = (x) => `<li>${modelName(x.model)}${tag(x)} <span class="muted">${esc(x.suite)} · ${esc(x.file)}</span> — <strong>${pct(x.overall)}</strong> <span class="muted">(${x.passed}/${x.total})</span></li>`;
     $('diff').innerHTML = `
       <p style="margin:0 0 4px;white-space:pre-wrap"><strong>${esc(c.message.split('\n')[0])}</strong>${c.message.includes('\n') ? '\n' + esc(c.message.split('\n').slice(1).join('\n').trim()) : ''}</p>
-      <p class="sub" style="margin:0 0 10px">${esc(c.author)} · ${esc(c.date.replace('T', ' ').slice(0, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · files: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || 'none'}</p>
-      <p class="sub">${A.size} models after this commit, ${B.size} before.</p>
-      <h3>Models added<span class="pill">${added.length}</span></h3>${added.length ? `<ul class="plain">${added.map(k => row(A.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
-      <h3>Models removed<span class="pill">${removed.length}</span></h3>${removed.length ? `<ul class="plain">${removed.map(k => row(B.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
-      <h3>Latest run changed<span class="pill">${changed.length}</span></h3>${changed.length ? `<ul class="plain">${changed.map(k => { const a = A.get(k), b = B.get(k); const d = (a.overall - b.overall) * 100; return `<li><code>${esc(k)}</code>: ${pct(b.overall)} → <span class="${d >= 0 ? 'up' : 'down'}">${pct(a.overall)} (${d >= 0 ? '+' : ''}${d.toFixed(1)})</span> <span class="muted">${esc(b.file)} → ${esc(a.file)}</span></li>`; }).join('')}</ul>` : '<p class="muted">None</p>'}`;
+      <p class="muted" style="margin:0 0 10px;font-size:12.5px">${esc(c.author)} · ${esc(c.date.replace('T', ' ').slice(0, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · files: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || 'none'}</p>
+      <p class="faint" style="margin:0;font-size:12.5px">${A.size} model runs after this commit, ${B.size} before.</p>
+      <h3>Models added <span class="faint num">${added.length}</span></h3>${added.length ? `<ul>${added.map(k => row(A.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
+      <h3>Models removed <span class="faint num">${removed.length}</span></h3>${removed.length ? `<ul>${removed.map(k => row(B.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
+      <h3>Latest run changed <span class="faint num">${changed.length}</span></h3>${changed.length ? `<ul>${changed.map(k => { const x = A.get(k), y = B.get(k); const d = (x.overall - y.overall) * 100; return `<li>${modelName(x.model)} <span class="muted">${esc(x.suite)}</span>: ${pct(y.overall)} → <span class="${d >= 0 ? 'delta-up' : 'delta-down'}">${pct(x.overall)} (${d >= 0 ? '+' : ''}${d.toFixed(1)})</span> <span class="muted">${esc(y.file)} → ${esc(x.file)}</span></li>`; }).join('')}</ul>` : '<p class="muted">None</p>'}`;
+  }
+
+  /** How it works (from the build_data page): the publishing flow and what gets ranked. */
+  function viewHow() {
+    const mono = 'class="m"';
+    main.innerHTML = `
+      <div class="section-head" style="margin-top:0"><h2>How it works</h2><p>raw run outputs are the source of truth; one small prebuilt data file is all this page needs</p></div>
+      <figure class="sheet pad" style="margin:0">
+        <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.">
+          <defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker></defs>
+          <g fill="none" stroke="currentColor" stroke-width="1.5">
+            <rect x="20" y="130" width="190" height="120" rx="8"/>
+            <rect x="300" y="40" width="380" height="340" rx="8"/>
+            <rect x="325" y="110" width="150" height="70" rx="6"/>
+            <rect x="325" y="300" width="150" height="56" rx="6"/>
+            <rect x="505" y="110" width="150" height="56" rx="6"/>
+            <rect x="505" y="300" width="150" height="56" rx="6"/>
+            <rect x="755" y="100" width="200" height="80" rx="8"/>
+            <rect x="755" y="290" width="200" height="70" rx="8"/>
+            <rect x="20" y="300" width="190" height="80" rx="8" stroke-dasharray="5 4"/>
+          </g>
+          <rect class="claim" x="505" y="190" width="150" height="70" rx="6"/>
+          <g fill="currentColor" font-size="12">
+            <text x="115" y="155" text-anchor="middle" class="t">Contributor or agent</text>
+            <text x="115" y="178" text-anchor="middle" ${mono}>wp-bench run</text>
+            <text x="115" y="200" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.json</text>
+            <text x="115" y="216" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.jsonl</text>
+            <text x="490" y="68" text-anchor="middle" class="t">wp-bench-results repository</text>
+            <text x="490" y="86" text-anchor="middle" font-size="11" class="dim">public · pull requests · CI</text>
+            <text x="400" y="135" text-anchor="middle" ${mono}>results/</text>
+            <text x="400" y="152" text-anchor="middle" font-size="11">raw run outputs,</text>
+            <text x="400" y="167" text-anchor="middle" font-size="11">copied unchanged</text>
+            <text x="400" y="323" text-anchor="middle" ${mono}>git log</text>
+            <text x="400" y="341" text-anchor="middle" font-size="11">who published, when</text>
+            <text x="580" y="133" text-anchor="middle" ${mono}>site/build_data.py</text>
+            <text x="580" y="152" text-anchor="middle" font-size="11">aggregates per run</text>
+            <text x="580" y="215" text-anchor="middle" ${mono}>site/data/</text>
+            <text x="580" y="231" text-anchor="middle" ${mono}>leaderboard.json</text>
+            <text x="580" y="248" text-anchor="middle" font-size="11">~65 KB per run</text>
+            <text x="580" y="323" text-anchor="middle" ${mono}>site/index.html</text>
+            <text x="580" y="341" text-anchor="middle" font-size="11">static page</text>
+            <text x="855" y="125" text-anchor="middle" class="t">Spacefast</text>
+            <text x="855" y="145" text-anchor="middle" font-size="11">serves site/ at</text>
+            <text x="855" y="162" text-anchor="middle" font-size="11">wpbench-leaderboard.space.fast</text>
+            <text x="855" y="316" text-anchor="middle" class="t">Your browser</text>
+            <text x="855" y="336" text-anchor="middle" font-size="11">fetches one data file,</text>
+            <text x="855" y="351" text-anchor="middle" font-size="11">no API calls</text>
+            <text x="115" y="325" text-anchor="middle" class="t">WordPress/wp-bench</text>
+            <text x="115" y="343" text-anchor="middle" ${mono}>AGENTS.md</text>
+            <text x="115" y="361" text-anchor="middle" font-size="11">check here before a run</text>
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)">
+            <line x1="210" y1="170" x2="325" y2="150"/>
+            <line x1="475" y1="145" x2="505" y2="140"/>
+            <line x1="475" y1="320" x2="505" y2="222"/>
+            <line x1="580" y1="166" x2="580" y2="190"/>
+            <line x1="580" y1="260" x2="580" y2="300"/>
+            <line x1="680" y1="140" x2="755" y2="140"/>
+            <line x1="855" y1="180" x2="855" y2="290"/>
+          </g>
+          <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)"><line x1="210" y1="310" x2="300" y2="250"/></g>
+          <g fill="currentColor" font-size="11" class="dim">
+            <text x="268" y="150" text-anchor="middle">copy + PR</text>
+            <text x="232" y="318" text-anchor="middle">reads the data</text>
+            <text x="232" y="331" text-anchor="middle">before a run</text>
+            <text x="490" y="104" text-anchor="middle">reads</text>
+            <text x="470" y="262" text-anchor="middle">attribution</text>
+            <text x="602" y="182" text-anchor="start">writes</text>
+            <text x="602" y="285" text-anchor="start">renders</text>
+            <text x="717" y="128" text-anchor="middle">push to main</text>
+            <text x="717" y="158" text-anchor="middle">→ deploy</text>
+            <text x="866" y="240" text-anchor="start">GET /data/</text>
+            <text x="866" y="254" text-anchor="start">leaderboard.json</text>
+          </g>
+        </svg>
+        <figcaption class="muted" style="margin-top:10px;font-size:13px">The data file is the one thing the page reads; the repository's git history is the audit trail.</figcaption>
+      </figure>
+      <div class="split" style="margin-top:16px">
+        <section class="sheet pad">
+          <h2 style="margin-bottom:8px">Publishing a run</h2>
+          <ol style="margin:0;padding-left:20px;line-height:1.7">
+            <li>Check the model is not already listed for the suite (this page, or <code>site/data/leaderboard.json</code>). <code>AGENTS.md</code> in wp-bench makes agents do this before running anything.</li>
+            <li>Run the benchmark: <code>wp-bench run</code> writes <code>output/results_&lt;timestamp&gt;.json</code> and <code>.jsonl</code>.</li>
+            <li>Fork <a href="https://github.com/${esc(REPO)}" rel="noopener">${esc(REPO)}</a>, copy both files into <code>results/</code>, commit. That commit is the run's attribution here.</li>
+            <li>Run <code>python3 site/build_data.py</code>, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.</li>
+            <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
+          </ol>
+        </section>
+        <section class="sheet pad">
+          <h2 style="margin-bottom:8px">What gets ranked</h2>
+          <p style="margin:0 0 8px">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite) and other scoring versions are listed under "Not ranked", never ranked with full runs.</p>
+          <p style="margin:0 0 8px">Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
+          <p class="muted" style="margin:0">Synthetic runs from <code>examples/synthetic</code> exist only for developing this page and are never published.</p>
+        </section>
+      </div>`;
+  }
+
+  function crumbs(s, parts) {
+    return `<nav class="crumbs" aria-label="Breadcrumb"><a href="${H.board(s.name)}">${esc(s.name)}</a>${parts.map(([label, href], i) => `<span aria-hidden="true">›</span>${href ? `<a href="${href}">${label}</a>` : `<span class="here"${i === parts.length - 1 ? ' aria-current="page"' : ''}>${label}</span>`}`).join('')}</nav>`;
+  }
+
+  // ---------- compare tray ----------
+  function renderTray(r) {
+    const tray = $('tray');
+    const show = S.compare.length && r.view !== 'compare' && !GLOBAL_VIEWS.includes(r.view);
+    tray.hidden = !show;
+    if (!show) return;
+    tray.innerHTML = `<span class="names">${S.compare.map(m => `<span>${esc(m)}<button type="button" data-unpick="${esc(m)}" aria-label="Remove ${esc(m)}">×</button></span>`).join('')}</span>
+      ${S.compare.length > 1 ? `<a class="btn primary" href="${H.compare(r.suite, S.compare)}">Compare ${S.compare.length}</a>` : '<span class="hint">pick one more</span>'}
+      <button type="button" class="btn" data-unpick="*">Clear</button>`;
+  }
+  document.addEventListener('change', e => {
+    const box = e.target.closest('[data-pick]'); if (!box) return;
+    const m = box.dataset.pick;
+    S.compare = box.checked ? [...new Set([...S.compare, m])].slice(-3) : S.compare.filter(x => x !== m);
+    main.querySelectorAll('[data-pick]').forEach(b => { b.checked = S.compare.includes(b.dataset.pick); b.closest('.entry')?.classList.toggle('picked', b.checked); });
+    renderChrome(route()); renderTray(route());
+  });
+  $('tray').addEventListener('click', e => {
+    const b = e.target.closest('[data-unpick]'); if (!b) return;
+    S.compare = b.dataset.unpick === '*' ? [] : S.compare.filter(x => x !== b.dataset.unpick);
+    render();
+  });
+
+  // ---------- strip hover / click ----------
+  const tip = $('tip');
+  function showTip(html, x, y) {
+    tip.innerHTML = html; tip.hidden = false;
+    const w = tip.offsetWidth, h = tip.offsetHeight;
+    tip.style.left = Math.min(window.innerWidth - w - 8, Math.max(8, x - w / 2)) + 'px';
+    tip.style.top = (y - h - 12 < 8 ? y + 18 : y - h - 12) + 'px';
+  }
+  function hideTip() { tip.hidden = true; document.querySelectorAll('#board, .big-lane').forEach(el => setBand(el, null, null)); const l = $('rulerLabel'); if (l && l.dataset.idle) l.innerHTML = l.dataset.idle; }
+  main.addEventListener('mousemove', e => {
+    const svg = e.target.closest('svg.strip, svg.ruler'); if (!svg) return;
+    const s = S.suites.get(svg.dataset.suite); if (!s) return;
+    const container = svg.closest('#board, .big-lane');
+    const label = $('rulerLabel');
+    if (label && !label.dataset.idle) label.dataset.idle = label.innerHTML;
+    if (svg.classList.contains('ruler')) {
+      const c = catAt(s, svg, e.clientX);
+      setBand(container, s, c);
+      tip.hidden = true;
+      if (label) label.innerHTML = c ? `<strong>${esc(c.name)}</strong><span>${c.count} tests · click to open the category</span>` : label.dataset.idle;
+      return;
+    }
+    const [id, cat] = s.order[testIndexAt(s, svg, e.clientX)];
+    const run = S.runs.find(x => x.key === svg.dataset.run);
+    const st = run ? statusOf(run, id) : 'none';
+    const c = s.cats.find(x => x.name === cat);
+    setBand(container, s, c);
+    if (label) label.innerHTML = `<strong>${esc(cat)}</strong><span>${c.count} tests</span>`;
+    const why = run?.failures[id]?.assertions?.[0];
+    showTip(`<b>${esc(id)}</b> · <span class="s-${st}">${STATUS[st]}</span><br>${esc(run?.model || '')}${why ? `<br>${esc(plain(why))}` : ''}`, e.clientX, svg.getBoundingClientRect().top);
+  });
+  main.addEventListener('mouseleave', hideTip);
+  main.addEventListener('mouseout', e => { if (e.target.closest?.('svg.strip, svg.ruler') && !e.relatedTarget?.closest?.('svg.strip, svg.ruler')) hideTip(); });
+  main.addEventListener('click', e => {
+    const svg = e.target.closest('svg.strip, svg.ruler'); if (!svg) return;
+    const s = S.suites.get(svg.dataset.suite); if (!s) return;
+    if (svg.classList.contains('ruler')) { const c = catAt(s, svg, e.clientX); if (c) location.hash = H.cat(s.name, c.name); return; }
+    location.hash = H.test(s.name, s.order[testIndexAt(s, svg, e.clientX)][0]);
+  });
+
+  // ---------- jump-to search ----------
+  const q = $('q'), list = $('qResults');
+  let options = [], active = -1;
+  function searchIndex(term) {
+    const t = term.trim().toLowerCase();
+    if (!t) return [];
+    const rank = (text) => { const v = text.toLowerCase(); const i = v.indexOf(t); return i < 0 ? -1 : i === 0 ? 0 : 1; };
+    const take = (items, n) => items.map(x => ({ ...x, rank: rank(x.key) })).filter(x => x.rank >= 0).sort((a, b) => a.rank - b.rank || a.key.localeCompare(b.key, undefined, { numeric: true })).slice(0, n);
+    const models = [], cats = [], tests = [];
+    for (const s of S.suites.values()) {
+      for (const m of new Set(s.runs.map(x => x.model))) { const run = primaryRun(s, m); models.push({ group: 'Models', key: m, desc: `${s.name} · ${pct(run.scores.overall)}${run.synthetic ? ' · synthetic' : ''}`, href: H.model(s.name, m) }); }
+      for (const c of s.cats) cats.push({ group: 'Categories', key: c.name, desc: `${s.name} · ${c.count} tests`, href: H.cat(s.name, c.name) });
+      for (const [id, cat] of s.order) tests.push({ group: 'Tests', key: id, desc: `${s.name} · ${cat}`, href: H.test(s.name, id) });
+    }
+    return [...take(models, 6), ...take(cats, 5), ...take(tests, 8)];
+  }
+  function showResults() {
+    options = searchIndex(q.value);
+    active = options.length ? 0 : -1;
+    if (!q.value.trim()) { closeResults(); return; }
+    let group = '';
+    list.innerHTML = options.length ? options.map((o, i) => `${o.group !== group ? `<li class="group" role="presentation">${(group = o.group)}</li>` : ''}<li role="option" id="opt${i}" data-i="${i}" aria-selected="${i === active}"><span class="k">${esc(o.key)}</span><span class="d">${esc(o.desc)}</span></li>`).join('') : `<li class="none" role="presentation">Nothing matches "${esc(q.value.trim())}".</li>`;
+    list.hidden = false;
+    q.setAttribute('aria-expanded', 'true');
+    q.setAttribute('aria-activedescendant', active >= 0 ? 'opt' + active : '');
+  }
+  function closeResults() { list.hidden = true; q.setAttribute('aria-expanded', 'false'); q.removeAttribute('aria-activedescendant'); }
+  function move(d) {
+    if (!options.length) return;
+    active = (active + d + options.length) % options.length;
+    list.querySelectorAll('[role="option"]').forEach(el => el.setAttribute('aria-selected', String(+el.dataset.i === active)));
+    q.setAttribute('aria-activedescendant', 'opt' + active);
+    $('opt' + active)?.scrollIntoView({ block: 'nearest' });
+  }
+  function choose(i) { const o = options[i]; if (!o) return; location.hash = o.href; q.value = ''; closeResults(); q.blur(); }
+  q.addEventListener('input', showResults);
+  q.addEventListener('focus', () => { if (q.value.trim()) showResults(); });
+  q.addEventListener('keydown', e => {
+    if (e.key === 'ArrowDown') { e.preventDefault(); if (list.hidden) showResults(); else move(1); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); move(-1); }
+    else if (e.key === 'Enter') { e.preventDefault(); choose(active); }
+    else if (e.key === 'Escape') { if (!list.hidden) closeResults(); else { q.value = ''; q.blur(); } }
+  });
+  list.addEventListener('mousedown', e => { const li = e.target.closest('[role="option"]'); if (li) { e.preventDefault(); choose(+li.dataset.i); } });
+  document.addEventListener('click', e => { if (!e.target.closest('#search')) closeResults(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.target.closest('input, textarea, select, [contenteditable]')) { e.preventDefault(); q.focus(); q.select(); }
+  });
+
+  // ---------- local files and export ----------
+  const fileInput = Object.assign(document.createElement('input'), { type: 'file', accept: '.json,application/json', multiple: true, hidden: true });
+  document.body.append(fileInput);
+  async function addLocalFiles(files) {
+    const added = [];
+    for (const f of files) {
+      if (!/\.json$/i.test(f.name)) continue;
+      try { added.push(...runsFromRaw(f.name, JSON.parse(await f.text()))); }
+      catch (e) { console.warn('skipping', f.name, e); }
+    }
+    if (!added.length) { alert('No wp-bench run outputs found. Open output/results_<timestamp>.json files from a model run.'); return; }
+    const keys = new Set(added.map(x => x.key));
+    S.runs = S.runs.filter(x => !keys.has(x.key)).concat(added);
+    buildSuites();
+    location.hash = H.model(added[0].suite, added[0].model, added[0].file);
+    render();
+  }
+  fileInput.addEventListener('change', e => { addLocalFiles([...e.target.files]); e.target.value = ''; });
+  document.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); document.body.classList.add('dropping'); } });
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) document.body.classList.remove('dropping'); });
+  document.addEventListener('drop', e => { if (!e.dataTransfer.files.length) return; e.preventDefault(); document.body.classList.remove('dropping'); addLocalFiles([...e.dataTransfer.files]); });
+
+  function exportCsv(s, rows) {
+    const cols = [['rank', x => x.rank], ['model', x => x.model], ['suite', x => x.suite], ['overall', x => x.scores.overall], ['ci95', x => wilson(x.scores.overall, x.total)],
+      ['execution_pass_rate', x => x.scores.execution_pass_rate], ['runtime', x => x.scores.runtime], ['static_policy_pass_rate', x => x.scores.static_policy_pass_rate],
+      ['scoring_version', x => x.scoring_version], ['passed', x => x.passed], ['total', x => x.total], ['suite_size', () => s.full], ['errored', x => x.errored],
+      ['cost_usd', x => x.cost.total], ['cost_per_pass_usd', x => x.cost.per_pass], ['latency_p50_ms', x => x.latency.p50], ['latency_p90_ms', x => x.latency.p90],
+      ['run_date', x => x.run_date], ['file', x => x.file], ['synthetic', x => x.synthetic], ['published_by', x => x.published?.by]];
+    const cell = (v) => v == null ? '' : /[",\n]/.test(String(v)) ? `"${String(v).replace(/"/g, '""')}"` : String(v);
+    const csv = [cols.map(c => c[0]).join(','), ...rows.map(x => cols.map(([, f]) => cell(f(x))).join(','))].join('\n') + '\n';
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })), download: `wp-bench-${s.name}.csv` });
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   }
 
   // ---------- boot ----------
-  function renderAll() {
-    const tab = document.querySelector('.tabs button[aria-selected="true"]').dataset.tab;
-    ({ board: renderBoard, categories: renderHeatmap, cost: renderScatter, h2h: renderH2H, hardest: renderHardest, history: renderHistory, how: () => {} })[tab]();
-  }
-  function fillGroupFilters() {
-    const groups = {};
-    for (const r of DATA.runs) (groups[r.suite ?? '—'] ||= new Set()).add(r.scoring_version ?? '—');
-    const suites = Object.keys(groups).sort();
-    const pick = (sel, values, prefer) => { sel.innerHTML = values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join(''); sel.value = values.includes(prefer) ? prefer : values[0]; };
-    // default: the group with the most models
-    const count = (s, v) => latestByModel(DATA.runs.filter(r => (r.suite ?? '—') === s && (r.scoring_version ?? '—') === v)).length;
-    let best = null; for (const s of suites) for (const v of groups[s]) if (!best || count(s, v) > count(...best)) best = [s, v];
-    pick($('suiteFilter'), suites, best?.[0]);
-    const refreshScoring = () => pick($('scoringFilter'), [...(groups[suite()] || [])].sort().reverse(), best?.[1]);
-    refreshScoring();
-    $('suiteFilter').addEventListener('change', () => { refreshScoring(); renderAll(); });
-    ['scoringFilter', 'allRuns', 'search'].forEach(id => $(id).addEventListener('input', renderAll));
-  }
-  fetch('data/leaderboard.json', { cache: 'no-cache' }).then(r => { if (!r.ok) throw new Error(`${r.status} ${r.statusText}`); return r.json(); }).then(d => {
-    DATA = d;
-    $('srcLine').textContent = `${d.runs.length} runs · ${Object.keys(d.tests).length} tests · data built ${d.generated_at.replace('T', ' ').slice(0, 16)} UTC${d.source_commit ? ' from ' + d.source_commit.slice(0, 7) : ''}`;
-    fillGroupFilters(); selectTab(location.hash.slice(1) || 'board', false);
-    addEventListener('resize', () => { if (!$('panel-cost').hidden) renderScatter(); });
-  }).catch(e => { document.querySelector('#board tbody').innerHTML = `<tr><td colspan="12" class="status err">Could not load data/leaderboard.json — ${esc(e.message)}</td></tr>`; $('srcLine').textContent = ''; });
+  window.addEventListener('hashchange', () => { render(); window.scrollTo({ top: 0 }); });
+  fetch(DATA_URL, { cache: 'no-cache' })
+    .then(res => { if (!res.ok) throw new Error(`${res.status} ${res.statusText}`); return res.json(); })
+    .then(d => {
+      S.data = d;
+      RESULTS = d.results_dir || 'results';
+      S.runs = (d.runs || []).map(r => adapt(r));
+      buildSuites();
+      S.loaded = true;
+      $('srcLine').textContent = `${S.runs.length} runs · ${Object.keys(d.tests || {}).length} tests · data built ${String(d.generated_at || '').replace('T', ' ').slice(0, 16)} UTC${qs.get('data') ? ` · ${DATA_URL}` : d.source_commit ? ` from ${REPO}@${d.source_commit.slice(0, 7)}` : ''}`;
+      render();
+    })
+    .catch(e => { main.innerHTML = `<div class="status err">Couldn't load the leaderboard data.<br><span class="muted">${esc(DATA_URL)} · ${esc(e.message)}</span></div>`; });
 })();
 </script>
 </body>
