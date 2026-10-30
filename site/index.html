@@ -175,6 +175,39 @@
   .lane { position: relative; margin: 8px 0 0 70px; }
   .lane::after { content: ""; position: absolute; top: -3px; bottom: -3px; left: var(--band-l, 0); width: var(--band-w, 0); background: var(--blueberry-wash); border-left: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); border-right: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); pointer-events: none; display: var(--band-d, none); }
   .lane.synthetic { background: var(--hatch); border-radius: 2px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  /* home list (the build_data page's table, with a compare column) */
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
+  .tile { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; min-width: 0; }
+  .tile .k { font-size: 11px; font-weight: 500; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .tile .v { font-size: 22px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; margin-top: 2px; }
+  .tile .s { font-size: 12px; color: var(--ink-3); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .tile .s a { color: inherit; }
+  table.board { border-collapse: collapse; width: 100%; font-size: 13px; }
+  table.board th, table.board td { padding: 8px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  table.board tbody tr:last-child td { border-bottom: 0; }
+  table.board th.left, table.board td.left { text-align: left; }
+  table.board thead th { position: sticky; top: 0; z-index: 1; background: var(--sheet-sunk); color: var(--ink-3); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
+  table.board thead th:hover { color: var(--ink); }
+  table.board thead th.nosort { cursor: default; }
+  table.board thead th .dir { color: var(--ink-4); font-size: 10px; margin-left: 3px; }
+  table.board tbody tr:hover td { background: var(--sheet-sunk); }
+  table.board tr.picked td { background: var(--blueberry-wash); }
+  table.board tr.dim td:not(.pickc) { opacity: .5; }
+  table.board td.rank { color: var(--ink-4); }
+  table.board .pickc { width: 40px; padding: 0 0 0 8px; text-align: center; }
+  table.board .who { flex-wrap: nowrap; }
+  table.board .bar { display: inline-block; width: 56px; height: 6px; margin-left: 8px; border-radius: 3px; background: var(--rule); vertical-align: middle; overflow: hidden; }
+  table.board .bar i { display: block; height: 100%; background: var(--blueberry); }
+  table.board .ci { color: var(--ink-4); font-size: 11px; margin-left: 4px; }
+  table.board td.drawer-cell { white-space: normal; }
+  details.drawer summary { cursor: pointer; color: var(--blueberry-ink); font-size: 12px; list-style: none; }
+  details.drawer summary::-webkit-details-marker { display: none; }
+  .drawer-body { text-align: left; font-size: 12.5px; color: var(--ink-2); padding: 8px 0 4px; width: min(620px, 70vw); }
+  .drawer-body dl { display: grid; grid-template-columns: max-content 1fr; gap: 3px 12px; margin: 0; }
+  .drawer-body dt { color: var(--ink-4); }
+  .drawer-body dd { margin: 0; overflow-wrap: anywhere; }
   .unranked-head { padding: 10px 16px; border-top: 1px solid var(--rule-strong); background: var(--sheet-sunk); font-size: 12.5px; color: var(--ink-3); }
   .unranked-head strong { color: var(--ink-2); font-weight: 600; }
   .ledger.dim .entry:first-child { border-top: 0; }
@@ -426,7 +459,7 @@
   // ---------- data ----------
   const S = {
     data: { tests: {}, runs: [], history: [] }, runs: [], suites: new Map(), compare: [], loaded: false,
-    sort: 'score', tests: { status: 'fail', cat: '', q: '' },
+    board: { sort: 'overall', dir: -1, all: false, q: '' }, tests: { status: 'fail', cat: '', q: '' },
     showSynthetic: pref('synthetic', true),
   };
   function pref(k, d) { try { const v = localStorage.getItem('wpb-pref:' + k); return v == null ? d : v === '1'; } catch { return d; } }
@@ -685,60 +718,115 @@
     return `<p class="notice synthetic">${synthetic} of ${s.runs.length} runs in ${esc(s.name)} are synthetic: random scores generated to build this page, tagged below. ${real} model${real === 1 ? ' has' : 's have'} real runs.${S.showSynthetic ? '' : ' They are hidden now.'}</p>`;
   }
 
+  /** Home (the list from the build_data page): summary tiles and a sortable table of each model's latest run; tick rows to compare. */
+  const BOARD_COLS = [
+    ['rank', '#', (r, rank) => rank.get(r) ?? Infinity],
+    ['model', 'Model', r => r.model, 'left'],
+    ['overall', 'Overall', r => r.scores.overall],
+    ['passed', 'Passed', r => r.passed],
+    ['cost', 'Cost / run', r => r.cost.total],
+    ['perpass', '$ / pass', r => r.cost.per_pass],
+    ['tokens', 'Tokens / test', r => r.tokens.completion_p50],
+    ['p50', 'Latency p50', r => r.latency.p50],
+    ['p90', 'p90', r => r.latency.p90],
+    ['date', 'Run date', r => r.run_ts],
+    ['by', 'Published by', r => r.published?.by, 'left'],
+  ];
+  // Columns that read best low-to-high on first click (cheaper, faster, alphabetical).
+  const ASCENDING = new Set(['rank', 'model', 'by', 'cost', 'perpass', 'tokens', 'p50', 'p90']);
   function viewBoard(r, s) {
-    const rows = boardRuns(s);
-    const sorted = [...rows];
-    const by = {
-      score: () => 0,
-      cost: (a, b) => (a.cost.total ?? Infinity) - (b.cost.total ?? Infinity),
-      latency: (a, b) => (a.latency.p50 ?? Infinity) - (b.latency.p50 ?? Infinity),
-      newest: (a, b) => b.run_ts.localeCompare(a.run_ts),
-    }[S.sort];
-    sorted.sort((a, b) => by(a, b) || a.rank - b.rank);
-    const unranked = unrankedRuns(s, rows);
+    const ranked = boardRuns(s);
+    const rank = new Map(ranked.map(x => [x, x.rank]));
+    // Default: every model's latest run; only full runs carry a rank. "Show older runs" adds the rest of the suite.
+    const pool = S.board.all ? s.runs.filter(x => S.showSynthetic || !x.synthetic) : [...ranked, ...unrankedRuns(s, ranked)];
+    const q = S.board.q.trim().toLowerCase();
+    const shown = pool.filter(x => !q || x.model.toLowerCase().includes(q) || (x.published?.by || '').toLowerCase().includes(q));
+    const [key, dir] = [S.board.sort, S.board.dir];
+    const col = BOARD_COLS.find(c => c[0] === key) || BOARD_COLS[2];
+    shown.sort((a, b) => {
+      const va = col[2](a, rank), vb = col[2](b, rank);
+      if (va == null && vb == null) return (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity);
+      if (va == null) return 1; if (vb == null) return -1;
+      return (typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb))) * dir || (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity);
+    });
+    const unrankedCount = shown.filter(x => !rank.has(x)).length;
     main.innerHTML = `
       ${syntheticNotice(s)}
+      <div class="tiles">${boardTiles(s, ranked)}</div>
       <div class="toolbar">
-        <span class="seg" role="group" aria-label="Sort by">${[['score', 'Score'], ['cost', 'Cost'], ['latency', 'Latency'], ['newest', 'Newest']].map(([k, l]) => `<button type="button" data-sort="${k}" aria-pressed="${S.sort === k}">${l}</button>`).join('')}</span>
+        <input type="search" class="field" id="boardSearch" placeholder="Filter by model or author" value="${esc(S.board.q)}" aria-label="Filter by model or author">
+        <label class="check"><input type="checkbox" id="optAll"${S.board.all ? ' checked' : ''}> Show older runs</label>
         ${filterToggles()}
+        <span class="muted num">${ranked.length} ranked${unrankedCount ? ` · ${unrankedCount} not ranked` : ''}</span>
         <span class="grow"></span>
-        <button type="button" class="btn" id="openLocal" title="Preview your own output/results_*.json next to the published runs. Nothing is uploaded.">Open local results</button>
         <button type="button" class="btn" id="exportCsv">Export CSV</button>
       </div>
-      <div class="sheet" id="board">
-        <div class="ruler-wrap">
-          <div class="ruler-label" id="rulerLabel"><span>${s.full} tests in ${s.cats.length} categories · hover the bar to find a category, a strip to find a test</span></div>
-          <div class="lane">${ruler(s)}</div>
-        </div>
-        ${sorted.length ? `<ol class="ledger">${sorted.map(x => entry(x, s)).join('')}</ol>` : `<div class="empty">No full runs to rank in ${esc(s.name)}.${S.showSynthetic ? '' : ' Synthetic runs are hidden.'}</div>`}
-        ${unranked.length ? `<div class="unranked-head"><strong>Not ranked</strong> · runs with a different test count (a partial run or an earlier revision of the suite) or another scoring version cover different tests, so they are never ranked with full runs</div><ol class="ledger dim">${unranked.map(x => entry(x, s)).join('')}</ol>` : ''}
+      <div class="sheet grid-wrap">
+        <table class="board" id="boardTable">
+          <thead><tr><th class="nosort pickc" scope="col"><span class="sr">Compare</span></th>${BOARD_COLS.map(([k, label, , align]) => `<th scope="col" data-sort="${k}" class="${align || ''}" aria-sort="${k === col[0] ? (dir < 0 ? 'descending' : 'ascending') : 'none'}">${label}${k === 'overall' ? ' <span class="faint" title="Strict execution pass rate; ± is a 95% Wilson interval">±</span>' : ''}${k === col[0] ? `<span class="dir">${dir < 0 ? '▼' : '▲'}</span>` : ''}</th>`).join('')}<th class="nosort left" scope="col">Run details</th></tr></thead>
+          <tbody>${shown.length ? shown.map(x => boardRow(x, s, rank)).join('') : `<tr><td colspan="${BOARD_COLS.length + 2}" class="empty">No runs match.</td></tr>`}</tbody>
+        </table>
       </div>
-      <div class="legend"><span><i style="height:12px;background:var(--fail)"></i>failed test</span><span><i style="height:12px;background:var(--notice)"></i>errored</span><span><i style="height:5px;background:var(--tick-pass)"></i>passed</span><span><i style="height:1px;background:var(--rule-strong)"></i>not run</span><span>Rank is by score; tick boxes to compare models.</span></div>`;
-    main.querySelectorAll('[data-sort]').forEach(b => b.addEventListener('click', () => { S.sort = b.dataset.sort; render(); }));
+      <p class="lede" style="margin-top:10px">Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. Greyed rows aren't ranked: a different test count (a partial run or an earlier revision of the suite), another scoring version, or an older run. Costs are harness estimates, not billing; tokens are median completion tokens per test. Tick rows to compare up to three models.</p>`;
+    $('boardSearch').addEventListener('input', e => { S.board.q = e.target.value; const pos = e.target.selectionStart; render(); const el = $('boardSearch'); el.focus(); el.setSelectionRange(pos, pos); });
+    $('optAll').addEventListener('change', e => { S.board.all = e.target.checked; render(); });
     bindFilterToggles();
-    $('openLocal').addEventListener('click', () => fileInput.click());
-    $('exportCsv').addEventListener('click', () => exportCsv(s, rows));
+    $('exportCsv').addEventListener('click', () => exportCsv(s, ranked));
+    $('boardTable').querySelector('thead').addEventListener('click', e => {
+      const th = e.target.closest('th[data-sort]'); if (!th) return;
+      const k = th.dataset.sort;
+      if (S.board.sort === k) S.board.dir = -S.board.dir; else { S.board.sort = k; S.board.dir = ASCENDING.has(k) ? 1 : -1; }
+      render();
+    });
+  }
+  function boardRow(x, s, rank) {
+    const picked = S.compare.includes(x.model);
+    const pub = x.published, cfg = x.config, h = wilson(x.scores.overall, x.total);
+    const why = rank.has(x) ? '' : x.scoring_version !== s.scoring ? `scoring ${esc(x.scoring_version)}` : x.subset ? '' : 'older run';
+    return `<tr class="${rank.has(x) ? '' : 'dim'}${picked ? ' picked' : ''}">
+      <td class="pickc"><label class="pick" title="Compare"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="Compare ${esc(x.model)}"></label></td>
+      <td class="rank">${rank.get(x) ?? '—'}</td>
+      <td class="left"><span class="who">${modelName(x.model, H.model(s.name, x.model, rank.has(x) ? '' : x.file))}${chips(x, s)}${why ? `<span class="chip" title="Not ranked">${why}</span>` : ''}</span></td>
+      <td><strong>${pct(x.scores.overall)}</strong>${h != null ? `<span class="ci">±${(h * 100).toFixed(1)}</span>` : ''}<span class="bar"><i style="width:${Math.round((x.scores.overall ?? 0) * 100)}%"></i></span></td>
+      <td>${x.passed}/${x.total}</td>
+      <td>${usd(x.cost.total)}</td>
+      <td>${usd(x.cost.per_pass)}</td>
+      <td>${int(x.tokens.completion_p50)}</td>
+      <td>${secs(x.latency.p50)}</td>
+      <td>${secs(x.latency.p90)}</td>
+      <td>${esc(x.run_date ?? '—')}</td>
+      <td class="left">${pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a> <span class="faint">${esc(pub.date)}</span>` : `<span class="faint">${x.local ? 'local file' : 'uncommitted'}</span>`}</td>
+      <td class="left drawer-cell"><details class="drawer"><summary>details</summary><div class="drawer-body"><dl>
+        <dt>suite</dt><dd>${esc(x.suite)} · scoring ${esc(x.scoring_version)} · schema ${esc(x.result_schema_version ?? '—')}</dd>
+        <dt>model</dt><dd>${esc(x.model)} (${esc(cfg.kind ?? '—')}) · temperature ${esc(cfg.temperature ?? '—')} · max_tokens ${esc(cfg.max_tokens ?? 'default')}</dd>
+        <dt>runtime</dt><dd>${esc(cfg.grader ?? '—')} / ${esc(cfg.database ?? '—')} · ${esc(cfg.runtime_isolation ?? '—')} (${esc(cfg.runtime_isolation_boundary ?? '—')}) · concurrency ${esc(cfg.execution_concurrency ?? '—')} · seed ${esc(cfg.seed ?? '—')}</dd>
+        <dt>image</dt><dd>${esc(cfg.runtime_image_id ?? '—')}</dd>
+        <dt>dataset</dt><dd>${esc(cfg.dataset?.source ?? '—')} ${esc(cfg.dataset?.name ?? '')}${cfg.dataset?.revision ? ' @ ' + esc(cfg.dataset.revision) : ''}</dd>
+        <dt>scores</dt><dd>exec pass ${pct(x.scores.execution_pass_rate)} · runtime partial ${pct(x.scores.runtime)} · static policy ${pct(x.scores.static_policy_pass_rate)} · correctness (legacy) ${pct(x.scores.correctness)}</dd>
+        <dt>usage</dt><dd>${int(x.usage.prompt_tokens)} prompt + ${int(x.usage.completion_tokens)} completion tokens · ${x.latency.total_min ?? '—'} min of model time · max latency ${secs(x.latency.max)}</dd>
+        <dt>file</dt><dd>${x.local ? esc(x.file) : `<a href="${esc(fileUrl(x))}" rel="noopener" target="_blank">${esc(x.file)}</a>`}</dd>
+      </dl></div></details></td>
+    </tr>`;
+  }
+  function boardTiles(s, ranked) {
+    if (!ranked.length) return '';
+    const top = ranked[0];
+    const cheapest = ranked.filter(x => x.cost.per_pass != null).sort((a, b) => a.cost.per_pass - b.cost.per_pass)[0];
+    const fastest = ranked.filter(x => x.latency.p50 != null).sort((a, b) => a.latency.p50 - b.latency.p50)[0];
+    const allFail = ranked.length > 1 ? s.order.filter(([id]) => ranked.every(x => { const st = statusOf(x, id); return st === 'fail' || st === 'error'; })).length : null;
+    const tile = (k, v, sub, href) => `<div class="tile"><div class="k">${esc(k)}</div><div class="v">${v}</div><div class="s" title="${esc(sub ?? '')}">${href ? `<a href="${href}">${esc(shortName(sub ?? ''))}</a>` : esc(sub ?? '')}</div></div>`;
+    return [
+      tile('Top score', pct(top.scores.overall), top.model, H.model(s.name, top.model)),
+      tile('Cheapest per pass', cheapest ? usd(cheapest.cost.per_pass) : '—', cheapest?.model, cheapest && H.model(s.name, cheapest.model)),
+      tile('Fastest (p50)', fastest ? secs(fastest.latency.p50) : '—', fastest?.model, fastest && H.model(s.name, fastest.model)),
+      tile('Tests', String(s.full), `${s.cats.length} categories`, H.cats(s.name)),
+      tile('Fail for every model', allFail == null ? '—' : String(allFail), allFail == null ? 'needs 2 ranked models' : 'likely benchmark hardness'),
+    ].join('');
   }
   // Synthetic runs only exist in development data (examples/synthetic); the toggle appears only then.
   const filterToggles = () => S.runs.some(r => r.synthetic) ? `<label class="check"><input type="checkbox" id="optSynthetic"${S.showSynthetic ? ' checked' : ''}> Synthetic runs</label>` : '';
   function bindFilterToggles() {
     $('optSynthetic')?.addEventListener('change', e => { S.showSynthetic = e.target.checked; setPref('synthetic', S.showSynthetic); render(); });
-  }
-
-  function entry(x, s) {
-    const picked = S.compare.includes(x.model);
-    const by = x.published?.by || (x.local ? 'local file' : '');
-    const ranked = s.runs.includes(x) && boardRuns(s).includes(x);
-    return `<li class="entry${picked ? ' picked' : ''}">
-      <div class="line">
-        <span class="rank num">${ranked ? x.rank : '—'}</span>
-        <label class="pick" title="Compare"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="Compare ${esc(x.model)}"></label>
-        <span class="who">${modelName(x.model, H.model(s.name, x.model))}${chips(x, s)}</span>
-        <span class="facts num"><span title="Tests passed">${x.passed}/${x.total}</span><span title="Estimated cost of the run · ${usd(x.cost.per_pass)} per passed test">${usd(x.cost.total)}</span><span title="Median model latency">${secs(x.latency.p50)}</span><span class="by" title="${esc(x.published?.message || x.file)}">${day(x.run_date)}${by ? ` · ${esc(by)}` : ''}</span></span>
-        ${score(x)}
-      </div>
-      <div class="lane${x.synthetic ? ' synthetic' : ''}">${strip(x, s)}</div>
-    </li>`;
   }
 
   function viewModel(r, s) {
@@ -1220,7 +1308,7 @@
     const box = e.target.closest('[data-pick]'); if (!box) return;
     const m = box.dataset.pick;
     S.compare = box.checked ? [...new Set([...S.compare, m])].slice(-3) : S.compare.filter(x => x !== m);
-    main.querySelectorAll('[data-pick]').forEach(b => { b.checked = S.compare.includes(b.dataset.pick); b.closest('.entry')?.classList.toggle('picked', b.checked); });
+    main.querySelectorAll('[data-pick]').forEach(b => { b.checked = S.compare.includes(b.dataset.pick); b.closest('.entry, tr')?.classList.toggle('picked', b.checked); });
     renderChrome(route()); renderTray(route());
   });
   $('tray').addEventListener('click', e => {
