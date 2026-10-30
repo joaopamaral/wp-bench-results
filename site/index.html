@@ -133,7 +133,7 @@
   <div class="controls" id="globalControls">
     <label>Suite <select id="suiteFilter"></select></label>
     <label>Scoring <select id="scoringFilter"></select></label>
-    <label><input type="checkbox" id="allRuns"> Show all runs</label>
+    <label><input type="checkbox" id="allRuns"> Show older runs and other suites</label>
     <label>Search <input type="search" id="search" placeholder="model or author"></label>
     <span class="sub" id="count"></span>
   </div>
@@ -284,7 +284,7 @@
         <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
       </ol>
       <h3 style="margin:16px 0 8px;font-size:15px">What gets ranked</h3>
-      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite), older runs and runs on another suite are shown greyed out with “Show all runs”, never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
+      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite), older runs and runs on another suite are shown greyed out (older runs and other suites behind “Show older runs and other suites”), never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
     </div>
   </section>
 
@@ -360,7 +360,9 @@
   function renderBoard() {
     const rows = ranked();
     rows.forEach((r, i) => r.rank = i + 1);
-    let shown = $('allRuns').checked ? DATA.runs.map(r => (rows.includes(r) ? r : { ...r, rank: null, dim: true })) : rows;
+    // Default view: every model's latest run in the selected group; only full runs carry a rank.
+    const unranked = latestByModel(DATA.runs.filter(inGroup)).filter(r => !rows.includes(r)).map(r => ({ ...r, rank: null, dim: true }));
+    let shown = $('allRuns').checked ? DATA.runs.map(r => (rows.includes(r) ? r : { ...r, rank: null, dim: true })) : [...rows, ...unranked];
     shown = shown.filter(searchHit);
     shown.sort((a, b) => {
       let va = get(a, sortKey), vb = get(b, sortKey);
@@ -370,7 +372,7 @@
     });
     document.querySelectorAll('#board thead th').forEach(th => { th.querySelector('.dir')?.remove(); if (th.dataset.key === sortKey) th.insertAdjacentHTML('beforeend', `<span class="dir">${sortDir < 0 ? '▼' : '▲'}</span>`); });
     const partial = latestByModel(DATA.runs.filter(inGroup)).filter(r => !isFull(r)).length;
-    $('count').textContent = `${rows.length} models ranked · ${DATA.runs.length} runs total${partial ? ` · ${partial} run${partial > 1 ? 's' : ''} with a different test count not ranked (tick “Show all runs”)` : ''}`;
+    $('count').textContent = `${rows.length} models ranked · ${DATA.runs.length} runs total${partial ? ` · ${partial} listed unranked (different test count)` : ''}`;
     const tbody = document.querySelector('#board tbody');
     if (!shown.length) { tbody.innerHTML = '<tr><td colspan="12" class="status">No runs match.</td></tr>'; return; }
     tbody.innerHTML = shown.map(r => {
