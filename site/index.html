@@ -85,6 +85,7 @@
   .legend i { display: inline-block; width: 22px; height: 12px; border-radius: 2px; }
   /* scatter */
   .chart { width: 100%; height: 360px; }
+  .diagram { display: block; width: 100%; max-width: 960px; height: auto; margin: 0 auto; color: var(--text); }
   .chart text { fill: var(--text-2); font-size: 12px; font-family: inherit; }
   .chart .grid line { stroke: var(--grid); } .chart .axis line, .chart .axis path { stroke: var(--axis); }
   .chart .dot { fill: var(--accent); stroke: var(--surface); stroke-width: 2; }
@@ -126,6 +127,7 @@
     <button role="tab" aria-selected="false" data-tab="h2h">Head-to-head</button>
     <button role="tab" aria-selected="false" data-tab="hardest">Hardest tests</button>
     <button role="tab" aria-selected="false" data-tab="history">History</button>
+    <button role="tab" aria-selected="false" data-tab="how">How it works</button>
   </div>
 
   <div class="controls" id="globalControls">
@@ -189,6 +191,103 @@
     <div class="card table-wrap"><table id="hardest"><thead><tr><th class="left">Test</th><th class="left">Category</th><th>Fails</th><th class="left">Models failing</th><th class="left">Failing assertion</th><th class="left">Source refs</th></tr></thead><tbody></tbody></table></div>
   </section>
 
+  <section class="panel" id="panel-how" hidden>
+    <figure class="card pad" style="margin:0">
+      <svg class="diagram" viewBox="0 0 960 420" role="img" aria-label="A contributor runs wp-bench and opens a pull request with the raw output to the wp-bench-results repository; build_data.py turns the results folder and its git history into one data file; Spacefast serves the static site, and the browser fetches only that data file.">
+        <defs>
+          <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        </defs>
+        <g fill="none" stroke="currentColor" stroke-width="1.5">
+          <!-- contributor -->
+          <rect x="20" y="130" width="190" height="120" rx="8"/>
+          <!-- results repo -->
+          <rect x="300" y="40" width="380" height="340" rx="8"/>
+          <rect x="325" y="110" width="150" height="70" rx="6"/>
+          <rect x="325" y="300" width="150" height="56" rx="6"/>
+          <rect x="505" y="110" width="150" height="56" rx="6"/>
+          <rect x="505" y="300" width="150" height="56" rx="6"/>
+          <!-- spacefast / browser -->
+          <rect x="755" y="100" width="200" height="80" rx="8"/>
+          <rect x="755" y="290" width="200" height="70" rx="8"/>
+          <!-- wp-bench AGENTS -->
+          <rect x="20" y="300" width="190" height="80" rx="8" stroke-dasharray="5 4"/>
+        </g>
+        <!-- the data file is the one element that carries the claim -->
+        <rect x="505" y="190" width="150" height="70" rx="6" fill="none" stroke="var(--accent)" stroke-width="2.5"/>
+        <g fill="currentColor" font-size="12" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+          <text x="115" y="155" text-anchor="middle" font-weight="600">Contributor or agent</text>
+          <text x="115" y="178" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">wp-bench run</text>
+          <text x="115" y="200" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.json</text>
+          <text x="115" y="216" text-anchor="middle" font-size="11">output/results_&lt;ts&gt;.jsonl</text>
+
+          <text x="490" y="68" text-anchor="middle" font-weight="600">wp-bench-results repository</text>
+          <text x="490" y="86" text-anchor="middle" font-size="11" opacity=".7">public · pull requests · CI</text>
+          <text x="400" y="135" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">results/</text>
+          <text x="400" y="152" text-anchor="middle" font-size="11">raw run outputs,</text>
+          <text x="400" y="167" text-anchor="middle" font-size="11">copied unchanged</text>
+          <text x="400" y="323" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">git log</text>
+          <text x="400" y="341" text-anchor="middle" font-size="11">who published, when</text>
+          <text x="580" y="133" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/build_data.py</text>
+          <text x="580" y="152" text-anchor="middle" font-size="11">aggregates per run</text>
+          <text x="580" y="215" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/data/</text>
+          <text x="580" y="231" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">leaderboard.json</text>
+          <text x="580" y="248" text-anchor="middle" font-size="11">~65 KB per run</text>
+          <text x="580" y="323" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">site/index.html</text>
+          <text x="580" y="341" text-anchor="middle" font-size="11">static page</text>
+
+          <text x="855" y="125" text-anchor="middle" font-weight="600">Spacefast</text>
+          <text x="855" y="145" text-anchor="middle" font-size="11">serves site/ at</text>
+          <text x="855" y="162" text-anchor="middle" font-size="11">wpbench-leaderboard.space.fast</text>
+          <text x="855" y="316" text-anchor="middle" font-weight="600">Your browser</text>
+          <text x="855" y="336" text-anchor="middle" font-size="11">fetches one data file,</text>
+          <text x="855" y="351" text-anchor="middle" font-size="11">no API calls</text>
+
+          <text x="115" y="325" text-anchor="middle" font-weight="600">WordPress/wp-bench</text>
+          <text x="115" y="343" text-anchor="middle" font-family="ui-monospace, Menlo, monospace" font-size="11">AGENTS.md</text>
+          <text x="115" y="361" text-anchor="middle" font-size="11">check here before a run</text>
+        </g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5" marker-end="url(#arrow)">
+          <line x1="210" y1="170" x2="325" y2="150"/>
+          <line x1="475" y1="145" x2="505" y2="140"/>
+          <line x1="475" y1="320" x2="505" y2="222"/>
+          <line x1="580" y1="166" x2="580" y2="190"/>
+          <line x1="580" y1="260" x2="580" y2="300"/>
+          <line x1="680" y1="140" x2="755" y2="140"/>
+          <line x1="855" y1="180" x2="855" y2="290"/>
+        </g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-dasharray="5 4" marker-end="url(#arrow)">
+          <line x1="210" y1="310" x2="300" y2="250"/>
+        </g>
+        <g fill="currentColor" font-size="11" font-family="system-ui, -apple-system, 'Segoe UI', sans-serif">
+          <text x="268" y="150" text-anchor="middle">copy + PR</text>
+          <text x="232" y="318" text-anchor="middle">reads the data</text>
+          <text x="232" y="331" text-anchor="middle">before a run</text>
+          <text x="490" y="104" text-anchor="middle">reads</text>
+          <text x="470" y="262" text-anchor="middle">attribution</text>
+          <text x="602" y="182" text-anchor="start">writes</text>
+          <text x="602" y="285" text-anchor="start">renders</text>
+          <text x="717" y="128" text-anchor="middle">push to main</text>
+          <text x="717" y="158" text-anchor="middle">→ deploy</text>
+          <text x="866" y="240" text-anchor="start">GET /data/</text>
+          <text x="866" y="254" text-anchor="start">leaderboard.json</text>
+        </g>
+      </svg>
+      <figcaption class="sub" style="margin-top:10px">Raw run outputs are the source of truth; one small prebuilt data file is all the page needs, and the repository's git history is the audit trail.</figcaption>
+    </figure>
+    <div class="card pad" style="margin-top:12px">
+      <h3 style="margin:0 0 8px;font-size:15px">Publishing a run</h3>
+      <ol style="margin:0;padding-left:20px;font-size:14px;line-height:1.7">
+        <li>Check the model is not already listed for the suite (this page, or <code>site/data/leaderboard.json</code>). <code>AGENTS.md</code> in wp-bench makes agents do this before running anything.</li>
+        <li>Run the benchmark: <code>wp-bench run</code> writes <code>output/results_&lt;timestamp&gt;.json</code> and <code>.jsonl</code>.</li>
+        <li>Fork <a id="howRepo" href="#" rel="noopener">the results repository</a>, copy both files into <code>results/</code>, commit. That commit is the run's attribution on this page.</li>
+        <li>Run <code>python3 site/build_data.py</code>, commit the regenerated data file, open a pull request. CI checks the file shapes and that the data is current.</li>
+        <li>Merge → push to <code>main</code> → Spacefast redeploys <code>site/</code>.</li>
+      </ol>
+      <h3 style="margin:16px 0 8px;font-size:15px">What gets ranked</h3>
+      <p class="sub" style="margin:0">Each model's latest <strong>full</strong> run per suite and scoring version. Partial runs (<code>--limit</code>, <code>--categories</code>), older runs and runs on another suite are shown greyed out with “Show all runs”, never ranked together. Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
+    </div>
+  </section>
+
   <section class="panel" id="panel-history" hidden>
     <p class="sub" style="margin:0 0 12px">Every commit that touched <code>results/</code>. Select one to see which runs it added, removed or changed and how the latest score per model moved.</p>
     <div class="hist">
@@ -227,6 +326,7 @@
   $('buildLink').href = `https://github.com/${REPO}/blob/main/site/build_data.py`;
   $('folderLink').href = `https://github.com/${REPO}/tree/main/results`;
   $('repoLink').href = `https://github.com/${REPO}`; $('repoLink').textContent = REPO;
+  $('howRepo').href = `https://github.com/${REPO}`;
 
   // ---------- selection ----------
   const suite = () => $('suiteFilter').value;
@@ -249,7 +349,7 @@
     const btn = document.querySelector(`.tabs button[data-tab="${name}"]`) || document.querySelector('.tabs button');
     document.querySelectorAll('.tabs button').forEach(b => b.setAttribute('aria-selected', String(b === btn)));
     document.querySelectorAll('.panel').forEach(p => p.hidden = p.id !== 'panel-' + btn.dataset.tab);
-    $('globalControls').style.display = btn.dataset.tab === 'history' ? 'none' : '';
+    $('globalControls').style.display = (btn.dataset.tab === 'history' || btn.dataset.tab === 'how') ? 'none' : '';
     if (push && location.hash !== '#' + btn.dataset.tab) history.replaceState(null, '', '#' + btn.dataset.tab);
     if (DATA.runs.length) renderAll();
   }
@@ -458,7 +558,7 @@
   // ---------- boot ----------
   function renderAll() {
     const tab = document.querySelector('.tabs button[aria-selected="true"]').dataset.tab;
-    ({ board: renderBoard, categories: renderHeatmap, cost: renderScatter, h2h: renderH2H, hardest: renderHardest, history: renderHistory })[tab]();
+    ({ board: renderBoard, categories: renderHeatmap, cost: renderScatter, h2h: renderH2H, hardest: renderHardest, history: renderHistory, how: () => {} })[tab]();
   }
   function fillGroupFilters() {
     const groups = {};
