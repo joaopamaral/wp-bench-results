@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # build_data.py reads the folder's git history
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pytest ruff mypy
+      - run: ruff check site tests && ruff format --check site tests
+      - run: mypy site tests --ignore-missing-imports
+      - name: Check the page data is current
+        run: |
+          python3 site/build_data.py --output /tmp/leaderboard.json
+          python3 - <<'PY'
+          import json
+          a = json.load(open("site/data/leaderboard.json")); b = json.load(open("/tmp/leaderboard.json"))
+          for d in (a, b): d.pop("generated_at", None); d.pop("source_commit", None)
+          assert a == b, "site/data/leaderboard.json is stale: run `python3 site/build_data.py` and commit it"
+          PY
+      - run: pytest -q
