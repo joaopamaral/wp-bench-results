@@ -62,11 +62,10 @@
   * { box-sizing: border-box; }
   html { -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
   body { margin: 0; background: var(--admin-canvas); color: var(--ink); font: 14px/1.5 var(--sans); }
-  body.dropping { outline: 3px dashed var(--blueberry); outline-offset: -8px; }
   a { color: var(--blueberry-ink); text-decoration: none; }
   a:hover { text-decoration: underline; text-underline-offset: 2px; }
   :focus-visible { outline: 2px solid var(--blueberry); outline-offset: 2px; border-radius: 4px; }
-  code, .mono { font-family: var(--mono); font-size: 12.5px; }
+  code, .mono { font-family: var(--mono); font-size: 13px; }
   h1, h2, h3 { margin: 0; text-wrap: balance; }
   h1 { font-size: 28px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; }
   h2 { font-size: 16px; font-weight: 600; }
@@ -84,131 +83,160 @@
   .brand { display: flex; align-items: baseline; gap: 6px; color: var(--ink); font-weight: 600; font-size: 16px; white-space: nowrap; }
   .brand:hover { text-decoration: none; }
   .brand span { color: var(--ink-3); font-weight: 400; }
-  .suites { display: flex; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--sheet); flex-shrink: 0; }
-  .suites a { padding: 5px 12px; color: var(--ink-3); font-size: 13px; white-space: nowrap; }
+  .suites { display: flex; border: 1px solid var(--rule-strong); border-radius: 4px; overflow: hidden; background: var(--sheet); flex-shrink: 0; }
+  .suites a { padding: 6px 12px; color: var(--ink-3); font-size: 13px; white-space: nowrap; }
   .suites a + a { border-left: 1px solid var(--rule); }
   .suites a:hover { background: var(--sheet-sunk); text-decoration: none; color: var(--ink); }
   .suites a[aria-current="true"] { color: var(--ink); font-weight: 600; background: var(--sheet-sunk); }
   .suites a small { color: var(--ink-4); font-weight: 400; margin-left: 4px; font-size: 12px; }
   .search { position: relative; flex: 1; min-width: 0; max-width: 420px; margin-left: auto; }
-  .search input { width: 100%; font: inherit; font-size: 13px; padding: 7px 34px 7px 32px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet-sunk); color: var(--ink); }
+  .search input { width: 100%; font: inherit; font-size: 13px; padding: 8px 36px 8px 32px; border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--sheet-sunk); color: var(--ink); }
   .search input::placeholder { color: var(--ink-4); }
   .search input:focus { outline: none; border-color: var(--blueberry); box-shadow: 0 0 0 1px var(--blueberry); background: var(--sheet); }
   .search svg { position: absolute; left: 10px; top: 50%; translate: 0 -50%; color: var(--ink-4); pointer-events: none; }
   .search kbd { position: absolute; right: 8px; top: 50%; translate: 0 -50%; font: 11px var(--mono); color: var(--ink-3); border: 1px solid var(--rule-strong); border-radius: 4px; padding: 0 5px; background: var(--sheet); }
   .search input:focus ~ kbd { display: none; }
   .results { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--sheet); border: 1px solid var(--rule-strong); border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,.12); max-height: min(70vh, 460px); overflow: auto; padding: 4px; margin: 0; list-style: none; }
-  .results .group { padding: 8px 10px 4px; font-size: 11px; font-weight: 600; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
-  .results [role="option"] { display: flex; gap: 10px; align-items: baseline; padding: 7px 10px; border-radius: 5px; cursor: pointer; }
-  .results [role="option"] .k { font-family: var(--mono); font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .results .group { padding: 8px 12px 4px; font-size: 11px; font-weight: 600; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .results [role="option"] { display: flex; gap: 12px; align-items: baseline; padding: 8px 12px; border-radius: 4px; cursor: pointer; }
+  .results [role="option"] .k { font-family: var(--mono); font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .results [role="option"] .d { margin-left: auto; font-size: 12px; color: var(--ink-4); white-space: nowrap; }
   .results [aria-selected="true"] { background: var(--blueberry-wash); }
-  .results .none { padding: 12px 10px; color: var(--ink-3); font-size: 13px; }
+  .results .none { padding: 12px; color: var(--ink-3); font-size: 13px; }
   .views { display: flex; gap: 2px; margin-top: 8px; overflow-x: auto; scrollbar-width: none; }
-  .views a { padding: 8px 10px 9px; color: var(--ink-3); font-size: 13px; border-bottom: 2px solid transparent; white-space: nowrap; }
+  .views a { padding: 8px 12px; color: var(--ink-3); font-size: 13px; border-bottom: 2px solid transparent; white-space: nowrap; }
   .views a:hover { color: var(--ink); text-decoration: none; }
   .views a[aria-current="page"] { color: var(--ink); font-weight: 600; border-bottom-color: var(--ink); }
   .views .pill { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 999px; background: var(--blueberry); color: var(--sheet); font-size: 11px; font-weight: 600; text-align: center; }
 
   /* page scaffolding */
-  main { padding-top: 20px; padding-bottom: 96px; }
+  /* .wrap sets horizontal padding; main.wrap outranks it so the vertical rhythm survives. */
+  main.wrap { padding-top: 24px; padding-bottom: 112px; }
   .crumbs { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 13px; color: var(--ink-4); margin-bottom: 12px; }
   .crumbs a { color: var(--ink-3); }
-  .crumbs .here { color: var(--ink); font-family: var(--mono); font-size: 12.5px; }
+  .crumbs .here { color: var(--ink); font-family: var(--mono); font-size: 13px; }
   .sheet { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; }
-  .pad { padding: 14px 16px; }
+  .pad { padding: 16px; }
   .section-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; margin: 28px 0 10px; }
   .section-head p { margin: 0; color: var(--ink-3); font-size: 13px; }
   .lede { margin: 0 0 12px; color: var(--ink-3); font-size: 13px; }
   .status { padding: 48px 16px; text-align: center; color: var(--ink-3); }
   .status.err { color: var(--fail-ink); }
-  .notice { padding: 10px 12px; font-size: 13px; color: var(--ink-2); background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--notice); border-radius: 0 6px 6px 0; margin: 0 0 12px; }
+  .notice { padding: 12px 16px; font-size: 13px; color: var(--ink-2); background: var(--sheet); border: 1px solid var(--rule); border-left: 3px solid var(--notice); border-radius: 0 4px 4px 0; margin: 0 0 16px; }
   .notice.synthetic { background: var(--hatch), var(--sheet); }
   .notice.fail { border-left-color: var(--fail); }
+  .notice.live { border-left-color: var(--pass); }
+
+  /* local files: upload, drop and follow */
+  #uploadBtn { flex-shrink: 0; }
+  #localbar:not([hidden]) { padding-top: 16px; }
+  .localbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; padding: 8px 16px; background: var(--blueberry-wash); border: 1px solid color-mix(in srgb, var(--blueberry) 30%, transparent); border-radius: 8px; font-size: 13px; color: var(--ink-2); }
+  .localbar > span:not(.livedot):not(.grow) { min-width: 0; overflow-wrap: anywhere; }
+  .localbar b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+  .localbar .grow { flex: 1; }
+  .localbar .msg { color: var(--notice-ink); }
+  .livedot { width: 8px; height: 8px; border-radius: 50%; background: var(--pass); animation: livepulse 1.6s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes livepulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  .drophint { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; background: color-mix(in srgb, var(--ink) 55%, transparent); color: var(--sheet); pointer-events: none; }
+  .drophint[hidden] { display: none; }
+  .drophint div { display: grid; gap: 4px; padding: 24px 32px; border: 2px dashed currentColor; border-radius: 8px; text-align: center; }
+  .drophint strong { font-size: 20px; font-weight: 600; }
+  .drophint span { font-size: 13px; opacity: .85; }
 
   /* controls */
   .toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; font-size: 13px; color: var(--ink-3); }
   .toolbar .grow { flex: 1; }
-  .seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 6px; overflow: hidden; background: var(--sheet); }
-  .seg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--ink-3); padding: 5px 10px; cursor: pointer; }
+  .seg { display: inline-flex; border: 1px solid var(--rule-strong); border-radius: 4px; overflow: hidden; background: var(--sheet); }
+  .seg button { font: inherit; font-size: 13px; border: 0; background: none; color: var(--ink-3); padding: 6px 12px; cursor: pointer; }
   .seg button + button { border-left: 1px solid var(--rule); }
   .seg button:hover { color: var(--ink); background: var(--sheet-sunk); }
   .seg button[aria-pressed="true"] { color: var(--ink); font-weight: 600; background: var(--sheet-sunk); }
   .seg button .c { color: var(--ink-4); font-weight: 400; margin-left: 4px; }
   .check { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; min-height: 32px; }
   .check input { accent-color: var(--blueberry); margin: 0; }
-  .btn { font: inherit; font-size: 13px; padding: 5px 10px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet); color: var(--ink-2); cursor: pointer; white-space: nowrap; }
+  .btn { font: inherit; font-size: 13px; padding: 6px 12px; border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--sheet); color: var(--ink-2); cursor: pointer; white-space: nowrap; }
   .btn:hover { background: var(--sheet-sunk); color: var(--ink); text-decoration: none; }
   .btn:active { transform: scale(.97); }
   .btn.primary { background: var(--blueberry); border-color: var(--blueberry); color: #fff; font-weight: 600; }
   .btn.primary:hover { background: var(--blueberry-ink); color: #fff; }
-  input[type=search].field { font: inherit; font-size: 13px; padding: 5px 9px; border: 1px solid var(--rule-strong); border-radius: 6px; background: var(--sheet-sunk); color: var(--ink); min-width: 160px; }
+  input[type=search].field { font: inherit; font-size: 13px; padding: 6px 12px; border: 1px solid var(--rule-strong); border-radius: 4px; background: var(--sheet-sunk); color: var(--ink); min-width: 224px; }
   input[type=search].field:focus { outline: none; border-color: var(--blueberry); box-shadow: 0 0 0 1px var(--blueberry); }
 
   /* chips */
-  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; line-height: 18px; padding: 0 7px; border-radius: 999px; background: var(--sheet-sunk); color: var(--ink-3); border: 1px solid var(--rule); white-space: nowrap; vertical-align: middle; }
+  .chip { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; line-height: 18px; padding: 0 8px; border-radius: 999px; background: var(--sheet-sunk); color: var(--ink-3); border: 1px solid var(--rule); white-space: nowrap; vertical-align: middle; }
   .chip.full { color: var(--pass-ink); border-color: color-mix(in srgb, var(--pass) 35%, transparent); background: color-mix(in srgb, var(--pass) 8%, transparent); }
   .chip.synthetic { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--hatch), var(--sheet); font-weight: 600; }
   .chip.subset, .chip.errored { color: var(--notice-ink); border-color: color-mix(in srgb, var(--notice) 50%, transparent); background: var(--notice-wash); }
+  .chip.live { color: var(--pass-ink); border-color: color-mix(in srgb, var(--pass) 45%, transparent); background: color-mix(in srgb, var(--pass) 10%, transparent); }
   .chip.local { color: var(--blueberry-ink); border-color: color-mix(in srgb, var(--blueberry) 40%, transparent); background: var(--blueberry-wash); }
 
   /* ledger (ranking) */
   .ledger { list-style: none; margin: 0; padding: 0; position: relative; }
-  .entry { padding: 12px 16px 10px; border-top: 1px solid var(--rule); }
+  .entry { padding: 12px 16px; border-top: 1px solid var(--rule); }
   .entry:first-child { border-top: 0; }
   .entry:hover { background: color-mix(in srgb, var(--sheet-sunk) 70%, transparent); }
   .entry.picked { background: var(--blueberry-wash); }
   .line { display: grid; grid-template-columns: 22px 28px minmax(0, 1fr) auto 112px; align-items: center; gap: 0 10px; }
   .rank { color: var(--ink-4); font-size: 13px; text-align: right; }
-  .pick { display: grid; place-items: center; width: 28px; height: 28px; margin: -4px 0; cursor: pointer; border-radius: 4px; }
+  .pick { display: grid; place-items: center; width: 40px; height: 40px; cursor: pointer; border-radius: 4px; }
   .pick:hover { background: var(--sheet-sunk); }
   .pick input { accent-color: var(--blueberry); margin: 0; cursor: pointer; }
   .who { display: flex; align-items: center; flex-wrap: wrap; gap: 4px 8px; min-width: 0; }
-  .model { font-family: var(--mono); font-size: 13.5px; color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
+  .model { font-family: var(--mono); font-size: 13px; color: var(--ink); font-weight: 500; overflow-wrap: anywhere; }
   .model .prov { color: var(--ink-4); font-weight: 400; }
   a.model:hover { text-decoration: none; color: var(--blueberry-ink); }
-  .facts { display: flex; gap: 14px; font-size: 12.5px; color: var(--ink-3); white-space: nowrap; }
+  .facts { display: flex; gap: 16px; font-size: 12px; color: var(--ink-3); white-space: nowrap; }
   .facts .by { color: var(--ink-4); }
-  .score { text-align: right; font-size: 22px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .score { text-align: right; font-size: 20px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
   .score small { font-size: 13px; font-weight: 400; color: var(--ink-4); margin-left: 1px; }
   .score .ci { font-size: 11px; font-weight: 400; color: var(--ink-4); margin-left: 4px; letter-spacing: 0; }
   .lane { position: relative; margin: 8px 0 0 70px; }
   .lane::after { content: ""; position: absolute; top: -3px; bottom: -3px; left: var(--band-l, 0); width: var(--band-w, 0); background: var(--blueberry-wash); border-left: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); border-right: 1px solid color-mix(in srgb, var(--blueberry) 45%, transparent); pointer-events: none; display: var(--band-d, none); }
-  .lane.synthetic { background: var(--hatch); border-radius: 2px; }
+  .lane.synthetic { background: var(--hatch); border-radius: 4px; }
   .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* home list (the build_data page's table, with a compare column) */
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 14px; }
-  .tile { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; min-width: 0; }
-  .tile .k { font-size: 11px; font-weight: 500; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
-  .tile .v { font-size: 22px; font-weight: 600; letter-spacing: -.01em; font-variant-numeric: tabular-nums; margin-top: 2px; }
-  .tile .s { font-size: 12px; color: var(--ink-3); font-family: var(--mono); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .tile .s a { color: inherit; }
+  /* home list (the build_data page's table, with a compare column and a failure strip) */
+  .statline { display: grid; grid-template-columns: repeat(auto-fit, minmax(176px, 1fr)); margin: 0 0 16px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+  .statline div { padding: 8px 16px; border-left: 1px solid var(--rule); min-width: 0; }
+  .statline div:first-child { border-left: 0; }
+  .statline dt { font-size: 11px; font-weight: 500; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
+  .statline dd { margin: 2px 0 0; display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .statline b { font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .statline .who-s { font-family: var(--mono); font-size: 12px; color: var(--ink-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .statline .who-s a { color: inherit; }
   table.board { border-collapse: collapse; width: 100%; font-size: 13px; }
-  table.board th, table.board td { padding: 8px 10px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; vertical-align: middle; }
+  table.board th, table.board td { padding: 8px 12px; border-bottom: 1px solid var(--rule); text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; vertical-align: middle; }
   table.board tbody tr:last-child td { border-bottom: 0; }
   table.board th.left, table.board td.left { text-align: left; }
   table.board thead th { position: sticky; top: 0; z-index: 1; background: var(--sheet-sunk); color: var(--ink-3); font-weight: 500; font-size: 12px; cursor: pointer; user-select: none; }
   table.board thead th:hover { color: var(--ink); }
   table.board thead th.nosort { cursor: default; }
-  table.board thead th .dir { color: var(--ink-4); font-size: 10px; margin-left: 3px; }
+  table.board thead th.nosort:hover { color: var(--ink-3); }
+  table.board thead th .dir { color: var(--ink-4); font-size: 11px; margin-left: 4px; }
   table.board tbody tr:hover td { background: var(--sheet-sunk); }
   table.board tr.picked td { background: var(--blueberry-wash); }
-  table.board tr.dim td:not(.pickc) { opacity: .5; }
-  table.board td.rank { color: var(--ink-4); }
-  table.board .pickc { width: 40px; padding: 0 0 0 8px; text-align: center; }
+  table.board tr.dim td:not(.pickc) { opacity: .55; }
+  table.board tr.group td { padding: 8px 16px; text-align: left; background: var(--sheet-sunk); border-top: 1px solid var(--rule-strong); color: var(--ink-3); font-size: 12px; white-space: normal; }
+  table.board tr.group strong { color: var(--ink-2); font-weight: 600; }
+  table.board tr.group:hover td { background: var(--sheet-sunk); }
+  table.board td.rank { color: var(--ink-4); width: 24px; }
+  table.board .pickc { width: 48px; padding: 0 0 0 8px; text-align: center; }
+  table.board .pickc .pick { width: 40px; height: 40px; margin: 0; }
   table.board .who { flex-wrap: nowrap; }
-  table.board .bar { display: inline-block; width: 56px; height: 6px; margin-left: 8px; border-radius: 3px; background: var(--rule); vertical-align: middle; overflow: hidden; }
-  table.board .bar i { display: block; height: 100%; background: var(--blueberry); }
+  table.board .byline { display: block; margin-top: 2px; font-size: 12px; color: var(--ink-4); }
+  table.board .byline a { color: var(--ink-3); }
+  table.board td.overall strong { font-size: 14px; font-weight: 600; }
   table.board .ci { color: var(--ink-4); font-size: 11px; margin-left: 4px; }
-  table.board td.drawer-cell { white-space: normal; }
+  table.board td.mini { width: 184px; }
+  table.board td.mini.synthetic svg.minibars { background: var(--hatch); border-radius: 4px; }
+  table.board td.drawer-cell { white-space: normal; width: 64px; }
   details.drawer summary { cursor: pointer; color: var(--blueberry-ink); font-size: 12px; list-style: none; }
   details.drawer summary::-webkit-details-marker { display: none; }
-  .drawer-body { text-align: left; font-size: 12.5px; color: var(--ink-2); padding: 8px 0 4px; width: min(620px, 70vw); }
-  .drawer-body dl { display: grid; grid-template-columns: max-content 1fr; gap: 3px 12px; margin: 0; }
+  .drawer-body { text-align: left; font-size: 13px; color: var(--ink-2); padding: 8px 0 4px; width: min(560px, 60vw); margin-left: auto; }
+  .drawer-body dl { display: grid; grid-template-columns: max-content 1fr; gap: 4px 12px; margin: 0; }
   .drawer-body dt { color: var(--ink-4); }
   .drawer-body dd { margin: 0; overflow-wrap: anywhere; }
-  .unranked-head { padding: 10px 16px; border-top: 1px solid var(--rule-strong); background: var(--sheet-sunk); font-size: 12.5px; color: var(--ink-3); }
+  .unranked-head { padding: 8px 16px; border-top: 1px solid var(--rule-strong); background: var(--sheet-sunk); font-size: 12px; color: var(--ink-3); }
   .unranked-head strong { color: var(--ink-2); font-weight: 600; }
   .ledger.dim .entry:first-child { border-top: 0; }
   .ledger.dim .lane, .ledger.dim .score { opacity: .5; }
@@ -217,7 +245,11 @@
   svg.strip .f { fill: var(--fail); }
   svg.strip .e { fill: var(--notice); }
   svg.strip .n { fill: var(--rule-strong); }
-  .ruler-wrap { padding: 10px 16px 8px; border-bottom: 1px solid var(--rule); background: var(--sheet-sunk); border-radius: 8px 8px 0 0; }
+  svg.minibars { display: block; width: 160px; height: 16px; overflow: visible; }
+  svg.minibars .p { fill: var(--tick-pass); }
+  svg.minibars .f { fill: var(--fail); }
+  svg.minibars .n { fill: var(--rule-strong); }
+  .ruler-wrap { padding: 12px 16px 8px; border-bottom: 1px solid var(--rule); background: var(--sheet-sunk); border-radius: 8px 8px 0 0; }
   .ruler-wrap .lane { margin-top: 0; }
   svg.ruler { display: block; width: 100%; cursor: pointer; }
   svg.ruler rect { fill: var(--rule-strong); }
@@ -227,32 +259,32 @@
   .legend { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 16px; font-size: 12px; color: var(--ink-3); margin: 10px 2px 0; }
   .legend i { display: inline-block; width: 2px; vertical-align: -1px; margin-right: 6px; }
   .legend .ramp { display: inline-flex; gap: 2px; align-items: center; }
-  .legend .ramp i { width: 20px; height: 10px; border-radius: 2px; margin: 0; }
+  .legend .ramp i { width: 20px; height: 12px; border-radius: 4px; margin: 0; }
 
   /* model page */
   .hero { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; margin-bottom: 16px; }
-  .hero h1 { font-family: var(--mono); font-size: 24px; font-weight: 600; letter-spacing: -.01em; overflow-wrap: anywhere; }
+  .hero h1 { font-family: var(--mono); font-size: 28px; font-weight: 600; letter-spacing: -.01em; overflow-wrap: anywhere; }
   .hero .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
   .big-score { text-align: right; }
   .big-score .v { font-size: 44px; font-weight: 600; letter-spacing: -.03em; line-height: 1; font-variant-numeric: tabular-nums; }
   .big-score .v small { font-size: 18px; font-weight: 500; color: var(--ink-4); }
   .big-score .l { font-size: 12px; color: var(--ink-3); margin-top: 4px; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0; margin: 0; }
-  .stats div { padding: 10px 14px; border-left: 1px solid var(--rule); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(144px, 1fr)); gap: 0; margin: 0; }
+  .stats div { padding: 12px 16px; border-left: 1px solid var(--rule); min-width: 0; }
   .stats div:first-child { border-left: 0; }
   .stats dt { font-size: 11px; font-weight: 500; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
-  .stats dd { margin: 2px 0 0; font-size: 14px; font-weight: 500; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-  .stats dd .sub { font-weight: 400; color: var(--ink-3); font-size: 12px; }
+  .stats dd { margin: 4px 0 0; font-size: 16px; font-weight: 600; font-variant-numeric: tabular-nums; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .stats dd .sub { display: block; font-weight: 400; color: var(--ink-3); font-size: 12px; overflow: hidden; text-overflow: ellipsis; }
   .big-lane { padding: 12px 16px 14px; }
   .big-lane .lane, .big-lane .ruler-label { margin-left: 0; }
   .split { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media (min-width: 920px) { .split { grid-template-columns: 340px minmax(0, 1fr); } }
   .cats { list-style: none; margin: 0; padding: 4px 0; }
-  .cats li a { display: grid; grid-template-columns: minmax(0, 1fr) 72px 44px; gap: 10px; align-items: center; padding: 6px 14px; color: var(--ink-2); font-size: 13px; }
+  .cats li a { display: grid; grid-template-columns: minmax(0, 1fr) 72px 44px; gap: 12px; align-items: center; padding: 8px 16px; color: var(--ink-2); font-size: 13px; }
   .cats li a:hover { background: var(--sheet-sunk); text-decoration: none; }
   .cats li a[aria-current="true"] { background: var(--blueberry-wash); color: var(--ink); }
-  .cats .name { font-family: var(--mono); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .meter { display: flex; height: 6px; border-radius: 3px; overflow: hidden; background: var(--rule); }
+  .cats .name { font-family: var(--mono); font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .meter { display: flex; height: 6px; border-radius: 999px; overflow: hidden; background: var(--rule); }
   .meter i { display: block; height: 100%; }
   .meter .mp { background: var(--ink-4); }
   .meter .mf { background: var(--fail); }
@@ -260,15 +292,15 @@
   .cats .r { text-align: right; font-size: 12px; color: var(--ink-3); font-variant-numeric: tabular-nums; }
 
   /* tests */
-  .tests-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 14px; border-bottom: 1px solid var(--rule); }
+  .tests-head { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 12px 16px; border-bottom: 1px solid var(--rule); }
   .tests-head .count { margin-left: auto; font-size: 12px; color: var(--ink-4); }
   .test { border-bottom: 1px solid var(--rule); }
   .test:last-child { border-bottom: 0; }
-  .test > summary { list-style: none; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 10px; align-items: center; padding: 8px 14px; cursor: pointer; font-size: 13px; }
+  .test > summary { list-style: none; display: grid; grid-template-columns: 58px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 16px; cursor: pointer; font-size: 13px; }
   .test > summary::-webkit-details-marker { display: none; }
   .test > summary:hover { background: var(--sheet-sunk); }
   .test[open] > summary { background: var(--sheet-sunk); }
-  .test .id { font-family: var(--mono); font-size: 12.5px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .test .id { font-family: var(--mono); font-size: 13px; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .test .id .cat { color: var(--ink-4); margin-left: 8px; }
   .test .meta { font-size: 12px; color: var(--ink-4); white-space: nowrap; font-variant-numeric: tabular-nums; }
   .st { display: inline-block; text-align: center; font-size: 11px; font-weight: 600; line-height: 18px; padding: 0 6px; border-radius: 4px; }
@@ -276,24 +308,24 @@
   .st.fail { color: var(--fail-ink); background: color-mix(in srgb, var(--fail) 12%, transparent); }
   .st.error { color: var(--notice-ink); background: var(--notice-wash); }
   .st.none { color: var(--ink-4); background: var(--sheet-sunk); }
-  .test-body { padding: 4px 14px 16px 82px; font-size: 13px; }
+  .test-body { padding: 4px 16px 16px 86px; font-size: 13px; }
   .test-body h4 { margin: 14px 0 4px; font-size: 11px; font-weight: 600; color: var(--ink-4); letter-spacing: .04em; text-transform: uppercase; }
-  .test-body .links { display: flex; flex-wrap: wrap; gap: 4px 14px; margin: 8px 0 2px; font-size: 12.5px; }
-  .kv { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 6px 0 0; font-size: 12.5px; color: var(--ink-3); }
+  .test-body .links { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 4px; font-size: 13px; }
+  .kv { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 8px 0 0; font-size: 12px; color: var(--ink-3); }
   .kv b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
   .checks { list-style: none; margin: 0; padding: 0; }
   .checks li { display: grid; grid-template-columns: 16px minmax(0, 1fr); gap: 6px; padding: 3px 0; }
   .checks .mark { color: var(--fail-ink); font-weight: 700; }
   .refs { display: flex; flex-wrap: wrap; gap: 4px 6px; }
-  .refs code { font-size: 11.5px; padding: 1px 6px; border-radius: 4px; background: var(--sheet-sunk); border: 1px solid var(--rule); color: var(--ink-3); }
-  pre { background: var(--sheet-sunk); border: 1px solid var(--rule); padding: 10px 12px; border-radius: 6px; overflow: auto; max-height: 340px; font-size: 12px; margin: 0; font-family: var(--mono); white-space: pre-wrap; }
+  .refs code { font-size: 12px; padding: 1px 6px; border-radius: 4px; background: var(--sheet-sunk); border: 1px solid var(--rule); color: var(--ink-3); }
+  pre { background: var(--sheet-sunk); border: 1px solid var(--rule); padding: 12px; border-radius: 4px; overflow: auto; max-height: 340px; font-size: 12px; margin: 0; font-family: var(--mono); white-space: pre-wrap; }
   .empty { padding: 28px 16px; text-align: center; color: var(--ink-3); font-size: 13px; }
   .why { color: var(--ink-3); font-size: 12px; margin-left: 6px; }
 
   /* tables and heatmaps */
   .grid-wrap { overflow-x: auto; }
-  table.grid { border-collapse: collapse; width: 100%; font-size: 12.5px; }
-  table.grid th, table.grid td { padding: 6px 10px; border-bottom: 1px solid var(--rule); text-align: center; white-space: nowrap; }
+  table.grid { border-collapse: collapse; width: 100%; font-size: 13px; }
+  table.grid th, table.grid td { padding: 8px 12px; border-bottom: 1px solid var(--rule); text-align: center; white-space: nowrap; }
   table.grid thead th { position: sticky; top: 0; background: var(--sheet-sunk); font-weight: 500; color: var(--ink-3); font-size: 12px; vertical-align: bottom; }
   table.grid thead th a { font-family: var(--mono); color: var(--ink-2); }
   table.grid th.rowh { text-align: left; font-weight: 400; font-family: var(--mono); color: var(--ink-2); background: var(--sheet); position: sticky; left: 0; z-index: 1; }
@@ -309,26 +341,31 @@
   .seq { font-variant-numeric: tabular-nums; color: #0d1b2e; }
   .seq.dark { color: #fff; }
   .seq.na { background: var(--sheet-sunk); color: var(--ink-4); }
+  .cat-layout { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 16px; align-items: start; }
+  .cat-layout > .sheet.pad { min-width: 0; }
+  .cell-head { margin: 0; padding: 16px; border-bottom: 1px solid var(--rule); }
+  #cellDetail { position: sticky; top: 112px; max-height: calc(100vh - 136px); overflow: auto; }
+  @media (max-width: 920px) { .cat-layout { grid-template-columns: minmax(0, 1fr); } #cellDetail { position: static; max-height: none; } }
   table.heat { border-collapse: separate; border-spacing: 2px; font-size: 12px; }
   table.heat th { font-weight: 500; color: var(--ink-3); }
-  table.heat th.cat { text-align: left; white-space: nowrap; padding: 2px 10px 2px 0; font-family: var(--mono); font-weight: 400; color: var(--ink-2); }
+  table.heat th.cat { text-align: left; white-space: nowrap; padding: 2px 12px 2px 0; font-family: var(--mono); font-weight: 400; color: var(--ink-2); }
   table.heat th.cat a { color: inherit; }
   table.heat th.cat .n { color: var(--ink-4); font-family: var(--sans); margin-left: 4px; }
   table.heat th.col { writing-mode: vertical-rl; transform: rotate(180deg); text-align: left; padding: 6px 3px; font-family: var(--mono); font-size: 11px; max-height: 170px; white-space: nowrap; }
   table.heat th.col a { color: var(--ink-2); }
-  table.heat th.col.synthetic { background: var(--hatch); border-radius: 3px; }
+  table.heat th.col.synthetic { background: var(--hatch); border-radius: 4px; }
   table.heat td { padding: 0; }
   table.heat td .cell { display: block; min-width: 44px; padding: 4px 6px; border-radius: 4px; text-align: center; cursor: pointer; font-variant-numeric: tabular-nums; }
   table.heat td .cell:hover, table.heat td .cell[aria-pressed="true"] { outline: 2px solid var(--ink); outline-offset: -2px; }
   table.heat tr.total th, table.heat tr.total td .cell { font-weight: 600; }
   .delta-up { color: var(--pass-ink); } .delta-down { color: var(--fail-ink); }
   .cmp-heads { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 12px; }
-  .cmp-heads .sheet { padding: 12px 14px; }
+  .cmp-heads .sheet { padding: 16px; }
   .cmp-heads .score { text-align: left; font-size: 28px; margin-top: 6px; }
-  .cmp-lanes .entry { padding: 10px 16px; }
+  .cmp-lanes .entry { padding: 12px 16px; }
   .cmp-lanes .lane { margin-left: 0; }
   .diff-groups { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-  .diff-groups .sheet { padding: 12px 14px; }
+  .diff-groups .sheet { padding: 16px; }
   .diff-groups h3 { display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
   .diff-groups h3 .c { color: var(--ink-4); font-weight: 400; }
   .idlist { display: flex; flex-wrap: wrap; gap: 4px 6px; margin-top: 8px; }
@@ -336,14 +373,14 @@
   .idlist a:hover { border-color: var(--blueberry); color: var(--blueberry-ink); text-decoration: none; }
 
   /* score vs cost */
-  svg.chart { display: block; width: 100%; height: 380px; }
+  svg.chart { display: block; width: 100%; height: 320px; }
   svg.chart text { fill: var(--ink-3); font-size: 12px; font-family: var(--sans); }
   svg.chart .gridline { stroke: var(--rule); }
   svg.chart .axis { stroke: var(--rule-strong); }
   svg.chart .dot { fill: var(--blueberry); stroke: var(--sheet); stroke-width: 2; cursor: pointer; }
   svg.chart .dot.synthetic { fill: var(--sheet); stroke: var(--notice); stroke-width: 2; stroke-dasharray: 3 2; }
   svg.chart .dot:hover { stroke: var(--ink); }
-  svg.chart .lbl { fill: var(--ink); font-family: var(--mono); font-size: 11.5px; pointer-events: none; }
+  svg.chart .lbl { fill: var(--ink); font-family: var(--mono); font-size: 12px; pointer-events: none; }
   svg.chart .lbl.synthetic { fill: var(--ink-3); }
 
   /* how it works */
@@ -355,7 +392,7 @@
   svg.diagram .claim { fill: var(--blueberry-wash); stroke: var(--blueberry); stroke-width: 2.5; }
 
   /* compare tray */
-  .tray { position: fixed; left: 50%; bottom: 16px; translate: -50% 0; z-index: 30; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; max-width: calc(100vw - 32px); padding: 8px 8px 8px 14px; border-radius: 10px; background: var(--ink); color: var(--sheet); box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 13px; }
+  .tray { position: fixed; left: 50%; bottom: 16px; translate: -50% 0; z-index: 30; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; max-width: calc(100vw - 32px); padding: 8px 8px 8px 16px; border-radius: 8px; background: var(--ink); color: var(--sheet); box-shadow: 0 10px 30px rgba(0,0,0,.25); font-size: 13px; }
   .tray .names { display: flex; gap: 6px; flex-wrap: wrap; }
   .tray .names span { font-family: var(--mono); font-size: 12px; padding: 1px 4px 1px 8px; border-radius: 4px; background: rgba(127,127,127,.25); display: inline-flex; align-items: center; gap: 2px; }
   .tray .names button { border: 0; background: none; color: inherit; cursor: pointer; font-size: 14px; line-height: 1; padding: 2px 4px; opacity: .7; }
@@ -367,26 +404,31 @@
   .hist { display: grid; grid-template-columns: 1fr; gap: 16px; }
   @media (min-width: 900px) { .hist { grid-template-columns: 340px minmax(0, 1fr); } }
   .commits { max-height: 70vh; overflow: auto; }
-  .commit { padding: 10px 14px; border-bottom: 1px solid var(--rule); cursor: pointer; }
+  .commit { padding: 12px 16px; border-bottom: 1px solid var(--rule); cursor: pointer; }
   .commit:hover, .commit.active { background: var(--sheet-sunk); }
   .commit.active { box-shadow: inset 2px 0 0 var(--ink); }
   .commit .msg { font-weight: 500; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .commit .meta { font-size: 12px; color: var(--ink-4); display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 2px; }
-  .diff { padding: 14px 16px; }
+  .diff { padding: 16px; }
   .diff h3 { margin: 16px 0 6px; }
   .diff ul { margin: 0; padding-left: 18px; }
 
   /* tooltip */
-  .tip { position: fixed; z-index: 40; pointer-events: none; padding: 6px 9px; border-radius: 6px; background: var(--ink); color: var(--sheet); font-size: 12px; line-height: 1.4; box-shadow: 0 6px 18px rgba(0,0,0,.2); max-width: 320px; }
+  .tip { position: fixed; z-index: 40; pointer-events: none; padding: 8px 12px; border-radius: 4px; background: var(--ink); color: var(--sheet); font-size: 12px; line-height: 1.4; box-shadow: 0 6px 18px rgba(0,0,0,.2); max-width: 320px; }
   .tip b { font-family: var(--mono); font-weight: 500; }
   .tip .s-pass { color: #68de7c; } .tip .s-fail { color: #ff8085; } .tip .s-error { color: #f0c33c; }
 
-  footer.foot { padding: 0 16px 32px; font-size: 12.5px; color: var(--ink-4); }
+  footer.foot { padding: 0 16px 32px; font-size: 12px; color: var(--ink-4); }
   footer.foot p { margin: 4px 0; }
 
   @media (max-width: 720px) {
     .masthead { position: static; }
-    .masthead .row { flex-wrap: wrap; gap: 10px; }
+    .statline { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .statline div { border-left: 0; border-top: 1px solid var(--rule); }
+    .statline div:nth-child(even) { border-left: 1px solid var(--rule); }
+    .statline div:nth-child(-n+2) { border-top: 0; }
+    .statline div:last-child:nth-child(odd) { grid-column: 1 / -1; }
+    .masthead .row { flex-wrap: wrap; gap: 12px; }
     .search { order: 3; flex-basis: 100%; max-width: none; }
     .line { grid-template-columns: 22px 28px minmax(0, 1fr) 84px; }
     .facts { grid-column: 3 / -1; grid-row: 2; flex-wrap: wrap; gap: 4px 12px; margin-top: 4px; white-space: normal; }
@@ -402,7 +444,7 @@
     svg.chart { height: 300px; }
     table.heat th.col { max-height: 110px; }
   }
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .btn:active { transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } .btn:active { transform: none; } .livedot { animation: none; } }
 </style>
 </head>
 <body>
@@ -417,19 +459,21 @@
         <kbd aria-hidden="true">/</kbd>
         <ul class="results" id="qResults" role="listbox" hidden></ul>
       </div>
+      <button type="button" class="btn" id="uploadBtn" data-action="upload" title="Preview a results file from this computer. Nothing is uploaded.">Upload results</button>
     </div>
     <nav class="views" id="views" aria-label="Views"></nav>
   </div>
 </header>
 
+<div class="wrap" id="localbar" role="status" hidden></div>
 <main class="wrap" id="main"><div class="status">Loading runs…</div></main>
 
+<div class="drophint" id="dropHint" hidden><div><strong>Drop to preview</strong><span>results_&lt;timestamp&gt;.json, .jsonl or .jsonl.partial · nothing is uploaded</span></div></div>
 <div class="tray" id="tray" hidden></div>
 <div class="tip" id="tip" role="tooltip" hidden></div>
 
 <footer class="wrap foot">
-  <p id="srcLine"></p>
-  <p>Scores are the strict execution pass rate (scoring 3.0): the code runs, passes its runtime assertions and triggers no forbidden pattern; ± is a 95% Wilson interval. Costs are harness estimates, not billing. Only compare runs from the same suite and scoring version. Data: <a id="dataLink" href="#">leaderboard.json</a>, built by <a id="buildLink" href="#" rel="noopener">build_data.py</a> from the raw run outputs in <a id="folderLink" href="#" rel="noopener">results/</a>; one file, no API calls. Drop <code>output/results_&lt;timestamp&gt;.json</code> files anywhere on the page to preview your own runs; they stay in this tab.</p>
+  <p><span id="srcLine"></span> · <a id="dataLink" href="#">leaderboard.json</a> · <a id="buildLink" href="#" rel="noopener">build_data.py</a> · <a id="folderLink" href="#" rel="noopener">results/</a></p>
 </footer>
 
 <script>
@@ -448,6 +492,8 @@
   const RUN_FILE = /^results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})\.json$/;
   const $ = (id) => document.getElementById(id);
   const main = $('main');
+  /** Translation hook: the English text is the key and {name} marks a value. */
+  const t = (text, vars) => vars ? text.replace(/\{(\w+)\}/g, (_, k) => vars[k] ?? '') : text;
   $('buildLink').href = `https://github.com/${REPO}/blob/${REF}/site/build_data.py`;
   $('folderLink').href = `https://github.com/${REPO}/tree/${REF}/results`;
   $('folderLink').textContent = `${REPO}/results`;
@@ -489,35 +535,91 @@
     const stderr = (g.stderr || '').trim();
     return { reason, assertions: assertions.slice(0, 5), runtime_score: sc.runtime ?? null, stderr: stderr ? stderr.slice(-300) : null, error: rec.error ? JSON.stringify(rec.error).slice(0, 300) : null };
   }
+  // Runs the visitor brings along: raw `wp-bench run` outputs read in the browser, never uploaded anywhere.
+  const LOCAL_STAMP = /results_(\d{4})(\d{2})(\d{2})_(\d{2})(\d{2})(\d{2})/;
+  const usageOf = (records, k) => records.map(x => x.usage?.[k]).filter(v => typeof v === 'number');
+  const sumOf = (list) => list.reduce((a, b) => a + b, 0);
+
+  /** A run shaped like the rows build_data.py writes, computed from a model's per-test records. */
+  function localRun(file, model, emd, records, extra = {}) {
+    const m = LOCAL_STAMP.exec(file);
+    const now = new Date().toISOString();
+    const passed_ids = [], failures = {}, categories = {};
+    for (const rec of records) {
+      const c = categories[rec.category] ||= { passed: 0, total: 0 };
+      c.total++;
+      if (rec.scores?.execution_pass) { c.passed++; passed_ids.push(rec.test_id); } else failures[rec.test_id] = failureDetail(rec);
+      S.data.tests[rec.test_id] ||= { suite: rec.suite, category: rec.category, source_refs: rec.metadata?.source_refs || [] };
+    }
+    const lat = usageOf(records, 'latency_ms'), cost = usageOf(records, 'cost_usd');
+    const total = cost.length === records.length && records.length ? sumOf(cost) : null;
+    return adapt({
+      id: `local:${file}:${model}`, file, model, suite: emd.suite, scoring_version: emd.scoring_version, result_schema_version: emd.result_schema_version,
+      run_date: m ? `${m[1]}-${m[2]}-${m[3]}` : now.slice(0, 10), run_ts: m ? m.slice(1).join('') : now.replace(/\D/g, '').slice(0, 14),
+      synthetic: !!emd.synthetic, limit: emd.limit ?? null,
+      config: { kind: emd.model?.kind, temperature: emd.model?.temperature, runtime_image_id: emd.runtime_image_id, runtime_isolation: emd.runtime_isolation, runtime_isolation_boundary: emd.runtime_isolation_boundary, execution_concurrency: emd.execution_concurrency, seed: emd.seed, grader: emd.grader?.kind, database: emd.grader?.database },
+      scores: emd.scores, usage: emd.usage || {},
+      tests: { passed: passed_ids.length, total: records.length, errored: records.filter(x => x.error).length },
+      latency_ms: { p50: pctl(lat, .5), p90: pctl(lat, .9), max: lat.length ? Math.max(...lat) : null, total_min: lat.length ? Math.round(sumOf(lat) / 6000) / 10 : null },
+      cost_usd: { total, per_pass: total != null && passed_ids.length ? total / passed_ids.length : null },
+      tokens: { completion_p50: pctl(usageOf(records, 'completion_tokens'), .5) },
+      categories, passed_ids, failures, published: null,
+    }, { local: true, localFile: file, ...extra });
+  }
+
+  /** A results_<timestamp>.json payload: one model (metadata + results) or several (metadata + models). */
   function runsFromRaw(file, doc) {
     const md = doc.metadata || {};
-    const m = RUN_FILE.exec(file);
+    if (md.mode === 'exploit_audit') throw new Error(t('Exploit audits are not leaderboard runs.'));
     const entries = Array.isArray(doc.results)
       ? (md.mode && md.mode !== 'model' ? [] : [[md.model?.name, md, doc.results]])
       : Object.values(doc.models || {}).filter(e => (e.variant?.kind ?? 'none') === 'none').map(e => [e.config?.name, { ...md, model: e.config, scores: e.scores }, e.results || []]);
-    return entries.filter(([name, emd]) => name && emd.scores).map(([model, emd, records]) => {
-      const passed_ids = [], failures = {}, categories = {};
-      for (const rec of records) {
-        const c = categories[rec.category] ||= { passed: 0, total: 0 };
-        c.total++;
-        if (rec.scores?.execution_pass) { c.passed++; passed_ids.push(rec.test_id); } else failures[rec.test_id] = failureDetail(rec);
-        S.data.tests[rec.test_id] ||= { suite: rec.suite, category: rec.category, source_refs: rec.metadata?.source_refs || [] };
-      }
-      const nums = (k) => records.map(x => x.usage?.[k]).filter(v => typeof v === 'number');
-      const lat = nums('latency_ms'), cost = nums('cost_usd');
-      const total = cost.length === records.length && records.length ? cost.reduce((a, b) => a + b, 0) : null;
-      return adapt({
-        id: `local:${file}:${model}`, file, model, suite: emd.suite, scoring_version: emd.scoring_version, result_schema_version: emd.result_schema_version,
-        run_date: m ? `${m[1]}-${m[2]}-${m[3]}` : null, run_ts: m ? m.slice(1).join('') : '', synthetic: !!emd.synthetic, limit: emd.limit ?? null,
-        config: { kind: emd.model?.kind, temperature: emd.model?.temperature, runtime_image_id: emd.runtime_image_id, runtime_isolation: emd.runtime_isolation, runtime_isolation_boundary: emd.runtime_isolation_boundary, execution_concurrency: emd.execution_concurrency, seed: emd.seed, grader: emd.grader?.kind, database: emd.grader?.database },
-        scores: emd.scores, usage: emd.usage || {},
-        tests: { passed: passed_ids.length, total: records.length, errored: records.filter(x => x.error).length },
-        latency_ms: { p50: pctl(lat, .5), p90: pctl(lat, .9), max: lat.length ? Math.max(...lat) : null },
-        cost_usd: { total, per_pass: total != null && passed_ids.length ? total / passed_ids.length : null },
-        tokens: { completion_p50: pctl(nums('completion_tokens'), .5) },
-        categories, passed_ids, failures, published: null,
-      }, { local: true });
+    return entries.filter(([name, emd]) => name && emd.scores).map(([model, emd, records]) => localRun(file, model, emd, records));
+  }
+
+  /** The published suite whose tests overlap these records the most; a new suite name when none does. */
+  function inferSuite(records) {
+    let best = null, bestN = 0;
+    for (const s of S.suites.values()) {
+      let n = 0;
+      for (const rec of records) if (s.tests.has(rec.test_id)) n++;
+      if (n > bestN) { best = s.name; bestN = n; }
+    }
+    return best || records[0]?.suite || t('uploaded');
+  }
+
+  /** Per-test records (results_<timestamp>.jsonl, or the .jsonl.partial a run is still writing): the scores are computed here, as the harness does. */
+  function runsFromRecords(file, records, partial) {
+    const groups = new Map();
+    for (const rec of records) {
+      if (!rec?.test_id || !rec.model?.name || (rec.variant?.kind ?? 'none') !== 'none' || (rec.mode && rec.mode !== 'model')) continue;
+      if (!groups.has(rec.model.name)) groups.set(rec.model.name, []);
+      groups.get(rec.model.name).push(rec);
+    }
+    return [...groups].map(([model, recs]) => {
+      const suite = inferSuite(recs);
+      const graded = recs.filter(r => !r.error);
+      const mean = (f) => { const v = graded.map(f).filter(x => typeof x === 'number'); return v.length ? sumOf(v) / v.length : null; };
+      const policy = graded.map(r => r.scores?.static_policy_pass).filter(v => v != null);
+      const overall = graded.length ? graded.filter(r => r.scores?.execution_pass).length / graded.length : null;
+      const scores = { correctness: mean(r => r.scores?.correctness), execution_pass_rate: overall, runtime: mean(r => r.scores?.runtime), static_policy_pass_rate: policy.length ? policy.filter(Boolean).length / policy.length : null, overall };
+      const usage = { prompt_tokens: sumOf(usageOf(recs, 'prompt_tokens')), completion_tokens: sumOf(usageOf(recs, 'completion_tokens')) };
+      return localRun(file, model, { suite, scoring_version: S.suites.get(suite)?.scoring ?? null, scores, usage, model: recs[0].model }, recs, { partial });
     });
+  }
+
+  /** Read one uploaded file: .json, .jsonl or .jsonl.partial. A last line still being written is skipped. */
+  async function parseUpload(file) {
+    const text = await file.text();
+    if (/\.jsonl(\.partial)?$/i.test(file.name)) {
+      const records = [];
+      for (const line of text.split('\n')) {
+        if (!line.trim()) continue;
+        try { records.push(JSON.parse(line)); } catch { /* the harness is mid-write */ }
+      }
+      return runsFromRecords(file.name, records, /\.partial$/i.test(file.name));
+    }
+    return runsFromRaw(file.name, JSON.parse(text));
   }
 
   /** Group runs by suite; the suite's test order (category, then id) is the x axis of every strip. */
@@ -544,7 +646,7 @@
       // The full suite is the largest test count among the current scoring version's runs; anything
       // smaller is a partial run or an earlier revision of the suite, never ranked with full runs.
       s.full = Math.max(0, ...s.runs.filter(r => r.scoring_version === s.scoring).map(r => r.total));
-      for (const r of s.runs) r.subset = r.total < s.full || !!r.limit;
+      for (const r of s.runs) r.subset = r.total < s.full || !!r.limit || !!r.partial;
     }
     S.suites = suites;
   }
@@ -574,7 +676,7 @@
   function catStats(run, s) {
     if (!run._cats) {
       run._cats = new Map(s.cats.map(c => [c.name, { name: c.name, total: 0, pass: 0, fail: 0, error: 0 }]));
-      for (const [id, cat] of s.order) { const st = statusOf(run, id); if (st === 'none') continue; const b = run._cats.get(cat); b.total++; b[st]++; }
+      for (const [id, cat] of s.order) { const st = statusOf(run, id); if (st === 'none') continue; const b = run._cats.get(cat); if (!b) continue; b.total++; b[st]++; }
     }
     return run._cats;
   }
@@ -604,7 +706,8 @@
   function chips(r, s, { full = false } = {}) {
     const out = [];
     if (r.synthetic) out.push('<span class="chip synthetic" title="Random scores generated to develop this page. Not a benchmark result.">synthetic</span>');
-    if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
+    if (r.partial) out.push(`<span class="chip live" title="${esc(t('The harness is still writing this run: the score covers only the tests graded so far.'))}">${esc(t('in progress'))} ${r.total}/${s.full}</span>`);
+    else if (r.subset && r.limit) out.push(`<span class="chip subset" title="Seeded subset: limit ${esc(r.limit)}, seed ${esc(r.config.seed)}">subset ${r.total}/${s.full}</span>`);
     else if (r.subset) out.push(`<span class="chip" title="Ran ${r.total} tests; the current full suite has ${s.full} (a partial run or an earlier revision of the suite)">${r.total} tests</span>`);
     else if (full) out.push('<span class="chip full" title="Every test in the suite was run">full suite</span>');
     if (r.scoring_version !== s.scoring) out.push(`<span class="chip subset" title="Scores from another scoring version are not comparable">scoring ${esc(r.scoring_version)}</span>`);
@@ -663,6 +766,18 @@
     const failed = run.total - run.passed - run.errored;
     return `<svg class="strip" data-run="${esc(run.key)}" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${run.passed} passed, ${failed} failed${run.errored ? `, ${run.errored} errored` : ''} of ${s.size} tests">${out}</svg>`;
   }
+  /** Failures by category for a table row: one bar per category, as tall as its failure rate. A tick per test is too thin at this width. */
+  function miniBars(run, s, h = 16) {
+    const w = 5, gap = 1.5, stats = catStats(run, s);
+    const bars = s.cats.map((c, i) => {
+      const b = stats.get(c.name), x = (i * (w + gap)).toFixed(1);
+      if (!b || !b.total) return `<rect class="n" x="${x}" y="${h - 1}" width="${w}" height="1"><title>${esc(c.name)}: not run</title></rect>`;
+      const bad = b.fail + b.error, bh = bad ? Math.max(4, Math.round(bad / b.total * h)) : 2;
+      return `<rect class="${bad ? 'f' : 'p'}" x="${x}" y="${h - bh}" width="${w}" height="${bh}" rx="1"><title>${esc(c.name)}: ${bad} of ${b.total} failed</title></rect>`;
+    }).join('');
+    const failed = run.total - run.passed - run.errored;
+    return `<svg class="minibars" viewBox="0 0 ${(s.cats.length * (w + gap) - gap).toFixed(1)} ${h}" preserveAspectRatio="none" height="${h}" role="img" aria-label="${esc(run.model)}: ${failed} failed tests across ${s.cats.length} categories">${bars}</svg>`;
+  }
   function ruler(s) {
     return `<svg class="ruler" data-suite="${esc(s.name)}" viewBox="0 0 ${s.width.toFixed(1)} 6" preserveAspectRatio="none" height="6" role="img" aria-label="${s.cats.length} categories">${s.cats.map(c => `<rect x="${c.x.toFixed(1)}" y="0" width="${c.w.toFixed(1)}" height="6" rx="1"/>`).join('')}</svg>`;
   }
@@ -690,6 +805,7 @@
     const inSuite = (m) => S.suites.get(r.suite)?.runs.some(x => x.model === m);
     S.compare = (r.view === 'compare' ? r.models : S.compare).filter(inSuite).slice(0, 3);
     renderChrome(r);
+    renderLocalBar();
     hideTip();
     const s = S.suites.get(r.suite);
     if (!s && !GLOBAL_VIEWS.includes(r.view)) { main.innerHTML = '<div class="status">No runs found in the results folder yet.</div>'; return; }
@@ -718,56 +834,60 @@
     return `<p class="notice synthetic">${synthetic} of ${s.runs.length} runs in ${esc(s.name)} are synthetic: random scores generated to build this page, tagged below. ${real} model${real === 1 ? ' has' : 's have'} real runs.${S.showSynthetic ? '' : ' They are hidden now.'}</p>`;
   }
 
-  /** Home (the list from the build_data page): summary tiles and a sortable table of each model's latest run; tick rows to compare. */
+  /** Home (the list from the build_data page): a stat strip and one table of each model's latest run, ranked full runs first; tick rows to compare. */
   const BOARD_COLS = [
     ['rank', '#', (r, rank) => rank.get(r) ?? Infinity],
     ['model', 'Model', r => r.model, 'left'],
     ['overall', 'Overall', r => r.scores.overall],
+    ['strip', 'Failures by category', null, 'left'],
     ['passed', 'Passed', r => r.passed],
     ['cost', 'Cost / run', r => r.cost.total],
     ['perpass', '$ / pass', r => r.cost.per_pass],
-    ['tokens', 'Tokens / test', r => r.tokens.completion_p50],
-    ['p50', 'Latency p50', r => r.latency.p50],
-    ['p90', 'p90', r => r.latency.p90],
-    ['date', 'Run date', r => r.run_ts],
-    ['by', 'Published by', r => r.published?.by, 'left'],
+    ['latency', 'Latency p50 / p90', r => r.latency.p50],
   ];
   // Columns that read best low-to-high on first click (cheaper, faster, alphabetical).
-  const ASCENDING = new Set(['rank', 'model', 'by', 'cost', 'perpass', 'tokens', 'p50', 'p90']);
+  const ASCENDING = new Set(['rank', 'model', 'cost', 'perpass', 'latency']);
   function viewBoard(r, s) {
     const ranked = boardRuns(s);
     const rank = new Map(ranked.map(x => [x, x.rank]));
-    // Default: every model's latest run; only full runs carry a rank. "Show older runs" adds the rest of the suite.
-    const pool = S.board.all ? s.runs.filter(x => S.showSynthetic || !x.synthetic) : [...ranked, ...unrankedRuns(s, ranked)];
+    // Ranked full runs first; then every model's latest unranked run ("Show older runs" adds the rest of the suite).
+    const others = S.board.all ? s.runs.filter(x => !rank.has(x) && (S.showSynthetic || !x.synthetic)) : unrankedRuns(s, ranked);
     const q = S.board.q.trim().toLowerCase();
-    const shown = pool.filter(x => !q || x.model.toLowerCase().includes(q) || (x.published?.by || '').toLowerCase().includes(q));
-    const [key, dir] = [S.board.sort, S.board.dir];
-    const col = BOARD_COLS.find(c => c[0] === key) || BOARD_COLS[2];
-    shown.sort((a, b) => {
+    const hit = (x) => !q || x.model.toLowerCase().includes(q) || (x.published?.by || '').toLowerCase().includes(q);
+    const col = BOARD_COLS.find(c => c[0] === S.board.sort && c[2]) || BOARD_COLS[2];
+    const dir = S.board.dir;
+    const order = (a, b) => {
       const va = col[2](a, rank), vb = col[2](b, rank);
-      if (va == null && vb == null) return (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity);
+      if (va == null && vb == null) return 0;
       if (va == null) return 1; if (vb == null) return -1;
-      return (typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb))) * dir || (rank.get(a) ?? Infinity) - (rank.get(b) ?? Infinity);
-    });
-    const unrankedCount = shown.filter(x => !rank.has(x)).length;
+      return (typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb))) * dir;
+    };
+    const top = ranked.filter(hit).sort((a, b) => order(a, b) || rank.get(a) - rank.get(b));
+    const rest = others.filter(hit).sort((a, b) => order(a, b) || (b.scores.overall ?? -1) - (a.scores.overall ?? -1));
+    const span = BOARD_COLS.length + 2;
     main.innerHTML = `
       ${syntheticNotice(s)}
-      <div class="tiles">${boardTiles(s, ranked)}</div>
+      ${boardStats(s, ranked)}
       <div class="toolbar">
         <input type="search" class="field" id="boardSearch" placeholder="Filter by model or author" value="${esc(S.board.q)}" aria-label="Filter by model or author">
         <label class="check"><input type="checkbox" id="optAll"${S.board.all ? ' checked' : ''}> Show older runs</label>
         ${filterToggles()}
-        <span class="muted num">${ranked.length} ranked${unrankedCount ? ` · ${unrankedCount} not ranked` : ''}</span>
         <span class="grow"></span>
+        ${canFollow() && $('localbar').hidden ? '<button type="button" class="btn" data-action="follow" title="Pick a results file the harness is still writing and watch it fill in.">Follow a running benchmark</button>' : ''}
         <button type="button" class="btn" id="exportCsv">Export CSV</button>
       </div>
       <div class="sheet grid-wrap">
         <table class="board" id="boardTable">
-          <thead><tr><th class="nosort pickc" scope="col"><span class="sr">Compare</span></th>${BOARD_COLS.map(([k, label, , align]) => `<th scope="col" data-sort="${k}" class="${align || ''}" aria-sort="${k === col[0] ? (dir < 0 ? 'descending' : 'ascending') : 'none'}">${label}${k === 'overall' ? ' <span class="faint" title="Strict execution pass rate; ± is a 95% Wilson interval">±</span>' : ''}${k === col[0] ? `<span class="dir">${dir < 0 ? '▼' : '▲'}</span>` : ''}</th>`).join('')}<th class="nosort left" scope="col">Run details</th></tr></thead>
-          <tbody>${shown.length ? shown.map(x => boardRow(x, s, rank)).join('') : `<tr><td colspan="${BOARD_COLS.length + 2}" class="empty">No runs match.</td></tr>`}</tbody>
+          <thead><tr><th class="nosort pickc" scope="col"><span class="sr">Compare</span></th>${BOARD_COLS.map(([k, label, get, align]) => get
+            ? `<th scope="col" data-sort="${k}" class="${align || ''}" aria-sort="${k === col[0] ? (dir < 0 ? 'descending' : 'ascending') : 'none'}">${label}${k === 'overall' ? ' <span class="faint" title="Strict execution pass rate; ± is a 95% Wilson interval">±</span>' : ''}${k === col[0] ? `<span class="dir">${dir < 0 ? '▼' : '▲'}</span>` : ''}</th>`
+            : `<th scope="col" class="nosort ${align || ''}">${label}</th>`).join('')}<th class="nosort" scope="col"><span class="sr">Run details</span></th></tr></thead>
+          <tbody>
+            ${top.length ? top.map(x => boardRow(x, s, rank)).join('') : `<tr><td colspan="${span}" class="empty">${q ? 'No ranked runs match the filter.' : `No full runs to rank in ${esc(s.name)} yet.`}</td></tr>`}
+            ${rest.length ? `<tr class="group"><td colspan="${span}"><strong>Not ranked</strong> · a different test count (a partial run or an earlier revision of the suite), another scoring version${S.board.all ? ', or an older run' : ''}</td></tr>${rest.map(x => boardRow(x, s, rank)).join('')}` : ''}
+          </tbody>
         </table>
       </div>
-      <p class="lede" style="margin-top:10px">Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. Greyed rows aren't ranked: a different test count (a partial run or an earlier revision of the suite), another scoring version, or an older run. Costs are harness estimates, not billing; tokens are median completion tokens per test. Tick rows to compare up to three models.</p>`;
+      <p class="lede" style="margin-top:12px">Overall is the strict execution pass rate (the code runs, passes its runtime assertions and triggers no forbidden pattern); ± is a 95% Wilson interval. Each strip has one tick per test in suite order, red where it failed. Costs are harness estimates. Tick rows to compare up to three models.</p>`;
     $('boardSearch').addEventListener('input', e => { S.board.q = e.target.value; const pos = e.target.selectionStart; render(); const el = $('boardSearch'); el.focus(); el.setSelectionRange(pos, pos); });
     $('optAll').addEventListener('change', e => { S.board.all = e.target.checked; render(); });
     bindFilterToggles();
@@ -783,45 +903,45 @@
     const picked = S.compare.includes(x.model);
     const pub = x.published, cfg = x.config, h = wilson(x.scores.overall, x.total);
     const why = rank.has(x) ? '' : x.scoring_version !== s.scoring ? `scoring ${esc(x.scoring_version)}` : x.subset ? '' : 'older run';
+    const by = pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a>` : x.local ? 'local file' : 'uncommitted';
     return `<tr class="${rank.has(x) ? '' : 'dim'}${picked ? ' picked' : ''}">
       <td class="pickc"><label class="pick" title="Compare"><input type="checkbox" data-pick="${esc(x.model)}"${picked ? ' checked' : ''} aria-label="Compare ${esc(x.model)}"></label></td>
       <td class="rank">${rank.get(x) ?? '—'}</td>
-      <td class="left"><span class="who">${modelName(x.model, H.model(s.name, x.model, rank.has(x) ? '' : x.file))}${chips(x, s)}${why ? `<span class="chip" title="Not ranked">${why}</span>` : ''}</span></td>
-      <td><strong>${pct(x.scores.overall)}</strong>${h != null ? `<span class="ci">±${(h * 100).toFixed(1)}</span>` : ''}<span class="bar"><i style="width:${Math.round((x.scores.overall ?? 0) * 100)}%"></i></span></td>
+      <td class="left"><span class="who">${modelName(x.model, H.model(s.name, x.model, rank.has(x) ? '' : x.file))}${chips(x, s)}${why ? `<span class="chip" title="Not ranked">${why}</span>` : ''}</span><span class="byline">${day(x.run_date)} · ${by}</span></td>
+      <td class="overall"><strong>${pct(x.scores.overall)}</strong>${h != null ? `<span class="ci">±${(h * 100).toFixed(1)}</span>` : ''}</td>
+      <td class="left mini${x.synthetic ? ' synthetic' : ''}">${miniBars(x, s)}</td>
       <td>${x.passed}/${x.total}</td>
       <td>${usd(x.cost.total)}</td>
       <td>${usd(x.cost.per_pass)}</td>
-      <td>${int(x.tokens.completion_p50)}</td>
-      <td>${secs(x.latency.p50)}</td>
-      <td>${secs(x.latency.p90)}</td>
-      <td>${esc(x.run_date ?? '—')}</td>
-      <td class="left">${pub ? `<a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank" title="${esc(pub.message)}">${esc(pub.by)}</a> <span class="faint">${esc(pub.date)}</span>` : `<span class="faint">${x.local ? 'local file' : 'uncommitted'}</span>`}</td>
-      <td class="left drawer-cell"><details class="drawer"><summary>details</summary><div class="drawer-body"><dl>
+      <td>${secs(x.latency.p50)}<span class="faint"> / ${secs(x.latency.p90)}</span></td>
+      <td class="drawer-cell"><details class="drawer"><summary>details</summary><div class="drawer-body"><dl>
+        <dt>run</dt><dd>${esc(x.file)} · ${day(x.run_date)}${pub ? ` · published by ${esc(pub.by)} in <a href="${esc(commitUrl(pub.sha))}" rel="noopener" target="_blank">${esc(pub.short || pub.sha.slice(0, 7))}</a>` : ''}</dd>
         <dt>suite</dt><dd>${esc(x.suite)} · scoring ${esc(x.scoring_version)} · schema ${esc(x.result_schema_version ?? '—')}</dd>
         <dt>model</dt><dd>${esc(x.model)} (${esc(cfg.kind ?? '—')}) · temperature ${esc(cfg.temperature ?? '—')} · max_tokens ${esc(cfg.max_tokens ?? 'default')}</dd>
         <dt>runtime</dt><dd>${esc(cfg.grader ?? '—')} / ${esc(cfg.database ?? '—')} · ${esc(cfg.runtime_isolation ?? '—')} (${esc(cfg.runtime_isolation_boundary ?? '—')}) · concurrency ${esc(cfg.execution_concurrency ?? '—')} · seed ${esc(cfg.seed ?? '—')}</dd>
         <dt>image</dt><dd>${esc(cfg.runtime_image_id ?? '—')}</dd>
         <dt>dataset</dt><dd>${esc(cfg.dataset?.source ?? '—')} ${esc(cfg.dataset?.name ?? '')}${cfg.dataset?.revision ? ' @ ' + esc(cfg.dataset.revision) : ''}</dd>
         <dt>scores</dt><dd>exec pass ${pct(x.scores.execution_pass_rate)} · runtime partial ${pct(x.scores.runtime)} · static policy ${pct(x.scores.static_policy_pass_rate)} · correctness (legacy) ${pct(x.scores.correctness)}</dd>
-        <dt>usage</dt><dd>${int(x.usage.prompt_tokens)} prompt + ${int(x.usage.completion_tokens)} completion tokens · ${x.latency.total_min ?? '—'} min of model time · max latency ${secs(x.latency.max)}</dd>
+        <dt>usage</dt><dd>${int(x.tokens.completion_p50)} completion tokens per test (median) · ${int(x.usage.prompt_tokens)} prompt + ${int(x.usage.completion_tokens)} completion in all · ${x.latency.total_min ?? '—'} min of model time · max latency ${secs(x.latency.max)}</dd>
         <dt>file</dt><dd>${x.local ? esc(x.file) : `<a href="${esc(fileUrl(x))}" rel="noopener" target="_blank">${esc(x.file)}</a>`}</dd>
       </dl></div></details></td>
     </tr>`;
   }
-  function boardTiles(s, ranked) {
+  /** The tiles from the build_data page as one quiet strip, so the table stays the thing you read. */
+  function boardStats(s, ranked) {
     if (!ranked.length) return '';
     const top = ranked[0];
     const cheapest = ranked.filter(x => x.cost.per_pass != null).sort((a, b) => a.cost.per_pass - b.cost.per_pass)[0];
     const fastest = ranked.filter(x => x.latency.p50 != null).sort((a, b) => a.latency.p50 - b.latency.p50)[0];
     const allFail = ranked.length > 1 ? s.order.filter(([id]) => ranked.every(x => { const st = statusOf(x, id); return st === 'fail' || st === 'error'; })).length : null;
-    const tile = (k, v, sub, href) => `<div class="tile"><div class="k">${esc(k)}</div><div class="v">${v}</div><div class="s" title="${esc(sub ?? '')}">${href ? `<a href="${href}">${esc(shortName(sub ?? ''))}</a>` : esc(sub ?? '')}</div></div>`;
-    return [
-      tile('Top score', pct(top.scores.overall), top.model, H.model(s.name, top.model)),
-      tile('Cheapest per pass', cheapest ? usd(cheapest.cost.per_pass) : '—', cheapest?.model, cheapest && H.model(s.name, cheapest.model)),
-      tile('Fastest (p50)', fastest ? secs(fastest.latency.p50) : '—', fastest?.model, fastest && H.model(s.name, fastest.model)),
-      tile('Tests', String(s.full), `${s.cats.length} categories`, H.cats(s.name)),
-      tile('Fail for every model', allFail == null ? '—' : String(allFail), allFail == null ? 'needs 2 ranked models' : 'likely benchmark hardness'),
-    ].join('');
+    const stat = (k, v, sub, href) => `<div><dt>${esc(k)}</dt><dd><b>${v}</b>${sub ? ` <span class="who-s" title="${esc(sub)}">${href ? `<a href="${href}">${esc(shortName(sub))}</a>` : esc(sub)}</span>` : ''}</dd></div>`;
+    return `<dl class="statline">${[
+      stat('Top score', pct(top.scores.overall), top.model, H.model(s.name, top.model)),
+      stat('Cheapest per pass', cheapest ? usd(cheapest.cost.per_pass) : '—', cheapest?.model, cheapest && H.model(s.name, cheapest.model)),
+      stat('Fastest p50', fastest ? secs(fastest.latency.p50) : '—', fastest?.model, fastest && H.model(s.name, fastest.model)),
+      stat('Tests', String(s.full), `${s.cats.length} categories`, ''),
+      stat('Fail for every model', allFail == null ? '—' : String(allFail), allFail == null ? 'needs 2 ranked models' : `of ${s.full}`, ''),
+    ].join('')}</dl>`;
   }
   // Synthetic runs only exist in development data (examples/synthetic); the toggle appears only then.
   const filterToggles = () => S.runs.some(r => r.synthetic) ? `<label class="check"><input type="checkbox" id="optSynthetic"${S.showSynthetic ? ' checked' : ''}> Synthetic runs</label>` : '';
@@ -841,7 +961,8 @@
     const h = wilson(run.scores.overall, run.total);
     const notes = [
       run.synthetic && '<p class="notice synthetic">Synthetic run: these results were randomly generated to build this page. They say nothing about the model.</p>',
-      run.subset && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
+      run.partial && `<p class="notice live">${esc(t('In progress: {done} of {full} tests graded so far. The score and the strip are partial and keep changing until the run ends.', { done: run.total, full: s.full }))}</p>`,
+      run.subset && !run.partial && `<p class="notice">This run has ${run.total} tests and the current full suite has ${s.full}${run.limit ? ` (seeded subset: limit ${esc(run.limit)}, seed ${esc(cfg.seed)})` : ': a partial run or an earlier revision of the suite'}, so its score is not ranked with full runs.</p>`,
       run.errored && `<p class="notice">${run.errored} tests errored before grading and are left out of the scores (continue_on_error).</p>`,
       run.scoring_version !== s.scoring && `<p class="notice">Scored with version ${esc(run.scoring_version)}, not ${esc(s.scoring)}: not ranked with the current runs.</p>`,
       cfg.runtime_isolation_boundary && cfg.runtime_isolation_boundary !== 'container_per_test' && `<p class="notice fail">Isolation "${esc(cfg.runtime_isolation_boundary)}" shares state between tests; not valid for published scores.</p>`,
@@ -858,13 +979,13 @@
       ${notes}
       <div class="sheet">
         <dl class="stats">
-          <div><dt>Passed</dt><dd>${run.passed}<span class="sub"> / ${run.total}</span></dd></div>
-          <div><dt>Failed</dt><dd>${failed}${timeouts ? `<span class="sub"> · ${timeouts} timeouts</span>` : ''}</dd></div>
-          <div><dt>Runtime mean</dt><dd>${pct(run.scores.runtime)}</dd></div>
-          <div><dt>Est. cost</dt><dd>${usd(run.cost.total)}<span class="sub"> · ${usd(run.cost.per_pass)}/pass</span></dd></div>
-          <div><dt>Latency p50 / p90</dt><dd>${secs(run.latency.p50)}<span class="sub"> / ${secs(run.latency.p90)}</span></dd></div>
-          <div><dt>Tokens per test</dt><dd>${int(run.tokens.completion_p50)}<span class="sub"> completion, median</span></dd></div>
-          <div><dt>Run</dt><dd>${day(run.run_date)}${run.published ? `<span class="sub"> · <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank" title="${esc(run.published.message)}">${esc(run.published.by)}</a></span>` : run.local ? '<span class="sub"> · local file</span>' : ''}</dd></div>
+          <div><dt>Passed</dt><dd>${run.passed}<span class="sub">of ${run.total} tests</span></dd></div>
+          <div><dt>Failed</dt><dd>${failed}<span class="sub">${timeouts ? `${timeouts} timeouts` : 'tests'}</span></dd></div>
+          <div><dt>Runtime mean</dt><dd>${pct(run.scores.runtime)}<span class="sub">partial credit</span></dd></div>
+          <div><dt>Est. cost</dt><dd>${usd(run.cost.total)}<span class="sub">${usd(run.cost.per_pass)} per pass</span></dd></div>
+          <div><dt>Latency p50</dt><dd>${secs(run.latency.p50)}<span class="sub">p90 ${secs(run.latency.p90)}</span></dd></div>
+          <div><dt>Tokens / test</dt><dd>${int(run.tokens.completion_p50)}<span class="sub">median completion</span></dd></div>
+          <div><dt>Run</dt><dd>${day(run.run_date)}<span class="sub">${run.published ? `by <a href="${esc(commitUrl(run.published.sha))}" rel="noopener" target="_blank" title="${esc(run.published.message)}">${esc(run.published.by)}</a>` : run.local ? 'local file' : 'unpublished'}</span></dd></div>
         </dl>
         <div class="big-lane" style="border-top:1px solid var(--rule)">
           <div class="ruler-label" id="rulerLabel"><span>Every test in the suite, grouped by category · click a failure to open it</span></div>
@@ -899,7 +1020,7 @@
         <div><dt>Isolation</dt><dd>${esc(cfg.runtime_isolation ?? '—')}<span class="sub"> · concurrency ${esc(cfg.execution_concurrency ?? '—')}</span></dd></div>
         <div><dt>Grader</dt><dd>${esc(cfg.grader ?? '—')}<span class="sub"> · ${esc(cfg.database ?? '')}</span></dd></div>
         <div><dt>Runtime image</dt><dd class="mono" style="font-size:12px">${esc(String(cfg.runtime_image_id ?? '—').slice(0, 19))}</dd></div>
-        <div><dt>Schema · scoring</dt><dd>${esc(run.result_schema_version ?? '—')}<span class="sub"> · ${esc(run.scoring_version)}</span></dd></div>
+        <div><dt>Schema</dt><dd>${esc(run.result_schema_version ?? '—')}<span class="sub">scoring ${esc(run.scoring_version)}</span></dd></div>
       </dl></div>
       ${runs.length > 1 ? `<div class="section-head"><h2>Other runs</h2></div><div class="sheet"><ol class="ledger">${runs.map(x => `<li class="entry"><div class="line" style="grid-template-columns:minmax(0,1fr) auto 112px"><span class="who"><a href="${H.model(s.name, x.model, x.file)}" class="mono">${esc(x.file)}</a>${x === run ? '<span class="chip">showing</span>' : ''}${chips(x, s)}</span><span class="facts num"><span>${x.passed}/${x.total}</span><span>${day(x.run_date)}</span></span>${score(x, 'score', false)}</div></li>`).join('')}</ol></div>` : ''}`;
     main.querySelectorAll('[data-status]').forEach(b => b.addEventListener('click', () => { S.tests.status = b.dataset.status; main.querySelectorAll('[data-status]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderTestList(run, s); }));
@@ -1017,6 +1138,7 @@
     main.innerHTML = `
       ${syntheticNotice(s)}
       <div class="toolbar"><span>Pass rate per category for each model's latest run in ${esc(s.name)}; darker is higher. Click a cell to list its tests. Categories with fewer than 5 tests are marked <span class="chip">n&lt;5</span>: one test moves them by 20 points or more.</span><span class="grow"></span>${filterToggles()}</div>
+      <div class="cat-layout">
       <div class="sheet pad grid-wrap">
         <table class="heat"><thead><tr><th class="cat"></th>${rows.map(x => `<th class="col${x.synthetic ? ' synthetic' : ''}" title="${esc(x.model)}${x.synthetic ? ' · synthetic' : ''}"><a href="${H.model(s.name, x.model)}">${esc(x.model)}</a></th>`).join('')}</tr></thead>
         <tbody>
@@ -1025,7 +1147,8 @@
         </tbody></table>
         <div class="legend">0%<span class="ramp">${[100, 200, 300, 400, 500, 600, 700].map(n => `<i style="background:var(--seq-${n})"></i>`).join('')}</span>100%</div>
       </div>
-      <div class="sheet pad" id="cellDetail" style="margin-top:12px" hidden></div>`;
+      <div class="sheet" id="cellDetail" hidden></div>
+      </div>`;
     bindFilterToggles();
     const heat = main.querySelector('table.heat');
     const open = (el) => {
@@ -1044,8 +1167,8 @@
     const ok = ids.filter(id => statusOf(run, id) === 'pass').length;
     const el = $('cellDetail');
     el.hidden = false;
-    el.innerHTML = `<div class="section-head" style="margin:0 0 8px"><h2>${modelName(run.model, H.model(s.name, run.model))} · ${cat ? `<a href="${H.cat(s.name, cat)}" class="mono">${esc(cat)}</a>` : 'all categories'}</h2><p>${ok}/${ids.length} passed</p></div>
-      <div id="cellTests" style="margin:0 -16px -14px">${ids.map((id, i) => testRow(run, id, s, { i, showCat: !cat })).join('')}</div>`;
+    el.innerHTML = `<div class="section-head cell-head"><h2>${modelName(run.model, H.model(s.name, run.model))} · ${cat ? `<a href="${H.cat(s.name, cat)}" class="mono">${esc(cat)}</a>` : 'all categories'}</h2><p>${ok}/${ids.length} passed</p></div>
+      <div id="cellTests">${ids.map((id, i) => testRow(run, id, s, { i, showCat: !cat })).join('')}</div>`;
     bindTestBodies($('cellTests'), (i) => [run, ids[i]], s);
     el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -1166,7 +1289,7 @@
       ${Hs.length ? `<div class="hist"><div class="sheet commits" id="commits">${Hs.map((c, i) => `
         <div class="commit" data-i="${i}" tabindex="0">
           <div class="msg" title="${esc(c.message)}">${esc(c.message.split('\n')[0])}</div>
-          <div class="meta"><span>${esc(c.author)}</span><span>${esc(c.date.slice(0, 10))}</span><a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank" onclick="event.stopPropagation()"><code>${esc(c.short)}</code></a><span>${c.added.length ? `+${c.added.length} ` : ''}${c.removed.length ? `−${c.removed.length} ` : ''}${c.modified.length ? `~${c.modified.length}` : ''}</span></div>
+          <div class="meta"><span>${esc(c.author)}</span><span>${day(c.date)}</span><a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank" onclick="event.stopPropagation()"><code>${esc(c.short)}</code></a><span>${c.added.length ? `+${c.added.length} ` : ''}${c.removed.length ? `−${c.removed.length} ` : ''}${c.modified.length ? `~${c.modified.length}` : ''}</span></div>
         </div>`).join('')}</div><div class="sheet diff" id="diff"></div></div>` : '<div class="sheet empty">No commits recorded in the data file.</div>'}`;
     if (!Hs.length) return;
     $('commits').querySelectorAll('.commit').forEach(el => {
@@ -1188,7 +1311,7 @@
     const row = (x) => `<li>${modelName(x.model)}${tag(x)} <span class="muted">${esc(x.suite)} · ${esc(x.file)}</span> — <strong>${pct(x.overall)}</strong> <span class="muted">(${x.passed}/${x.total})</span></li>`;
     $('diff').innerHTML = `
       <p style="margin:0 0 4px;white-space:pre-wrap"><strong>${esc(c.message.split('\n')[0])}</strong>${c.message.includes('\n') ? '\n' + esc(c.message.split('\n').slice(1).join('\n').trim()) : ''}</p>
-      <p class="muted" style="margin:0 0 10px;font-size:12.5px">${esc(c.author)} · ${esc(c.date.replace('T', ' ').slice(0, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · files: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || 'none'}</p>
+      <p class="muted" style="margin:0 0 12px;font-size:12px">${esc(c.author)} · ${day(c.date)}, ${esc(c.date.slice(11, 16))} · <a href="${esc(commitUrl(c.sha))}" rel="noopener" target="_blank"><code>${esc(c.short)}</code></a> · files: ${[...c.added.map(f => '+' + f), ...c.removed.map(f => '−' + f), ...c.modified.map(f => '~' + f)].map(esc).join(', ') || 'none'}</p>
       <p class="faint" style="margin:0;font-size:12.5px">${A.size} model runs after this commit, ${B.size} before.</p>
       <h3>Models added <span class="faint num">${added.length}</span></h3>${added.length ? `<ul>${added.map(k => row(A.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
       <h3>Models removed <span class="faint num">${removed.length}</span></h3>${removed.length ? `<ul>${removed.map(k => row(B.get(k))).join('')}</ul>` : '<p class="muted">None</p>'}
@@ -1285,7 +1408,8 @@
           <h2 style="margin-bottom:8px">What gets ranked</h2>
           <p style="margin:0 0 8px">Each model's latest <strong>full</strong> run per suite and scoring version. Runs with a different test count (<code>--limit</code>, <code>--categories</code>, or an earlier revision of the suite) and other scoring versions are listed under "Not ranked", never ranked with full runs.</p>
           <p style="margin:0 0 8px">Overall is the strict execution pass rate; ± is a 95% Wilson interval on the number of tests; costs are harness estimates.</p>
-          <p class="muted" style="margin:0">Synthetic runs from <code>examples/synthetic</code> exist only for developing this page and are never published.</p>
+          <p class="muted" style="margin:0 0 8px">Synthetic runs from <code>examples/synthetic</code> exist only for developing this page and are never published.</p>
+          <p class="muted" style="margin:0">To preview a run before publishing it, use Upload results or drop a file anywhere on this page: <code>output/results_&lt;timestamp&gt;.json</code>, the <code>.jsonl</code>, or the <code>.jsonl.partial</code> the harness writes while a run is going. Nothing leaves your browser; in Chromium a dropped <code>.partial</code> file is followed live.</p>
         </section>
       </div>`;
   }
@@ -1406,27 +1530,129 @@
     if (e.key === '/' && !e.metaKey && !e.ctrlKey && !e.target.closest('input, textarea, select, [contenteditable]')) { e.preventDefault(); q.focus(); q.select(); }
   });
 
-  // ---------- local files and export ----------
-  const fileInput = Object.assign(document.createElement('input'), { type: 'file', accept: '.json,application/json', multiple: true, hidden: true });
+  // ---------- local files: upload, drop and follow ----------
+  const fileInput = Object.assign(document.createElement('input'), { type: 'file', accept: '.json,.jsonl,.partial,application/json', multiple: true, hidden: true });
   document.body.append(fileInput);
-  async function addLocalFiles(files) {
-    const added = [];
-    for (const f of files) {
-      if (!/\.json$/i.test(f.name)) continue;
-      try { added.push(...runsFromRaw(f.name, JSON.parse(await f.text()))); }
-      catch (e) { console.warn('skipping', f.name, e); }
-    }
-    if (!added.length) { alert('No wp-bench run outputs found. Open output/results_<timestamp>.json files from a model run.'); return; }
-    const keys = new Set(added.map(x => x.key));
-    S.runs = S.runs.filter(x => !keys.has(x.key)).concat(added);
+  const canFollow = () => typeof window.showOpenFilePicker === 'function';
+  // Files being followed while a run is still writing them (File System Access API, Chromium).
+  const LIVE = { handles: new Map(), timer: null, busy: false, message: '' };
+
+  /** Replace everything a file contributed with its latest runs, then rebuild the suites around them. */
+  function setLocalRuns(name, runs) {
+    // The final results_<timestamp>.json / .jsonl supersedes the .jsonl.partial the harness wrote for the same run.
+    const partial = /\.partial$/i.test(name) ? null : name.replace(/\.jsonl?$/i, '.jsonl.partial');
+    S.runs = S.runs.filter(x => x.localFile !== name && x.localFile !== partial).concat(runs);
+    for (const x of S.runs) delete x._cats;
     buildSuites();
-    location.hash = H.model(added[0].suite, added[0].model, added[0].file);
+  }
+
+  async function addLocalFiles(files) {
+    LIVE.message = '';
+    const added = [], failed = [];
+    for (const f of files) {
+      try {
+        const runs = await parseUpload(f);
+        if (runs.length) { setLocalRuns(f.name, runs); added.push(...runs); } else failed.push(`${f.name}: ${t('no wp-bench run output found.')}`);
+      } catch (e) { failed.push(`${f.name}: ${e.message}`); }
+    }
+    if (failed.length) LIVE.message = failed.join(' · ');
+    if (added.length) location.hash = H.model(added[0].suite, added[0].model, added[0].file);
     render();
   }
+
+  async function followHandle(handle) {
+    LIVE.handles.set(handle.name, { handle, stamp: '', runs: null, updated: null });
+    if (!LIVE.timer) LIVE.timer = setInterval(() => pollFollowed(false), 1500);
+    await pollFollowed(true);
+  }
+  function stopFollowing() {
+    LIVE.handles.clear();
+    clearInterval(LIVE.timer); LIVE.timer = null;
+  }
+  async function pollFollowed(initial) {
+    if (LIVE.busy || (document.hidden && !initial)) return;
+    LIVE.busy = true;
+    let changed = false, first = null;
+    try {
+      for (const [name, h] of [...LIVE.handles]) {
+        let file;
+        try { file = await h.handle.getFile(); }
+        catch { LIVE.handles.delete(name); LIVE.message = t('{name} is gone: the run has probably finished. Upload the final results_<timestamp>.json to keep it.', { name }); changed = true; continue; }
+        const stamp = `${file.lastModified}:${file.size}`;
+        if (stamp === h.stamp) continue;
+        h.stamp = stamp;
+        try {
+          const runs = await parseUpload(file);
+          if (runs.length) { setLocalRuns(name, runs); h.runs = runs; h.updated = new Date(); first ||= runs; changed = true; }
+        } catch (e) { LIVE.message = `${name}: ${e.message}`; changed = true; }
+      }
+    } finally { LIVE.busy = false; }
+    if (!LIVE.handles.size && LIVE.timer) stopFollowing();
+    if (!changed) return;
+    if (initial && first) location.hash = H.model(first[0].suite, first[0].model, first[0].file);
+    render();
+  }
+  async function pickToFollow() {
+    try {
+      const [handle] = await window.showOpenFilePicker({ multiple: false, types: [{ description: 'wp-bench output', accept: { 'application/json': ['.json', '.jsonl', '.partial'] } }] });
+      await followHandle(handle);
+    } catch (e) { if (e.name !== 'AbortError') { LIVE.message = e.message; render(); } }
+  }
+  function clearLocal() {
+    stopFollowing();
+    LIVE.message = '';
+    S.runs = S.runs.filter(x => !x.local);
+    for (const x of S.runs) delete x._cats;
+    buildSuites();
+    location.hash = '#/';
+    render();
+  }
+
+  /** The strip under the masthead: what is being previewed, the live status and the way out. */
+  function renderLocalBar() {
+    const bar = $('localbar'), local = S.runs.filter(x => x.local), following = [...LIVE.handles.values()];
+    if (!local.length && !following.length && !LIVE.message) { bar.hidden = true; bar.innerHTML = ''; return; }
+    bar.hidden = false;
+    const files = [...new Set(local.map(x => x.localFile))];
+    let text = '';
+    if (following.length) {
+      const h = following[0], run = h.runs?.[0];
+      text = `<span class="livedot" aria-hidden="true"></span><span>${t('Following')} <b>${esc(h.handle.name)}</b>${run ? ` · <b>${run.total}</b> ${t('tests graded')} · ${t('score')} <b>${pct(run.scores.overall)}</b>` : ''}${h.updated ? ` · ${t('updated')} ${h.updated.toLocaleTimeString()}` : ''}</span>`;
+    } else if (local.length) {
+      text = `<span>${t('Previewing local results')}: ${files.map(f => `<code>${esc(f)}</code>`).join(', ')} · ${t('only in this tab, nothing is uploaded')}</span>`;
+    }
+    bar.innerHTML = `<div class="localbar">${text}${LIVE.message ? `<span class="msg">${esc(LIVE.message)}</span>` : ''}<span class="grow"></span>
+      ${canFollow() && !following.length ? `<button type="button" class="btn" data-action="follow">${t('Follow a running benchmark')}</button>` : ''}
+      ${following.length ? `<button type="button" class="btn" data-action="stop">${t('Stop following')}</button>` : ''}
+      ${local.length || LIVE.message ? `<button type="button" class="btn" data-action="clear">${t('Clear')}</button>` : ''}</div>`;
+  }
+
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-action]'); if (!b) return;
+    const act = b.dataset.action;
+    if (act === 'upload') fileInput.click();
+    else if (act === 'follow') pickToFollow();
+    else if (act === 'stop') { stopFollowing(); render(); }
+    else if (act === 'clear') clearLocal();
+  });
   fileInput.addEventListener('change', e => { addLocalFiles([...e.target.files]); e.target.value = ''; });
-  document.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); document.body.classList.add('dropping'); } });
-  document.addEventListener('dragleave', e => { if (!e.relatedTarget) document.body.classList.remove('dropping'); });
-  document.addEventListener('drop', e => { if (!e.dataTransfer.files.length) return; e.preventDefault(); document.body.classList.remove('dropping'); addLocalFiles([...e.dataTransfer.files]); });
+
+  const dropHint = $('dropHint');
+  document.addEventListener('dragover', e => { if ([...e.dataTransfer.types].includes('Files')) { e.preventDefault(); dropHint.hidden = false; } });
+  document.addEventListener('dragleave', e => { if (!e.relatedTarget) dropHint.hidden = true; });
+  document.addEventListener('drop', async e => {
+    if (!e.dataTransfer.files.length) return;
+    e.preventDefault();
+    dropHint.hidden = true;
+    // Handles must be requested while the event is still alive; a dropped .partial file can then be followed.
+    const files = [...e.dataTransfer.files];
+    const handles = await Promise.all([...e.dataTransfer.items].map(i => i.kind === 'file' && i.getAsFileSystemHandle ? i.getAsFileSystemHandle().catch(() => null) : null));
+    const plain = [];
+    for (const [i, f] of files.entries()) {
+      if (/\.partial$/i.test(f.name) && handles[i]?.kind === 'file') await followHandle(handles[i]); else plain.push(f);
+    }
+    if (plain.length) await addLocalFiles(plain);
+  });
 
   function exportCsv(s, rows) {
     const cols = [['rank', x => x.rank], ['model', x => x.model], ['suite', x => x.suite], ['overall', x => x.scores.overall], ['ci95', x => wilson(x.scores.overall, x.total)],
